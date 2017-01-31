@@ -21,6 +21,7 @@ $font-family-sans: 'Open Sans', sans-serif;
 body {
   background-image: url('/img/bg.jpg');
   background-repeat: none;
+  background-attachment: fixed;
   font-family: $font-family-sans;
   font-size: 16px;
   font-weight: 300;
@@ -45,6 +46,20 @@ section {
     color: lightblue;
     @include media($mobile) {
       font-size: 2rem;
+    }
+  }
+
+  &#contributors {
+    .content {
+      p.stats {
+        padding-top: 2rem;
+        font-size: 1rem;
+        color: lightblue;
+        text-align: center;
+        span.number {
+          font-weight: 600;
+        }
+      }
     }
   }
 }
