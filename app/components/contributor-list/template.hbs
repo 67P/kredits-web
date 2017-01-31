@@ -1,0 +1,14 @@
+<tbody>
+  {{#each contributors as |contributor|}}
+    <tr>
+      <td class="person">
+        <img class="avatar" src={{contributor.avatarURL}}>
+        {{contributor.github_username}}
+      </td>
+      <td class="kredits">
+        <span class="amount">{{contributor.kredits}}</span>
+        <span class="symbol">₭S</span>
+      </td>
+    </tr>
+  {{/each}}
+</tbody>

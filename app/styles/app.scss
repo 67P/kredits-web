@@ -19,11 +19,12 @@
 $font-family-sans: 'Open Sans', sans-serif;
 
 body {
-  font-family: $font-family-sans;
-  font-size: 16px;
-  color: #fff;
   background-image: url('/img/bg.jpg');
   background-repeat: none;
+  font-family: $font-family-sans;
+  font-size: 16px;
+  font-weight: 300;
+  color: #fff;
 }
 
 @media screen and (min-width: 900px) {
@@ -32,23 +33,20 @@ body {
   }
 }
 
-h1, h2, h3, h4, h5 {
-  font-weight: normal;
-  font-size: 1rem;
-}
-
-input, button {
+h1, h2, h3, h4, h5, input, button {
   font-family: $font-family-sans;
   font-size: 1rem;
+  font-weight: 300;
 }
 
 section {
   h2 {
     font-size: 2.8rem;
-    font-weight: 300;
     color: lightblue;
     @include media($mobile) {
       font-size: 2rem;
     }
   }
 }
+
+@import "components/contributor-list";

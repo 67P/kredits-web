@@ -1,23 +1,27 @@
-body {
-}
-
 section {
   @include outer-container;
   margin-top: 6rem;
+  margin-bottom: 8rem;
 
   @include media($mobile) {
-    margin-top: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 5rem;
   }
 
   header {
-    @include span-columns(10);
-    @include shift(1);
+    @include span-columns(12);
+    padding-bottom: 3rem;
     text-align: center;
     // background-color: purple;
 
     @include media($mobile) {
       @include span-columns(10);
       @include shift(1);
+      padding-bottom: 2rem;
+    }
+
+    div.content {
+      @include span-columns(12);
     }
   }
 }
