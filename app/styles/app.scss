@@ -52,12 +52,15 @@ section {
   &#contributors {
     .content {
       p.stats {
-        padding-top: 2rem;
+        padding-top: 3rem;
         font-size: 1rem;
         color: lightblue;
         text-align: center;
         span.number {
           font-weight: 600;
+        }
+        @include media($mobile) {
+          padding-top: 2rem;
         }
       }
     }
