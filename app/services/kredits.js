@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Web3 from 'npm:web3';
+import config from 'kredits-web/config/environment';
 
 export default Ember.Service.extend({
 
@@ -26,15 +27,20 @@ export default Ember.Service.extend({
     return web3Instance;
   }.property('web3Instance'),
 
-  contract: function() {
-    // let web3 = this.get('web3');
-    let contract = null;
-
+  kreditsContract: function() {
+    // TODO cache this
+    let contract = this.get('web3')
+                       .eth.contract(config.kreditsContract.ABI)
+                       .at(config.kreditsContract.address);
     return contract;
   }.property('web3'),
 
   totalSupply: function() {
-    return 23000;
-  }.property()
+    return this.get('kreditsContract').totalSupply();
+  }.property('kreditsContract'),
+
+  logKreditsContract: function() {
+    Ember.Logger.debug('kreditsContract', this.get('kreditsContract'));
+  }.on('init')
 
 });

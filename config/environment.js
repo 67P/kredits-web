@@ -1,4 +1,5 @@
 /* jshint node: true */
+let contracts = require('../vendor/contract-abis');
 
 module.exports = function(environment) {
   var ENV = {
@@ -20,10 +21,15 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+
+    kreditsContract: {
+      ABI: contracts['Kredits']
     }
   };
 
   if (environment === 'development') {
+    ENV.kreditsContract.address = 'abcdef123456';
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -43,7 +49,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
   }
 
   return ENV;
