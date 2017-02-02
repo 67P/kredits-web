@@ -1,10 +1,15 @@
 import Ember from 'ember';
 
 const {
-  computed
+  computed,
+  inject: {
+    service
+  }
 } = Ember;
 
 export default Ember.Controller.extend({
+
+  kredits: service(),
 
   contributorsCount: computed('model.contributors.[]', function() {
     return this.get('model.contributors').length;
