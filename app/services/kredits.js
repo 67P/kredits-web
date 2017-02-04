@@ -23,6 +23,7 @@ export default Ember.Service.extend({
     }
 
     this.set('web3Instance', web3Instance);
+
     return web3Instance;
   }.property('web3Instance'),
 
@@ -36,26 +37,6 @@ export default Ember.Service.extend({
 
   totalSupply: function() {
     return this.get('kreditsContract').totalSupply();
-  }.property('kreditsContract'),
-
-  contributorsCount: function() {
-    return this.get('kreditsContract').contributorCount();
-  }.property('kreditsContract'),
-
-  contributors: function() {
-    var c = [];
-    for(var i = 0; i < this.get('contributorsCount').toNumber(); i++) {
-      var address = this.get('kreditsContract').contributorAddresses(i);
-      var person = this.get('kreditsContract').contributors(address);
-      var balance = this.get('kreditsContract').balanceOf(address);
-      console.log(person);
-      c.push({address: address, name: person[0], github_username: person[1], github_uid: person[2], ipfsHash: person[3], kredits: balance.toNumber()});
-    };
-    return c;
-  }.property('kreditsContract', 'contributorCount'),
-
-  balanceOf: function(address) {
-    return this.get('kreditsContract').balanceOf(address).toNumber();
   }.property('kreditsContract'),
 
   logKreditsContract: function() {
