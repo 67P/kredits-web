@@ -24,12 +24,12 @@ module.exports = function(environment) {
     },
 
     kreditsContract: {
-      ABI: contracts['Kredits']
+      ABI: contracts['Kredits'].abi
     }
   };
 
   if (environment === 'development') {
-    ENV.kreditsContract.address = 'abcdef123456';
+    ENV.kreditsContract.address = '0xa624dc6c2539eed38273f03fc7c9fe05bfaddf66';
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
