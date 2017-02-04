@@ -15,9 +15,11 @@ let fixtures = [
 
 export default Ember.Route.extend({
 
+  kredits: Ember.inject.service(),
+
   model() {
     let contributors = [];
-    fixtures.forEach(obj => {
+    this.get('kredits.contributors').forEach(obj => {
       contributors.pushObject(Contributor.create(obj));
     });
 
