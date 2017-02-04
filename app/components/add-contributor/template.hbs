@@ -1,0 +1,26 @@
+<form {{action "save" on="submit"}}>
+  <p>
+    {{input name="id"
+            type="text"
+            placeholder="GitHub UID (123)"
+            value=id
+            class=classId}}
+  </p>
+  <p>
+    {{input name="realname"
+            type="text"
+            placeholder="Carl Sagan"
+            value=realName
+            class=classRealName}}
+  </p>
+  <p>
+    {{input name="address"
+            type="text"
+            placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
+            value=address
+            class=classAddress}}
+  </p>
+  <p>
+    <input type="submit" value="Save">
+  </p>
+</form>

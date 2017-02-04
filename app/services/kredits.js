@@ -5,6 +5,7 @@ import config from 'kredits-web/config/environment';
 export default Ember.Service.extend({
 
   web3Instance: null,
+  web3Provided: false, // Web3 provided (using Mist Browser, Metamask et al.)
 
   web3: function() {
     if (Ember.isPresent(this.get('web3Instance'))) {
@@ -16,6 +17,7 @@ export default Ember.Service.extend({
     if (typeof window.web3 !== 'undefined') {
       Ember.Logger.debug('[web3] Using user-provided instance, e.g. from Mist browser or Metamask');
       web3Instance = window.web3;
+      this.set('web3Provided', true);
     } else {
       Ember.Logger.debug('[web3] Creating new instance from npm module class');
       let provider = new Web3.providers.HttpProvider("http://139.59.248.169:8545");
@@ -38,7 +40,8 @@ export default Ember.Service.extend({
   }.property('web3'),
 
   totalSupply: function() {
-    return this.get('kreditsContract').totalSupply();
+    return 23000;
+    // return this.get('kreditsContract').totalSupply();
   }.property('kreditsContract'),
 
   contributorsCount: function() {

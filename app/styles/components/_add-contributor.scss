@@ -1,0 +1,25 @@
+section#add-contributor {
+
+  form {
+
+    p {
+      margin-bottom: 1.2rem;
+    }
+
+    input[type=text] {
+      width: 100%;
+      padding: 1.2rem;
+      line-height: 2rem;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      background-color: rgba(22, 21, 40, 0.3);
+      color: #fff;
+      font-size: 1.4rem;
+      &:focus, &.valid {
+        background-color: rgba(22, 21, 40, 0.6);
+      }
+    }
+
+  }
+
+}

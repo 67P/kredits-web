@@ -11,4 +11,6 @@ export default Ember.Controller.extend({
 
   kredits: service(),
 
+  contractInteractionEnabled: computed.alias('kredits.web3Provided'),
+
 });

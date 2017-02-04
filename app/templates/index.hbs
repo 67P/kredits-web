@@ -1,5 +1,4 @@
 <section id="contributors">
-
   <header>
     <h2>Kosmos Contributors</h2>
   </header>
@@ -12,5 +11,16 @@
       <span class="number">{{kredits.contributorsCount}}</span> contributors.
     </p>
   </div>
-
 </section>
+
+{{#if contractInteractionEnabled}}
+  <section id="add-contributor">
+    <header>
+      <h2>Add Contributor</h2>
+    </header>
+
+    <div class="content">
+      {{add-contributor kredits=kredits}}
+    </div>
+  </section>
+{{/if}}
