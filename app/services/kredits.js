@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Web3 from 'npm:web3';
 import config from 'kredits-web/config/environment';
+import Contributor from 'kredits-web/models/contributor';
 
 export default Ember.Service.extend({
 
@@ -44,21 +45,46 @@ export default Ember.Service.extend({
     // return this.get('kreditsContract').totalSupply();
   }.property('kreditsContract'),
 
-  contributorsCount: function() {
-    return this.get('kreditsContract').contributorsCount();
-  }.property('kreditsContract'),
+  getValueFromContract(contractMethod, ...args) {
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get('kreditsContract')[contractMethod](...args, (err, data) => {
+        if (err) { reject(err); }
+        resolve(data);
+      });
+    });
+  },
 
-  contributors: function() {
-    var c = [];
-    for(var i = 0; i < this.get('contributorsCount').toNumber(); i++) {
-      var address = this.get('kreditsContract').contributorAddresses(i);
-      var person = this.get('kreditsContract').contributors(address);
-      var balance = this.get('kreditsContract').balanceOf(address);
-      console.log(person);
-      c.push({address: address, github_username: person[1], github_uid: person[0], ipfsHash: person[3], kredits: balance.toNumber()});
-    };
-    return c;
-  }.property('kreditsContract', 'contributorCount'),
+  getContributors() {
+    return this.getValueFromContract('contributorsCount').then(contributorsCount => {
+      let contributors = [];
+
+      for(var i = 0; i < contributorsCount.toNumber(); i++) {
+        contributors.push(new Ember.RSVP.Promise((resolve/*, reject*/) => {
+          let c = {};
+          this.getValueFromContract('contributorAddresses', i).then(address => {
+            c.address = address;
+            this.getValueFromContract('contributors', address).then(person => {
+              c.person = person;
+              this.getValueFromContract('balanceOf', c.address).then(balance => {
+                c.balance = balance;
+                let contributor = Contributor.create({
+                  address: c.address,
+                  github_username: c.person[1],
+                  github_uid: c.person[0],
+                  ipfsHash: c.person[3],
+                  kredits: c.balance.toNumber()
+                });
+                console.log(contributor);
+                resolve(contributor);
+              });
+            });
+          });
+        }));
+      }
+
+      return Ember.RSVP.all(contributors);
+    });
+  },
 
   balanceOf: function(address) {
     return this.get('kreditsContract').balanceOf(address).toNumber();

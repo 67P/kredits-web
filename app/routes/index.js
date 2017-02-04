@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import Contributor from 'kredits-web/models/contributor';
 
 let fixtures = [
   { github_username: "bumi", github_uid: "318", kredits: 18000 },
@@ -18,14 +17,10 @@ export default Ember.Route.extend({
   kredits: Ember.inject.service(),
 
   model() {
-    let contributors = [];
-    this.get('kredits.contributors').forEach(obj => {
-      contributors.pushObject(Contributor.create(obj));
-    });
 
-    return {
-      contributors: contributors
-    };
+    return Ember.RSVP.hash({
+      contributors: this.get('kredits').getContributors()
+    });
   }
 
 });
