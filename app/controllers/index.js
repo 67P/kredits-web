@@ -94,6 +94,10 @@ export default Ember.Controller.extend({
           'executed': true,
           'votesCount': 2 // TODO use real count
         });
+
+    this.get('model.contributors')
+        .findBy('address', data.args.recipient)
+        .incrementProperty('kredits', data.args.amount.toNumber());
   },
 
   actions: {
