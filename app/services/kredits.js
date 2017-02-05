@@ -40,11 +40,6 @@ export default Ember.Service.extend({
     return contract;
   }.property('web3'),
 
-  totalSupply: function() {
-    return 23000;
-    // return this.get('kreditsContract').totalSupply();
-  }.property('kreditsContract'),
-
   getValueFromContract(contractMethod, ...args) {
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('kreditsContract')[contractMethod](...args, (err, data) => {
