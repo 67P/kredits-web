@@ -6,6 +6,6 @@
     to <span class="recipient" title="{{proposal.recipientAddress}}">{{proposal.recipientName}}</span>
     <span class="votes">({{proposal.votesCount}}/{{proposal.votesNeeded}} votes)</span>
 
-    <button {{action "confirm"}}>+1</button>
+    {{#unless proposal.executed}}<button {{action "confirm" proposal.id}}>+1</button>{{/unless}}
   </li>
 {{/each}}

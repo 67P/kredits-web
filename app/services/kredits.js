@@ -116,6 +116,17 @@ export default Ember.Service.extend({
     });
   },
 
+  vote(proposalId) {
+    Ember.Logger.debug('[kredits] vote for', proposalId);
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get('kreditsContract').vote(proposalId, (err, data) => {
+        if (err) { reject(err); }
+        Ember.Logger.debug('[kredits] vote response', data);
+        resolve(data);
+      });
+    });
+  },
+
   logKreditsContract: function() {
     Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
   }.on('init')

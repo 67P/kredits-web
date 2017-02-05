@@ -20,7 +20,7 @@
         <h2>Open Proposals</h2>
       </header>
       <div class="content">
-        {{proposal-list proposals=proposalsOpen}}
+        {{proposal-list proposals=proposalsOpen confirmAction="confirmProposal"}}
       </div>
     </section>
   {{/if}}
@@ -30,7 +30,7 @@
       <h2>Closed Proposals</h2>
     </header>
     <div class="content">
-      {{proposal-list proposals=proposalsClosed}}
+      {{proposal-list proposals=proposalsClosed confirmAction="confirmProposal"}}
     </div>
   </section>
 

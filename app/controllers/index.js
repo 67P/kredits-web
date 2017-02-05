@@ -36,7 +36,16 @@ export default Ember.Controller.extend({
   findContributorByAddress(address) {
     return this.get('model.contributors')
                .findBy('address', address);
-  }
+  },
 
+  actions: {
+
+    confirmProposal(proposalId) {
+      this.get('kredits').vote(proposalId).then(transactionId => {
+        window.confirm('Vote submitted to Ethereum blockhain: '+transactionId);
+      });
+    }
+
+  }
 
 });
