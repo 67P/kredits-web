@@ -1,6 +1,6 @@
 @keyframes pulse {
   from {
-    opacity: 0.2;
+    opacity: 0.1;
   }
   to {
     opacity: 0.6;
@@ -24,13 +24,13 @@
 
     #path-comet {
       fill: lightblue;
-      opacity: 0.6;
+      opacity: 0.1;
 
-      -moz-animation-name: pulse;
-      -moz-animation-iteration-count: infinite;
-      -moz-animation-timing-function: ease-in-out;
-      -moz-animation-direction: alternate;
-      -moz-animation-duration: 1s;
+      animation-name: pulse;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+      animation-direction: alternate;
+      animation-duration: 1s;
     }
   }
 }
