@@ -3,5 +3,7 @@
     Issue{{#if proposal.executed}}d{{/if}}
     <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
     to <span class="recipient">{{proposal.recipientName}}</span>
+
+    <button {{action "confirm"}}>+1</button>
   </li>
 {{/each}}
