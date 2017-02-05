@@ -60,6 +60,9 @@ export default Ember.Controller.extend({
         case 'ProposalExecuted':
           this._handleProposalExecuted(data);
           break;
+        case 'ProposalVoted':
+          this._handleProposalVoted(data);
+          break;
       }
     });
   }.on('init'),
@@ -98,6 +101,12 @@ export default Ember.Controller.extend({
     this.get('model.contributors')
         .findBy('address', data.args.recipient)
         .incrementProperty('kredits', data.args.amount.toNumber());
+  },
+
+  _handleProposalVoted(data) {
+    this.get('model.proposals')
+        .findBy('id', data.args.id.toNumber())
+        .incrementProperty('votesCount', 1);
   },
 
   actions: {
