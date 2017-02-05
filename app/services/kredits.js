@@ -3,6 +3,7 @@ import Web3 from 'npm:web3';
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
+import kreditsContracts from 'npm:kredits-contracts';
 
 export default Ember.Service.extend({
 
@@ -10,7 +11,7 @@ export default Ember.Service.extend({
   web3Provided: false, // Web3 provided (using Mist Browser, Metamask et al.)
 
   web3: function() {
-    if (Ember.isPresent(this.get('web3Instance'))) {
+    if (this.get('web3Instance')) {
       return this.get('web3Instance');
     }
 
@@ -22,7 +23,7 @@ export default Ember.Service.extend({
       this.set('web3Provided', true);
     } else {
       Ember.Logger.debug('[kredits] Creating new instance from npm module class');
-      let provider = new Web3.providers.HttpProvider("http://139.59.248.169:8545");
+      let provider = new Web3.providers.HttpProvider(config.web3ProviderUrl);
       web3Instance = new Web3(provider);
     }
 
@@ -33,11 +34,14 @@ export default Ember.Service.extend({
   }.property('web3Instance'),
 
   kreditsContract: function() {
-    // TODO cache this
-    let contract = this.get('web3')
-                       .eth.contract(config.kreditsContract.ABI)
-                       .at(config.kreditsContract.address);
+    if (this.get('kreditsContractInstance')) {
+      return this.get('kreditsContractInstance');
+    }
+
+    let contract = kreditsContracts(this.get('web3'))['Kredits'];
+
     window.Kredits = contract;
+    this.set('kreditsContractInstance', contract);
     return contract;
   }.property('web3'),
 
