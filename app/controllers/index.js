@@ -27,7 +27,7 @@ export default Ember.Controller.extend({
                           return p;
                         });
     return proposals;
-  }.property('model.proposals.[]', 'model.contributors.[]'),
+  }.property('model.proposals.[]', 'model.proposals.@each.executed', 'model.contributors.[]'),
 
   proposalsClosed: function() {
     let proposals = this.get('model.proposals')
@@ -37,7 +37,7 @@ export default Ember.Controller.extend({
                           return p;
                         });
     return proposals;
-  }.property('model.proposals.[]', 'model.contributors.[]'),
+  }.property('model.proposals.[]', 'model.proposals.@each.executed', 'model.contributors.[]'),
 
   proposalsSorting: ['id:desc'],
   proposalsClosedSorted: Ember.computed.sort('proposalsClosed', 'proposalsSorting'),
@@ -57,6 +57,9 @@ export default Ember.Controller.extend({
         case 'ProposalCreated':
           this._handleProposalCreated(data);
           break;
+        case 'ProposalExecuted':
+          this._handleProposalExecuted(data);
+          break;
       }
     });
   }.on('init'),
@@ -64,7 +67,7 @@ export default Ember.Controller.extend({
   _handleProposalCreated(data) {
     if (Ember.isPresent(this.get('model.proposals')
              .findBy('id', data.args.id.toNumber()))) {
-      console.log('[index] proposal exists, not adding from event');
+      Ember.Logger.debug('[index] proposal exists, not adding from event');
       return false;
     }
 
@@ -81,8 +84,16 @@ export default Ember.Controller.extend({
       ipfsHash: data.args.ipfsHash
     });
 
-    console.log('new proposal created', proposal);
     this.get('model.proposals').pushObject(proposal);
+  },
+
+  _handleProposalExecuted(data) {
+    this.get('model.proposals')
+        .findBy('id', data.args.id.toNumber())
+        .setProperties({
+          'executed': true,
+          'votesCount': 2 // TODO use real count
+        });
   },
 
   actions: {
