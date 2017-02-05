@@ -5,10 +5,13 @@ export default Ember.Route.extend({
   kredits: Ember.inject.service(),
 
   model() {
+    let kredits = this.get('kredits');
+
     return Ember.RSVP.hash({
-      contributors: this.get('kredits').getContributors(),
-      totalSupply: this.get('kredits').getValueFromContract('totalSupply'),
-      contributorsCount: this.get('kredits').getValueFromContract('contributorsCount')
+      contributors: kredits.getContributors(),
+      totalSupply: kredits.getValueFromContract('totalSupply'),
+      contributorsCount: kredits.getValueFromContract('contributorsCount'),
+      proposals: kredits.getProposals()
     });
   }
 

@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Web3 from 'npm:web3';
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
+import Proposal from 'kredits-web/models/proposal';
 
 export default Ember.Service.extend({
 
@@ -79,6 +80,38 @@ export default Ember.Service.extend({
       }
 
       return Ember.RSVP.all(contributors);
+    });
+  },
+
+  getProposalData(i) {
+    let promise = new Ember.RSVP.Promise((resolve, reject) => {
+      this.getValueFromContract('proposals', i).then(p => {
+        let proposal = Proposal.create({
+          creatorAddress   : p[0],
+          recipientAddress : p[1],
+          votesCount       : p[2].toNumber(),
+          votesNeeded      : p[3].toNumber(),
+          amount           : p[4].toNumber(),
+          executed         : p[5],
+          url              : p[6],
+          ipfsHash         : p[7]
+        });
+        Ember.Logger.debug('[kredits] proposal', proposal);
+        resolve(proposal);
+      }).catch(err => reject(err));
+    });
+    return promise;
+  },
+
+  getProposals() {
+    return this.getValueFromContract('proposalsCount').then(proposalsCount => {
+      let proposals = [];
+
+      for(var i = 0; i < proposalsCount.toNumber(); i++) {
+        proposals.push(this.getProposalData(i));
+      }
+
+      return Ember.RSVP.all(proposals);
     });
   },
 
