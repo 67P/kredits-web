@@ -12,5 +12,5 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{loading-spinner}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.equal(this.$().text().trim(), 'Loading data from Ethereum...');
 });
