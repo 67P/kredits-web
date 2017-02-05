@@ -36,7 +36,8 @@
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
     "loader.js": "^4.0.10",
-    "web3": "^0.18.2"
+    "web3": "^0.18.2",
+    "kredits-contracts": "67P/kredits-contracts"
   },
   "engines": {
     "node": ">= 0.12.0"

@@ -1,6 +1,4 @@
 /* jshint node: true */
-let contracts = require('../vendor/contract-abis');
-
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'kredits-web',
@@ -21,15 +19,11 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    },
-
-    kreditsContract: {
-      ABI: contracts['Kredits'].abi
     }
   };
 
   if (environment === 'development') {
-    ENV.kreditsContract.address = '0x9C68Af50e97f5605402B4C01e7aB836ed7145e8B';
+    ENV.web3ProviderUrl = "http://139.59.248.169:8545";
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
