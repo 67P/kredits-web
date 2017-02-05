@@ -87,6 +87,7 @@ export default Ember.Service.extend({
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
       this.getValueFromContract('proposals', i).then(p => {
         let proposal = Proposal.create({
+          id               : i,
           creatorAddress   : p[0],
           recipientAddress : p[1],
           votesCount       : p[2].toNumber(),

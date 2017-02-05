@@ -1,5 +1,6 @@
 {{#each proposals as |proposal|}}
   <li>
+    <span class="id">#{{proposal.id}}</span>
     Issue{{#if proposal.executed}}d{{/if}}
     <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
     to <span class="recipient" title="{{proposal.recipientAddress}}">{{proposal.recipientName}}</span>
