@@ -1,11 +1,7 @@
-<ul>
-  {{#each proposals as |proposal|}}
+{{#each proposals as |proposal|}}
   <li>
     Issue{{#if proposal.executed}}d{{/if}}
-    <span class="amount">{{proposal.amount}}</span>
-    <span class="symbol">₭S</span>
-    to
-    <span class="recipient">{{proposal.recipientName}}</span>
+    <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
+    to <span class="recipient">{{proposal.recipientName}}</span>
   </li>
-  {{/each}}
-</ul>
+{{/each}}
