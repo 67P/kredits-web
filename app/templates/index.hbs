@@ -13,6 +13,26 @@
   </div>
 </section>
 
+{{#if proposalsOpen}}
+  <section id="proposals-open">
+    <header>
+      <h2>Open Proposals</h2>
+    </header>
+    <div class="content">
+      {{proposal-list proposals=proposalsOpen}}
+    </div>
+  </section>
+{{/if}}
+
+<section id="proposals-closed">
+  <header>
+    <h2>Closed Proposals</h2>
+  </header>
+  <div class="content">
+    {{proposal-list proposals=proposalsClosed}}
+  </div>
+</section>
+
 {{#if contractInteractionEnabled}}
   <section id="add-contributor">
     <header>
