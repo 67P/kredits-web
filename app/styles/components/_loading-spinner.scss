@@ -1,8 +1,37 @@
-.loading-spinner {
+@keyframes pulse {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
 
-  margin-top: 14rem;
+.loading-spinner {
+  margin-top: 12rem;
   text-align: center;
   font-size: 1.4rem;
   color: lightblue;
 
+  @include media($mobile) {
+    margin-top: 6rem;
+  }
+
+  svg {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 2rem;
+
+    #path-comet {
+      fill: lightblue;
+      opacity: 0.6;
+
+      -moz-animation-name: pulse;
+      -moz-animation-iteration-count: infinite;
+      -moz-animation-timing-function: ease-in-out;
+      -moz-animation-direction: alternate;
+      -moz-animation-duration: 1s;
+    }
+  }
 }
+
