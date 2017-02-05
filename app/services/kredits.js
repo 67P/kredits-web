@@ -16,11 +16,11 @@ export default Ember.Service.extend({
     let web3Instance;
 
     if (typeof window.web3 !== 'undefined') {
-      Ember.Logger.debug('[web3] Using user-provided instance, e.g. from Mist browser or Metamask');
+      Ember.Logger.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
       web3Instance = window.web3;
       this.set('web3Provided', true);
     } else {
-      Ember.Logger.debug('[web3] Creating new instance from npm module class');
+      Ember.Logger.debug('[kredits] Creating new instance from npm module class');
       let provider = new Web3.providers.HttpProvider("http://139.59.248.169:8545");
       web3Instance = new Web3(provider);
     }
@@ -58,8 +58,8 @@ export default Ember.Service.extend({
     return this.getValueFromContract('contributorsCount').then(contributorsCount => {
       let contributors = [];
 
-      for(var i = 0; i < contributorsCount.toNumber(); i++) {
-        contributors.push(new Ember.RSVP.Promise((resolve/*, reject*/) => {
+      let gatherContributorData = (i) => {
+        let promise = new Ember.RSVP.Promise((resolve/*, reject*/) => {
           let c = {};
           this.getValueFromContract('contributorAddresses', i).then(address => {
             c.address = address;
@@ -74,12 +74,17 @@ export default Ember.Service.extend({
                   ipfsHash: c.person[3],
                   kredits: c.balance.toNumber()
                 });
-                console.log(contributor);
+                Ember.Logger.debug('[kredits] contributor', contributor);
                 resolve(contributor);
               });
             });
           });
-        }));
+        });
+        return promise;
+      };
+
+      for(var i = 0; i < contributorsCount.toNumber(); i++) {
+        contributors.push(gatherContributorData(i));
       }
 
       return Ember.RSVP.all(contributors);
@@ -91,7 +96,7 @@ export default Ember.Service.extend({
   }.property('kreditsContract'),
 
   logKreditsContract: function() {
-    Ember.Logger.debug('kreditsContract', this.get('kreditsContract'));
+    Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
   }.on('init')
 
 });
