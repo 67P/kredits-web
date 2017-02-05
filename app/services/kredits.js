@@ -54,42 +54,38 @@ export default Ember.Service.extend({
     });
   },
 
+  getContributorData(i) {
+    let promise = new Ember.RSVP.Promise((resolve, reject) => {
+      this.getValueFromContract('contributorAddresses', i).then(address => {
+        this.getValueFromContract('contributors', address).then(person => {
+          this.getValueFromContract('balanceOf', address).then(balance => {
+            let contributor = Contributor.create({
+              address: address,
+              github_username: person[1],
+              github_uid: person[0],
+              ipfsHash: person[3],
+              kredits: balance.toNumber()
+            });
+            Ember.Logger.debug('[kredits] contributor', contributor);
+            resolve(contributor);
+          });
+        });
+      }).catch(err => reject(err));
+    });
+    return promise;
+  },
+
   getContributors() {
     return this.getValueFromContract('contributorsCount').then(contributorsCount => {
       let contributors = [];
 
-      let gatherContributorData = (i) => {
-        let promise = new Ember.RSVP.Promise((resolve, reject) => {
-          this.getValueFromContract('contributorAddresses', i).then(address => {
-            this.getValueFromContract('contributors', address).then(person => {
-              this.getValueFromContract('balanceOf', address).then(balance => {
-                let contributor = Contributor.create({
-                  address: address,
-                  github_username: person[1],
-                  github_uid: person[0],
-                  ipfsHash: person[3],
-                  kredits: balance.toNumber()
-                });
-                Ember.Logger.debug('[kredits] contributor', contributor);
-                resolve(contributor);
-              });
-            });
-          }).catch(err => reject(err));
-        });
-        return promise;
-      };
-
       for(var i = 0; i < contributorsCount.toNumber(); i++) {
-        contributors.push(gatherContributorData(i));
+        contributors.push(this.getContributorData(i));
       }
 
       return Ember.RSVP.all(contributors);
     });
   },
-
-  balanceOf: function(address) {
-    return this.get('kreditsContract').balanceOf(address).toNumber();
-  }.property('kreditsContract'),
 
   logKreditsContract: function() {
     Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
