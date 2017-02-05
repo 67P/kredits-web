@@ -67,6 +67,22 @@ section {
   }
 }
 
+button, input[type=submit] {
+  display: inline-block;
+  border: 1px solid rgba(22, 21, 40, 1);
+  background-color: rgba(22, 21, 40, 0.6);
+  color: lightblue;
+  border-radius: 3px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+
+  &:hover {
+    background-color: rgba(22, 21, 40, 0.8);
+  }
+}
+
 @import "components/loading-spinner";
 @import "components/contributor-list";
 @import "components/add-contributor";
