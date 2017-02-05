@@ -59,7 +59,7 @@ export default Ember.Service.extend({
       let contributors = [];
 
       let gatherContributorData = (i) => {
-        let promise = new Ember.RSVP.Promise((resolve/*, reject*/) => {
+        let promise = new Ember.RSVP.Promise((resolve, reject) => {
           let c = {};
           this.getValueFromContract('contributorAddresses', i).then(address => {
             c.address = address;
@@ -78,7 +78,7 @@ export default Ember.Service.extend({
                 resolve(contributor);
               });
             });
-          });
+          }).catch(err => reject(err));
         });
         return promise;
       };
