@@ -4,7 +4,7 @@
   </header>
 
   <div class="content">
-    {{contributor-list contributors=model.contributors}}
+    {{contributor-list contributors=contributorsSorted}}
 
     <p class="stats">
       <span class="number">{{model.totalSupply}}</span> kredits issued and distributed among
@@ -20,7 +20,7 @@
         <h2>Open Proposals</h2>
       </header>
       <div class="content">
-        {{proposal-list proposals=proposalsOpen confirmAction="confirmProposal"}}
+        {{proposal-list proposals=proposalsOpenSorted confirmAction="confirmProposal"}}
       </div>
     </section>
   {{/if}}
@@ -30,7 +30,7 @@
       <h2>Closed Proposals</h2>
     </header>
     <div class="content">
-      {{proposal-list proposals=proposalsClosed confirmAction="confirmProposal"}}
+      {{proposal-list proposals=proposalsClosedSorted confirmAction="confirmProposal"}}
     </div>
   </section>
 

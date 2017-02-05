@@ -13,6 +13,11 @@ export default Ember.Controller.extend({
 
   contractInteractionEnabled: computed.alias('kredits.web3Provided'),
 
+  findContributorByAddress(address) {
+    return this.get('model.contributors')
+               .findBy('address', address);
+  },
+
   proposalsOpen: function() {
     let proposals = this.get('model.proposals')
                         .filterBy('executed', false)
@@ -33,10 +38,12 @@ export default Ember.Controller.extend({
     return proposals;
   }.property('model.proposals.[]', 'model.contributors.[]'),
 
-  findContributorByAddress(address) {
-    return this.get('model.contributors')
-               .findBy('address', address);
-  },
+  proposalsSorting: ['id:desc'],
+  proposalsClosedSorted: Ember.computed.sort('proposalsClosed', 'proposalsSorting'),
+  proposalsOpenSorted: Ember.computed.sort('proposalsOpen', 'proposalsSorting'),
+
+  contributorsSorting: ['kredits:desc'],
+  contributorsSorted: Ember.computed.sort('model.contributors', 'contributorsSorting'),
 
   actions: {
 
