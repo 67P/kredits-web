@@ -60,19 +60,15 @@ export default Ember.Service.extend({
 
       let gatherContributorData = (i) => {
         let promise = new Ember.RSVP.Promise((resolve, reject) => {
-          let c = {};
           this.getValueFromContract('contributorAddresses', i).then(address => {
-            c.address = address;
             this.getValueFromContract('contributors', address).then(person => {
-              c.person = person;
-              this.getValueFromContract('balanceOf', c.address).then(balance => {
-                c.balance = balance;
+              this.getValueFromContract('balanceOf', address).then(balance => {
                 let contributor = Contributor.create({
-                  address: c.address,
-                  github_username: c.person[1],
-                  github_uid: c.person[0],
-                  ipfsHash: c.person[3],
-                  kredits: c.balance.toNumber()
+                  address: address,
+                  github_username: person[1],
+                  github_uid: person[0],
+                  ipfsHash: person[3],
+                  kredits: balance.toNumber()
                 });
                 Ember.Logger.debug('[kredits] contributor', contributor);
                 resolve(contributor);
