@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import Proposal from 'kredits-web/models/proposal';
 
 const {
   computed,
@@ -22,7 +23,7 @@ export default Ember.Controller.extend({
     let proposals = this.get('model.proposals')
                         .filterBy('executed', false)
                         .map(p => {
-                          p.recipientName = this.findContributorByAddress(p.recipientAddress).github_username;
+                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).github_username);
                           return p;
                         });
     return proposals;
@@ -32,7 +33,7 @@ export default Ember.Controller.extend({
     let proposals = this.get('model.proposals')
                         .filterBy('executed', true)
                         .map(p => {
-                          p.recipientName = this.findContributorByAddress(p.recipientAddress).github_username;
+                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).github_username);
                           return p;
                         });
     return proposals;
@@ -44,6 +45,45 @@ export default Ember.Controller.extend({
 
   contributorsSorting: ['kredits:desc'],
   contributorsSorted: Ember.computed.sort('model.contributors', 'contributorsSorting'),
+
+  watchContractEvents: function() {
+    let events = this.get('kredits.kreditsContract')
+                     .allEvents(/* [additionalFilterObject], */);
+
+    events.watch((error, data) => {
+      Ember.Logger.debug('[index] Received contract event', data);
+
+      switch (data.event) {
+        case 'ProposalCreated':
+          this._handleProposalCreated(data);
+          break;
+      }
+    });
+  }.on('init'),
+
+  _handleProposalCreated(data) {
+    if (Ember.isPresent(this.get('model.proposals')
+             .findBy('id', data.args.id.toNumber()))) {
+      console.log('[index] proposal exists, not adding from event');
+      return false;
+    }
+
+    let proposal = Proposal.create({
+      id: data.args.id.toNumber(),
+      creatorAddress: data.args.creator,
+      recipientAddress: data.args.recipient,
+      recipientName: null,
+      votesCount: 0,
+      votesNeeded: 2,
+      amount: data.args.amount.toNumber(),
+      executed: false,
+      url: data.args.url,
+      ipfsHash: data.args.ipfsHash
+    });
+
+    console.log('new proposal created', proposal);
+    this.get('model.proposals').pushObject(proposal);
+  },
 
   actions: {
 

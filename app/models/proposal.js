@@ -3,8 +3,9 @@ import Ember from 'ember';
 export default Ember.Object.extend({
 
   id: null,
-  creator: null,
-  recipient: null,
+  creatorAddress: null,
+  recipientAddress: null,
+  recipientName: null,
   votesCount: null,
   votesNeeded: null,
   amount: null,
