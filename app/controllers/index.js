@@ -63,6 +63,9 @@ export default Ember.Controller.extend({
         case 'ProposalVoted':
           this._handleProposalVoted(data);
           break;
+        case 'Transfer':
+          this._handleTransfer(data);
+          break;
       }
     });
   }.on('init'),
@@ -115,6 +118,16 @@ export default Ember.Controller.extend({
         .findBy('id', data.args.id.toNumber())
         .incrementProperty('votesCount', 1);
   },
+
+  _handleTransfer(data) {
+    this.get('model.contributors')
+        .findBy('address', data.args.from)
+        .incrementProperty('kredits', - data.args.value.toNumber());
+    this.get('model.contributors')
+        .findBy('address', data.args.to)
+        .incrementProperty('kredits', data.args.value.toNumber());
+  },
+
 
   actions: {
 
