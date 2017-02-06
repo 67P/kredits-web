@@ -91,6 +91,13 @@ export default Ember.Controller.extend({
   },
 
   _handleProposalExecuted(data) {
+    if (this.get('model.proposals')
+            .findBy('id', data.args.id.toNumber())
+            .get('executed')) {
+      Ember.Logger.debug('[index] proposal already executed, not adding from event');
+      return false;
+    }
+
     this.get('model.proposals')
         .findBy('id', data.args.id.toNumber())
         .setProperties({
