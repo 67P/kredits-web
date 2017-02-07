@@ -21,7 +21,8 @@ module.exports = function(environment) {
       // when it is created
     },
 
-    web3ProviderUrl: "https://parity.kosmos.org:8545"
+    web3ProviderUrl: "https://parity.kosmos.org:8545",
+    ethereumChain: "testnet"
   };
 
   if (environment === 'development') {

@@ -38,10 +38,8 @@ export default Ember.Service.extend({
       return this.get('kreditsContractInstance');
     }
 
-    let chain = {development: 'testnet', staging: 'testnet', production: 'main'}[config.environment];
-    let contract = kreditsContracts(this.get('web3'), chain)['Kredits'];
+    let contract = kreditsContracts(this.get('web3'), config.ethereumChain)['Kredits'];
 
-    window.Kredits = contract;
     this.set('kreditsContractInstance', contract);
     return contract;
   }.property('web3'),
