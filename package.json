@@ -10,9 +10,13 @@
   },
   "repository": "",
   "scripts": {
-    "build": "ember build",
     "start": "ember server",
-    "test": "ember test"
+    "test": "ember test",
+    "postinstall": "bower install",
+    "build": "ember build",
+    "build-prod": "ember build --environment production",
+    "update-version-file": "bash scripts/update-version-file.sh",
+    "deploy": "npm run build-prod && npm run update-version-file && bash scripts/deploy.sh"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
