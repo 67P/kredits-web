@@ -38,7 +38,8 @@ export default Ember.Service.extend({
       return this.get('kreditsContractInstance');
     }
 
-    let contract = kreditsContracts(this.get('web3'))['Kredits'];
+    let chain = {development: 'testnet', staging: 'testnet', production: 'main'}[config.environment];
+    let contract = kreditsContracts(this.get('web3'), chain)['Kredits'];
 
     window.Kredits = contract;
     this.set('kreditsContractInstance', contract);
