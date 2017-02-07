@@ -19,11 +19,12 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    }
+    },
+
+    web3ProviderUrl: "https://parity.kosmos.org:8545"
   };
 
   if (environment === 'development') {
-    ENV.web3ProviderUrl = "http://139.59.248.169:8545";
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
