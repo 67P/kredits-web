@@ -39,9 +39,16 @@ export default Ember.Component.extend({
   },
 
   actions: {
+
     save() {
-      if(this.get('isValid')) {
+      if (!this.get('contractInteractionEnabled')) {
+        alert('Only core team members can add new contributors. Please ask someone to set you up.');
+        return;
+      }
+
+      if (this.get('isValid')) {
         this.set('inProgress', true);
+
         this.get('kredits').addContributor(
           this.get('address'),
           this.get('realName'),
@@ -54,9 +61,10 @@ export default Ember.Component.extend({
           window.scroll(0,0);
         });
       } else {
-        alert('invalid data. please review');
+        alert('Invalid data. Please review and try again.');
       }
     }
+
   }
 
 });
