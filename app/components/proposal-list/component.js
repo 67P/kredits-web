@@ -8,7 +8,11 @@ export default Ember.Component.extend({
   actions: {
 
     confirm(proposalId) {
-      this.sendAction('confirmAction', proposalId);
+      if (this.get('contractInteractionEnabled')) {
+        this.sendAction('confirmAction', proposalId);
+      } else {
+        window.alert('Only members can vote on proposals. Please ask someone to set you up.');
+      }
     }
 
   }

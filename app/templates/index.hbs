@@ -13,34 +13,35 @@
   </div>
 </section>
 
-{{#if contractInteractionEnabled}}
-  {{#if proposalsOpen}}
-    <section id="proposals-open">
-      <header>
-        <h2>Open Proposals</h2>
-      </header>
-      <div class="content">
-        {{proposal-list proposals=proposalsOpenSorted confirmAction="confirmProposal"}}
-      </div>
-    </section>
-  {{/if}}
-
-  <section id="proposals-closed">
+{{#if proposalsOpen}}
+  <section id="proposals-open">
     <header>
-      <h2>Closed Proposals</h2>
+      <h2>Open Proposals</h2>
     </header>
     <div class="content">
-      {{proposal-list proposals=proposalsClosedSorted confirmAction="confirmProposal"}}
-    </div>
-  </section>
-
-  <section id="add-contributor">
-    <header>
-      <h2>Add Contributor</h2>
-    </header>
-
-    <div class="content">
-      {{add-contributor kredits=kredits}}
+      {{proposal-list proposals=proposalsOpenSorted
+                      confirmAction="confirmProposal"
+                      contractInteractionEnabled=contractInteractionEnabled}}
     </div>
   </section>
 {{/if}}
+
+<section id="proposals-closed">
+  <header>
+    <h2>Closed Proposals</h2>
+  </header>
+  <div class="content">
+    {{proposal-list proposals=proposalsClosedSorted
+                    confirmAction="confirmProposal"}}
+  </div>
+</section>
+
+<section id="add-contributor">
+  <header>
+    <h2>Add Contributor</h2>
+  </header>
+
+  <div class="content">
+    {{add-contributor kredits=kredits}}
+  </div>
+</section>
