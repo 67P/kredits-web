@@ -1,6 +1,6 @@
 <tbody>
   {{#each contributors as |contributor|}}
-    <tr>
+    <tr class="{{if contributor.isCurrentUser 'current-user'}}">
       <td class="person">
         <img class="avatar" src={{contributor.avatarURL}}>
         {{contributor.github_username}}

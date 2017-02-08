@@ -33,6 +33,10 @@ export default Ember.Service.extend({
     return web3Instance;
   }.property('web3Instance'),
 
+  currentUserAccounts: function() {
+    return (this.get('web3Provided') && this.get('web3').eth.accounts) || [];
+  }.property('web3', 'web3Provided'),
+
   kreditsContract: function() {
     if (this.get('kreditsContractInstance')) {
       return this.get('kreditsContractInstance');
@@ -64,7 +68,8 @@ export default Ember.Service.extend({
               github_username: person[1],
               github_uid: person[0],
               ipfsHash: person[3],
-              kredits: balance.toNumber()
+              kredits: balance.toNumber(),
+              isCurrentUser: this.get('currentUserAccounts').includes(address)
             });
             Ember.Logger.debug('[kredits] contributor', contributor);
             resolve(contributor);
@@ -142,7 +147,8 @@ export default Ember.Service.extend({
           github_username: name,
           github_uid: id,
           ipfsHash: ipfsHash,
-          kredits: 0
+          kredits: 0,
+          isCurrentUser: this.get('currentUserAccounts').includes(address)
         });
         resolve(contributor);
       });
