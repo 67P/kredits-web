@@ -15,7 +15,7 @@ export default Ember.Component.extend({
   }.property('id'),
 
   isValidRealName: function() {
-    return Ember.isPresent(this.get('realName'))
+    return Ember.isPresent(this.get('realName'));
   }.property('realName'),
 
   isValidAddress: function() {
