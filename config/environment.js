@@ -46,6 +46,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
+    ENV.ethereumChain = 'testnet';
+    ENV.web3ProviderUrl = 'https://ropsten.infura.io';
   }
 
   return ENV;
