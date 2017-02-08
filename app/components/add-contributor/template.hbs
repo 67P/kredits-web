@@ -4,23 +4,23 @@
             type="text"
             placeholder="GitHub UID (123)"
             value=id
-            class=classId}}
+            class=(if isValidId 'valid' '')}}
   </p>
   <p>
     {{input name="realname"
             type="text"
             placeholder="Carl Sagan"
             value=realName
-            class=classRealName}}
+            class=(if isValidRealName 'valid' '')}}
   </p>
   <p>
     {{input name="address"
             type="text"
             placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
             value=address
-            class=classAddress}}
+            class=(if isValidAddress 'valid' '')}}
   </p>
   <p class="actions">
-    <input type="submit" value="Save">
+    {{input type="submit" value=(if inProgress 'Processing' 'Save') disabled=inProgress}}
   </p>
 </form>

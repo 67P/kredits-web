@@ -26,6 +26,9 @@ section#add-contributor {
 
     input[type=submit] {
       padding: 0.6rem 2rem;
+      &:disabled {
+        background-color: transparent;
+      }
     }
 
   }

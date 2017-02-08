@@ -38,6 +38,7 @@ export default Ember.Service.extend({
       return this.get('kreditsContractInstance');
     }
 
+    console.log(config.ethereumChain);
     let contract = kreditsContracts(this.get('web3'), config.ethereumChain)['Kredits'];
 
     this.set('kreditsContractInstance', contract);
@@ -126,6 +127,24 @@ export default Ember.Service.extend({
         if (err) { reject(err); }
         Ember.Logger.debug('[kredits] vote response', data);
         resolve(data);
+      });
+    });
+  },
+
+  addContributor(address, name, ipfsHash, isCore, id) {
+    Ember.Logger.debug('[kredits] add contributor', name, address);
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
+        if (err) { reject(err); }
+        Ember.Logger.debug('[kredits] add contributor response', data);
+        let contributor = Contributor.create({
+          address: address,
+          github_username: name,
+          github_uid: id,
+          ipfsHash: ipfsHash,
+          kredits: 0
+        });
+        resolve(contributor);
       });
     });
   },
