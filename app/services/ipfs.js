@@ -17,13 +17,13 @@ export default Ember.Service.extend({
 
   storeFile(content) {
     let ipfs = this.get('ipfs');
-    return ipfs.add(new ipfs.Buffer(content)).then((res) => {
+    return ipfs.add(new ipfs.Buffer(content)).then(res => {
       return res[0].hash;
     });
   },
 
   getFile(hash) {
-    return this.get('ipfs').cat(hash, { buffer: true }).then(res) => {
+    return this.get('ipfs').cat(hash, { buffer: true }).then(res => {
       return res.toString();
     });
   }
