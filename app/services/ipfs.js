@@ -12,7 +12,6 @@ export default Ember.Service.extend({
     }
     let ipfs = ipfsAPI(config.ipfs);
     this.set('ipfsInstance', ipfs);
-    window.ipfs = ipfs;
     return ipfs;
   }.property('ipfsInstance'),
 
