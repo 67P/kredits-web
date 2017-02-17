@@ -22,7 +22,12 @@ module.exports = function(environment) {
     },
 
     web3ProviderUrl: "https://parity.kosmos.org:8545",
-    ethereumChain: "testnet"
+    ethereumChain: "testnet",
+    ipfs: {
+      host: 'localhost',
+      port: '5001',
+      protocol: 'http'
+    }
   };
 
   if (environment === 'development') {

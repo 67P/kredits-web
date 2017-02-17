@@ -39,9 +39,10 @@
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
+    "ipfs-api": "^12.1.7",
+    "kredits-contracts": "67P/kredits-contracts",
     "loader.js": "^4.0.10",
-    "web3": "^0.18.2",
-    "kredits-contracts": "67P/kredits-contracts"
+    "web3": "^0.18.2"
   },
   "engines": {
     "node": ">= 0.12.0"
