@@ -23,7 +23,7 @@ export default Ember.Service.extend({
   },
 
   getFile(hash) {
-    return this.get('ipfs').cat(hash, { buffer: true }, (err, res) => {
+    return this.get('ipfs').cat(hash, { buffer: true }).then(res) => {
       return res.toString();
     });
   }
