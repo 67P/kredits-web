@@ -140,19 +140,23 @@ export default Ember.Service.extend({
 
   addContributor(address, name, ipfsHash, isCore, id) {
     Ember.Logger.debug('[kredits] add contributor', name, address);
+
+    let contributor = Contributor.create({
+      address: address,
+      github_username: name,
+      github_uid: id,
+      kredits: 0,
+      isCurrentUser: this.get('currentUserAccounts').includes(address)
+    });
+
     return new Ember.RSVP.Promise((resolve, reject) => {
-      this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
-        if (err) { reject(err); }
-        Ember.Logger.debug('[kredits] add contributor response', data);
-        let contributor = Contributor.create({
-          address: address,
-          github_username: name,
-          github_uid: id,
-          ipfsHash: ipfsHash,
-          kredits: 0,
-          isCurrentUser: this.get('currentUserAccounts').includes(address)
+      this.get('ipfs').storeFile(contributor.serialize()).then(ipfsHash => {
+        contributor.set('ipfsHash', ipfsHash);
+        this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
+          if (err) { reject(err); }
+          Ember.Logger.debug('[kredits] add contributor response', data);
+          resolve(contributor);
         });
-        resolve(contributor);
       });
     });
   },

@@ -18,6 +18,7 @@ export default Ember.Service.extend({
   storeFile(content) {
     let ipfs = this.get('ipfs');
     return ipfs.add(new ipfs.Buffer(content)).then(res => {
+      Ember.Logger.debug('[ipfs] stored content in IPFS', content, res[0].hash);
       return res[0].hash;
     });
   },
