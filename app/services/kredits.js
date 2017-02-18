@@ -7,6 +7,8 @@ import kreditsContracts from 'npm:kredits-contracts';
 
 export default Ember.Service.extend({
 
+  ipfs: Ember.inject.service(),
+
   web3Instance: null,
   web3Provided: false, // Web3 provided (using Mist Browser, Metamask et al.)
 

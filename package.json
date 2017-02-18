@@ -19,6 +19,8 @@
     "deploy": "npm run build-prod && npm run update-version-file && bash scripts/deploy.sh"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "babelify": "^7.3.0",
     "broccoli-asset-rev": "^2.4.5",
     "ember-ajax": "^2.4.1",
     "ember-browserify": "^1.1.13",
@@ -39,9 +41,10 @@
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
+    "ipfs-api": "^12.1.7",
+    "kredits-contracts": "67P/kredits-contracts",
     "loader.js": "^4.0.10",
-    "web3": "^0.18.2",
-    "kredits-contracts": "67P/kredits-contracts"
+    "web3": "^0.18.2"
   },
   "engines": {
     "node": ">= 0.12.0"
