@@ -52,7 +52,6 @@ export default Ember.Component.extend({
         this.get('kredits').addContributor(
           this.get('address'),
           this.get('realName'),
-          '', // TODO: this.get('ipfsHash')
           this.get('isCore'),
           this.get('id')
         ).then(contributor => {
