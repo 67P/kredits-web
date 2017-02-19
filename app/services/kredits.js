@@ -65,11 +65,12 @@ export default Ember.Service.extend({
       this.getValueFromContract('contributorAddresses', i).then(address => {
         this.getValueFromContract('contributors', address).then(person => {
           this.getValueFromContract('balanceOf', address).then(balance => {
+            console.debug('person', person);
             let contributor = Contributor.create({
               address: address,
               github_username: person[1],
               github_uid: person[0],
-              ipfsHash: person[3],
+              ipfsHash: person[2],
               kredits: balance.toNumber(),
               isCurrentUser: this.get('currentUserAccounts').includes(address)
             });

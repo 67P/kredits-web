@@ -10,5 +10,17 @@
         <span class="symbol">₭S</span>
       </td>
     </tr>
+    <tr class="metadata visible {{if contributor.isCurrentUser 'current-user'}}">
+      <td colspan="2">
+        <dl>
+          <dt>Ethereum address</dt>
+          <dd><a href="https://testnet.etherscan.io/address/{{contributor.address}}">{{contributor.address}}</a></dd>
+          {{#if contributor.ipfsHash}}
+            <dt>IPFS profile data</dt>
+            <dd><a href="https://ipfs.io/ipfs/{{contributor.ipfsHash}}">{{contributor.ipfsHash}}</a></dd>
+          {{/if}}
+        </dl>
+      </td>
+    </tr>
   {{/each}}
 </tbody>
