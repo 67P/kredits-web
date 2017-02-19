@@ -1,5 +1,9 @@
 <form {{action "save" on="submit"}}>
   <p>
+    {{input type="checkbox" name="is-core" id="is-core" checked=isCore}}
+    <label for="is-core">Core team member (can add contributors)</label>
+  </p>
+  <p>
     {{input name="id"
             type="text"
             placeholder="GitHub UID (123)"

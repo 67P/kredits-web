@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   realName: null,
   address: null,
   ipfsHash: null,
-  isCore: true,
+  isCore: false,
 
   inProgress: false,
 

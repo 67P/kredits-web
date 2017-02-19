@@ -139,7 +139,7 @@ export default Ember.Service.extend({
     });
   },
 
-  addContributor(address, name, ipfsHash, isCore, id) {
+  addContributor(address, name, isCore, id) {
     Ember.Logger.debug('[kredits] add contributor', name, address);
 
     let contributor = Contributor.create({
@@ -147,12 +147,14 @@ export default Ember.Service.extend({
       github_username: name,
       github_uid: id,
       kredits: 0,
+      isCore: isCore,
       isCurrentUser: this.get('currentUserAccounts').includes(address)
     });
 
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('ipfs').storeFile(contributor.serialize()).then(ipfsHash => {
         contributor.set('ipfsHash', ipfsHash);
+        console.debug('ADD', address, name, ipfsHash, isCore, id);
         this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
           if (err) { reject(err); }
           Ember.Logger.debug('[kredits] add contributor response', data);

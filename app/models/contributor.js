@@ -7,6 +7,7 @@ export default Ember.Object.extend({
   github_uid: null,
   ipfsHash: null,
   kredits: null,
+  isCore: false,
   isCurrentUser: false,
 
   avatarURL: function() {
