@@ -31,6 +31,35 @@ section#add-contributor {
       }
     }
 
+    input[type=checkbox] {
+      display: none;
+    }
+
+    label.checkbox {
+      line-height: 3.2rem;
+      font-size: 1.2rem;
+      &::before {
+        display: inline-block;
+        height: 3.2rem;
+        width: 3.2rem;
+        font-size: 2rem;
+        background-color: rgba(22, 21, 40, 0.3);
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+        text-align: center;
+        vertical-align: middle;
+        content: '';
+        margin-right: 0.8rem;
+      }
+    }
+
+    input[type=checkbox]:checked + label.checkbox {
+      &::before {
+        content: '✓';
+        background-color: rgba(22, 21, 40, 0.6);
+      }
+    }
+
   }
 
 }
