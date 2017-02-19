@@ -1,6 +1,6 @@
 <tbody>
   {{#each contributors as |contributor|}}
-    <tr class="{{if contributor.isCurrentUser 'current-user'}}">
+    <tr class="{{if contributor.isCurrentUser 'current-user'}}" {{action "toggleContributorInfo" contributor}}>
       <td class="person">
         <img class="avatar" src={{contributor.avatarURL}}>
         {{contributor.github_username}}
@@ -10,7 +10,7 @@
         <span class="symbol">₭S</span>
       </td>
     </tr>
-    <tr class="metadata visible {{if contributor.isCurrentUser 'current-user'}}">
+    <tr class="metadata {{if contributor.isCurrentUser 'current-user'}} {{if contributor.showMetadata 'visible'}}">
       <td colspan="2">
         <dl>
           <dt>Ethereum address</dt>
