@@ -54,7 +54,7 @@ export default Ember.Service.extend({
   getValueFromContract(contractMethod, ...args) {
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('kreditsContract')[contractMethod](...args, (err, data) => {
-        if (err) { reject(err); }
+        if (err) { reject(err); return; }
         resolve(data);
       });
     });
@@ -132,7 +132,7 @@ export default Ember.Service.extend({
     Ember.Logger.debug('[kredits] vote for', proposalId);
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('kreditsContract').vote(proposalId, (err, data) => {
-        if (err) { reject(err); }
+        if (err) { reject(err); return; }
         Ember.Logger.debug('[kredits] vote response', data);
         resolve(data);
       });
@@ -156,7 +156,7 @@ export default Ember.Service.extend({
         contributor.set('ipfsHash', ipfsHash);
         console.debug('ADD', address, name, ipfsHash, isCore, id);
         this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
-          if (err) { reject(err); }
+          if (err) { reject(err); return; }
           Ember.Logger.debug('[kredits] add contributor response', data);
           resolve(contributor);
         });
