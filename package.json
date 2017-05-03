@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "description": "Small description for kredits-web goes here",
   "license": "MIT",
-  "author": "",
+  "author": "Kosmos Community",
+  "contributors": [
+    "Garret Alfert <alfert@wevelop.de>",
+    "Sebastian Kippe <sebastian@kip.pe>",
+    "Michael Bumann <hello@michaelbumann.com>"
+  ],
   "directories": {
     "doc": "doc",
     "test": "tests"
