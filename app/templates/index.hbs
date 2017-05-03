@@ -22,6 +22,10 @@
       {{proposal-list proposals=proposalsOpenSorted
                       confirmAction="confirmProposal"
                       contractInteractionEnabled=contractInteractionEnabled}}
+
+      <p class="actions">
+        {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+      </p>
     </div>
   </section>
 {{/if}}
@@ -33,6 +37,10 @@
   <div class="content">
     {{proposal-list proposals=proposalsClosedSorted
                     confirmAction="confirmProposal"}}
+
+    <p class="actions">
+      {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+    </p>
   </div>
 </section>
 

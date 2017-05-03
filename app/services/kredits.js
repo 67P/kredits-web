@@ -164,6 +164,23 @@ export default Ember.Service.extend({
     });
   },
 
+  addProposal(proposal) {
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      const {
+        recipientAddress,
+        amount,
+        url,
+        ipfsHash
+      } = proposal.getProperties('recipientAddress', 'amount', 'url', 'ipfsHash');
+
+      this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
+        if (err) { reject(err); return; }
+        Ember.Logger.debug('[kredits] add proposal response', data);
+        resolve();
+      });
+    });
+  },
+
   logKreditsContract: function() {
     Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
   }.on('init')

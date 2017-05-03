@@ -40,6 +40,7 @@
     "ember-cli-uglify": "^1.2.0",
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
+    "ember-parachute": "0.1.0",
     "ember-resolver": "^2.0.3",
     "ipfs-api": "^12.1.7",
     "kredits-contracts": "67P/kredits-contracts",

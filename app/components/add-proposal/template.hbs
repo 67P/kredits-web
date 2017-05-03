@@ -1,0 +1,31 @@
+<form {{action "save" on="submit"}}>
+  <p>
+    {{input type="text"
+            placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
+            value=proposal.recipientAddress
+            class=(if isValidRecipient 'valid' '')}}
+  </p>
+  <p>
+    {{input type="text"
+            placeholder="100"
+            value=proposal.amount
+            class=(if isValidAmount 'valid' '')}}
+  </p>
+  <p>
+    {{input type="text"
+            placeholder="URL"
+            value=proposal.url
+            class=(if isValidUrl 'valid' '')}}
+  </p>
+  <p>
+    {{input type="text"
+            placeholder="IPFS Hash"
+            value=proposal.ipfsHash
+            class=(if isValidIpfsHash 'valid' '')}}
+  </p>
+  <p class="actions">
+    {{input type="submit" value=(if inProgress 'Processing' 'Save') disabled=inProgress}}
+    {{#link-to 'index'}}Back{{/link-to}}
+  </p>
+</form>
+

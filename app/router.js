@@ -8,6 +8,9 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('spinner');
+  this.route('proposals', function() {
+    this.route('new');
+  });
 });
 
 export default Router;

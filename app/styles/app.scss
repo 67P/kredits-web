@@ -65,6 +65,22 @@ section {
       }
     }
   }
+
+  &#proposals-open, &#proposals-closed {
+    .actions {
+      padding-top: 3rem;
+      font-size: 1rem;
+      color: lightblue;
+      text-align: center;
+      @include media($mobile) {
+        padding-top: 2rem;
+      }
+
+      a {
+        color: lightblue;
+      }
+    }
+  }
 }
 
 button, input[type=submit] {
