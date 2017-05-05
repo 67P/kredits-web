@@ -44,16 +44,28 @@ export default Ember.Service.extend({
       return this.get('kreditsContractInstance');
     }
 
-    console.log(config.ethereumChain);
-    let contract = kreditsContracts(this.get('web3'), config.ethereumChain)['Kredits'];
+    let contract = kreditsContracts(this.get('web3'))['Kredits'];
 
     this.set('kreditsContractInstance', contract);
+    window.Kredits = contract;
     return contract;
   }.property('web3'),
 
-  getValueFromContract(contractMethod, ...args) {
+  tokenContract: function() {
+    if (this.get('tokenContractInstance')) {
+      return this.get('tokenContractInstance');
+    }
+
+    let contract = kreditsContracts(this.get('web3'), config.ethereumChain)['Token'];
+    this.set('tokenContractInstance', contract);
+    window.Token = contract;
+    return contract;
+  }.property('web3', 'kreditsContract', 'tokenContract'),
+
+  getValueFromContract(contract, contractMethod, ...args) {
+    Ember.Logger.debug('[kredits] read from contract', contract);
     return new Ember.RSVP.Promise((resolve, reject) => {
-      this.get('kreditsContract')[contractMethod](...args, (err, data) => {
+      this.get(contract)[contractMethod](...args, (err, data) => {
         if (err) { reject(err); }
         resolve(data);
       });
@@ -62,9 +74,9 @@ export default Ember.Service.extend({
 
   getContributorData(i) {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      this.getValueFromContract('contributorAddresses', i).then(address => {
-        this.getValueFromContract('contributors', address).then(person => {
-          this.getValueFromContract('balanceOf', address).then(balance => {
+      this.getValueFromContract('kreditsContract', 'contributorAddresses', i).then(address => {
+        this.getValueFromContract('kreditsContract', 'contributors', address).then(person => {
+          this.getValueFromContract('tokenContract', 'balanceOf', address).then(balance => {
             console.debug('person', person);
             let contributor = Contributor.create({
               address: address,
@@ -84,7 +96,7 @@ export default Ember.Service.extend({
   },
 
   getContributors() {
-    return this.getValueFromContract('contributorsCount').then(contributorsCount => {
+    return this.getValueFromContract('kreditsContract', 'contributorsCount').then(contributorsCount => {
       let contributors = [];
 
       for(var i = 0; i < contributorsCount.toNumber(); i++) {
@@ -97,7 +109,7 @@ export default Ember.Service.extend({
 
   getProposalData(i) {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      this.getValueFromContract('proposals', i).then(p => {
+      this.getValueFromContract('kreditsContract', 'proposals', i).then(p => {
         let proposal = Proposal.create({
           id               : i,
           creatorAddress   : p[0],
@@ -117,7 +129,7 @@ export default Ember.Service.extend({
   },
 
   getProposals() {
-    return this.getValueFromContract('proposalsCount').then(proposalsCount => {
+    return this.getValueFromContract('kreditsContract', 'proposalsCount').then(proposalsCount => {
       let proposals = [];
 
       for(var i = 0; i < proposalsCount.toNumber(); i++) {
