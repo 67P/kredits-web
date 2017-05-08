@@ -44,7 +44,7 @@ export default Ember.Service.extend({
       return this.get('kreditsContractInstance');
     }
 
-    let contract = kreditsContracts(this.get('web3'))['Kredits'];
+    let contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
 
     this.set('kreditsContractInstance', contract);
     window.Kredits = contract;
@@ -56,7 +56,7 @@ export default Ember.Service.extend({
       return this.get('tokenContractInstance');
     }
 
-    let contract = kreditsContracts(this.get('web3'), config.ethereumChain)['Token'];
+    let contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Token'];
     this.set('tokenContractInstance', contract);
     window.Token = contract;
     return contract;

@@ -46,6 +46,13 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
     ENV.ethereumChain = 'dev';
+    ENV.contractMetadata = {};
+    if (process.env.KREDITS_CONTRACT_ADDR) {
+      ENV.contractMetadata['Kredits'] = { address: process.env.KREDITS_CONTRACT_ADDR };
+    }
+    if (process.env.TOKEN_CONTRACT_ADDR) {
+      ENV.contractMetadata['Token'] = { address: process.env.TOKEN_CONTRACT_ADDR };
+    }
   }
 
   if (environment === 'test') {
