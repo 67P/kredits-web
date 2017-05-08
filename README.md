@@ -45,6 +45,30 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 Specify what it takes to deploy your app.
 
+
+## Working with locally deployed contracts
+
+For development you might want to run your own development chain with your own development contracts.
+The kredits-contracts helper scripts are available in kredits-web. See [kredits-contracts](https://github.com/67P/kredits-contracts) for more information.
+
+Start your parity node with a KreditsChain: 
+    
+    npm run kredits-parity
+
+Deploy the contracts to your local chain: 
+
+    npm run kredits-deploy
+
+Run kredits-web with your localy deployed contracts: 
+
+    KREDITS_CONTRACT_ADDR=`kredits-inspect -c Kredits -r -w address` \
+    TOKEN_CONTRACT_ADDR=`kredits-inspect -c Token -r -w address` \
+    npm start
+
+    You need to have `./node_modules/.bin` in your path for this to work. Otherwise simply copy the contract addresses and set the environment variables manually.
+    
+
+
 ## Further Reading / Useful Links
 
 * [ember.js](http://emberjs.com/)
