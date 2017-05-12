@@ -66,7 +66,7 @@ export default Ember.Service.extend({
     Ember.Logger.debug('[kredits] read from contract', contract);
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get(contract)[contractMethod](...args, (err, data) => {
-        if (err) { reject(err); }
+        if (err) { reject(err); return; }
         resolve(data);
       });
     });
@@ -144,7 +144,7 @@ export default Ember.Service.extend({
     Ember.Logger.debug('[kredits] vote for', proposalId);
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('kreditsContract').vote(proposalId, (err, data) => {
-        if (err) { reject(err); }
+        if (err) { reject(err); return; }
         Ember.Logger.debug('[kredits] vote response', data);
         resolve(data);
       });
@@ -168,10 +168,27 @@ export default Ember.Service.extend({
         contributor.set('ipfsHash', ipfsHash);
         console.debug('ADD', address, name, ipfsHash, isCore, id);
         this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
-          if (err) { reject(err); }
+          if (err) { reject(err); return; }
           Ember.Logger.debug('[kredits] add contributor response', data);
           resolve(contributor);
         });
+      });
+    });
+  },
+
+  addProposal(proposal) {
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      const {
+        recipientAddress,
+        amount,
+        url,
+        ipfsHash
+      } = proposal.getProperties('recipientAddress', 'amount', 'url', 'ipfsHash');
+
+      this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
+        if (err) { reject(err); return; }
+        Ember.Logger.debug('[kredits] add proposal response', data);
+        resolve();
       });
     });
   },

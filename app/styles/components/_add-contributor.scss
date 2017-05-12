@@ -1,4 +1,4 @@
-section#add-contributor {
+section#add-contributor, section#add-proposal {
 
   form {
 
@@ -8,6 +8,10 @@ section#add-contributor {
       &.actions {
         padding-top: 1rem;
         text-align: center;
+        a {
+          color: lightblue;
+          margin-left: 1rem;
+        }
       }
     }
 
