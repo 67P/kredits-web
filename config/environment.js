@@ -29,15 +29,24 @@ module.exports = function(environment) {
         }]
       ]
     },
-
-    web3ProviderUrl: "https://parity.kosmos.org:8545",
-    ethereumChain: "testnet",
+    contractMetadata: {},
     ipfs: {
       host: 'localhost',
       port: '5001',
       protocol: 'http'
     }
   };
+  if (process.env.KREDITS_CONTRACT_ADDR) {
+    ENV.contractMetadata['Kredits'] = { address: process.env.KREDITS_CONTRACT_ADDR };
+  }
+  if (process.env.TOKEN_CONTRACT_ADDR) {
+    ENV.contractMetadata['Token'] = { address: process.env.TOKEN_CONTRACT_ADDR };
+  }
+  if (process.env.WEB3_PROVIDER_URL) {
+    ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
+  } else {
+    ENV.web3ProviderUrl = 'https://kovan.infura.io';
+  }
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
@@ -45,14 +54,6 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.ethereumChain = 'dev';
-    ENV.contractMetadata = {};
-    if (process.env.KREDITS_CONTRACT_ADDR) {
-      ENV.contractMetadata['Kredits'] = { address: process.env.KREDITS_CONTRACT_ADDR };
-    }
-    if (process.env.TOKEN_CONTRACT_ADDR) {
-      ENV.contractMetadata['Token'] = { address: process.env.TOKEN_CONTRACT_ADDR };
-    }
   }
 
   if (environment === 'test') {
@@ -67,8 +68,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.ethereumChain = 'testnet';
-    ENV.web3ProviderUrl = 'https://ropsten.infura.io';
+    // production conifig
   }
 
   return ENV;

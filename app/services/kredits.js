@@ -77,7 +77,7 @@ export default Ember.Service.extend({
       this.getValueFromContract('kreditsContract', 'contributorAddresses', i).then(address => {
         this.getValueFromContract('kreditsContract', 'contributors', address).then(person => {
           this.getValueFromContract('tokenContract', 'balanceOf', address).then(balance => {
-            console.debug('person', person);
+            Ember.Logger.debug('person', person);
             let contributor = Contributor.create({
               address: address,
               github_username: person[1],
@@ -166,7 +166,7 @@ export default Ember.Service.extend({
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('ipfs').storeFile(contributor.serialize()).then(ipfsHash => {
         contributor.set('ipfsHash', ipfsHash);
-        console.debug('ADD', address, name, ipfsHash, isCore, id);
+        Ember.Logger.debug('ADD', address, name, ipfsHash, isCore, id);
         this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
           if (err) { reject(err); }
           Ember.Logger.debug('[kredits] add contributor response', data);
