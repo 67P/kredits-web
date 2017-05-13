@@ -5,9 +5,16 @@ import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
 import kreditsContracts from 'npm:kredits-contracts';
 
+const {
+  isPresent,
+  inject: {
+    service
+  }
+} = Ember;
+
 export default Ember.Service.extend({
 
-  ipfs: Ember.inject.service(),
+  ipfs: service(),
 
   web3Instance: null,
   web3Provided: false, // Web3 provided (using Mist Browser, Metamask et al.)
@@ -43,8 +50,13 @@ export default Ember.Service.extend({
     if (this.get('kreditsContractInstance')) {
       return this.get('kreditsContractInstance');
     }
+    let contract;
 
-    let contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
+    if (isPresent(config.contractMetadata)) {
+      contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
+    } else {
+      contract = kreditsContracts(this.get('web3'))['Kredits'];
+    }
 
     this.set('kreditsContractInstance', contract);
     window.Kredits = contract;

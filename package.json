@@ -54,7 +54,7 @@
     "ember-parachute": "0.1.0",
     "ember-resolver": "^2.0.3",
     "ipfs-api": "^12.1.7",
-    "kredits-contracts": "^2.0.4",
+    "kredits-contracts": "^2.4.0",
     "loader.js": "^4.0.10",
     "web3": "^0.18.2"
   },
