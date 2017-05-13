@@ -45,7 +45,7 @@ module.exports = function(environment) {
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
   } else {
-    ENV.web3ProviderUrl = 'https://kovan.infura.io';
+    ENV.web3ProviderUrl = 'https://parity.kosmos.org:8545';
   }
 
   if (environment === 'development') {
