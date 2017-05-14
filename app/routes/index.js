@@ -10,7 +10,6 @@ export default Ember.Route.extend({
     return Ember.RSVP.hash({
       contributors: kredits.getContributors(),
       totalSupply: kredits.getValueFromContract('tokenContract', 'totalSupply'),
-      contributorsCount: kredits.getValueFromContract('kreditsContract', 'contributorsCount'),
       proposals: kredits.getProposals()
     });
   }
