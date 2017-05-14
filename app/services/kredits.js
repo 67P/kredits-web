@@ -25,7 +25,8 @@ export default Ember.Service.extend({
       this.set('web3Provided', true);
     } else {
       Ember.Logger.debug('[kredits] Creating new instance from npm module class');
-      let provider = new Web3.providers.HttpProvider(config.web3ProviderUrl);
+      let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
+      let provider = new Web3.providers.HttpProvider(providerUrl);
       web3Instance = new Web3(provider);
     }
 
