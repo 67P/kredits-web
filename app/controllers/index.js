@@ -43,8 +43,14 @@ export default Ember.Controller.extend({
   proposalsClosedSorted: Ember.computed.sort('proposalsClosed', 'proposalsSorting'),
   proposalsOpenSorted: Ember.computed.sort('proposalsOpen', 'proposalsSorting'),
 
+  contributorsWithKredits: function() {
+    return this.get('model.contributors').filter(c => {
+      return c.get('kredits') !== 0;
+    });
+  }.property('model.contributors.[]'),
+
   contributorsSorting: ['kredits:desc'],
-  contributorsSorted: Ember.computed.sort('model.contributors', 'contributorsSorting'),
+  contributorsSorted: Ember.computed.sort('contributorsWithKredits', 'contributorsSorting'),
 
   watchContractEvents: function() {
     let events = this.get('kredits.kreditsContract')
