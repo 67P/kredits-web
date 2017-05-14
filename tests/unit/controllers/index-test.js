@@ -32,7 +32,6 @@ test('doesn\'t contain people with 0 kredits', function(assert) {
   addFixtures(controller);
 
   let contributorsSorted = controller.get('contributorsSorted');
-  console.log(controller.get('contributorsSorted'));
 
   assert.ok(isPresent(contributorsSorted.findBy('github_username', 'neo')));
   assert.ok(isEmpty(contributorsSorted.findBy('github_username', 'mouse')));
