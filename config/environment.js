@@ -5,6 +5,7 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'auto',
+
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -29,13 +30,18 @@ module.exports = function(environment) {
         }]
       ]
     },
+
     contractMetadata: {},
+
+    web3ProviderUrl: 'https://parity.kosmos.org:8545',
+
     ipfs: {
-      host: 'localhost',
-      port: '5001',
+      host: 'ipfs.kosmos.org',
+      port: '5444',
       protocol: 'http'
     }
   };
+
   if (process.env.KREDITS_CONTRACT_ADDR) {
     ENV.contractMetadata['Kredits'] = { address: process.env.KREDITS_CONTRACT_ADDR };
   }
@@ -44,8 +50,6 @@ module.exports = function(environment) {
   }
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
-  } else {
-    ENV.web3ProviderUrl = 'https://parity.kosmos.org:8545';
   }
 
   if (environment === 'development') {
@@ -54,6 +58,11 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.ipfs = {
+      host: 'localhost',
+      port: '5001',
+      protocol: 'http'
+    };
   }
 
   if (environment === 'test') {
@@ -68,7 +77,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // production conifig
   }
 
   return ENV;
