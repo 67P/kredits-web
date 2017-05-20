@@ -23,9 +23,11 @@
                       confirmAction="confirmProposal"
                       contractInteractionEnabled=contractInteractionEnabled}}
 
-      <p class="actions">
-        {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-      </p>
+      {{#if contractInteractionEnabled}}
+        <p class="actions">
+          {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+        </p>
+      {{/if}}
     </div>
   </section>
 {{/if}}
@@ -38,9 +40,11 @@
     {{proposal-list proposals=proposalsClosedSorted
                     confirmAction="confirmProposal"}}
 
-    <p class="actions">
-      {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-    </p>
+    {{#if contractInteractionEnabled}}
+      <p class="actions">
+        {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+      </p>
+    {{/if}}
   </div>
 </section>
 
