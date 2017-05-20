@@ -6,13 +6,14 @@ import Proposal from 'kredits-web/models/proposal';
 import kreditsContracts from 'npm:kredits-contracts';
 
 const {
+  Service,
   isPresent,
   inject: {
     service
   }
 } = Ember;
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   ipfs: service(),
 

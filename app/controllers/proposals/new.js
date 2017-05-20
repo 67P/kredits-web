@@ -18,6 +18,8 @@ export const queryParams = new QueryParams({
 
 export default Ember.Controller.extend(queryParams.Mixin, {
 
+  contributors: null,
+
   actions: {
     onSave() {
       this.transitionToRoute('index');
