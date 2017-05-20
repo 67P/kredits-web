@@ -1,15 +1,36 @@
 import Ember from 'ember';
 import Proposal from 'kredits-web/models/proposal';
 
-export default Ember.Route.extend({
+const {
+  Route,
+  RSVP,
+  inject: {
+    service
+  }
+} = Ember;
+
+export default Route.extend({
+
+  kredits: service(),
 
   model(params) {
-    return Proposal.create({
+    const proposal = Proposal.create({
       recipientAddress: params.recipient,
       amount: params.amount,
       url: params.url,
       ipfsHash: params.ipfsHash
     });
+
+    return RSVP.hash({
+      proposal,
+      contributors: this.get('kredits').getContributors()
+    });
+  },
+
+  setupController(controller, model) {
+    this._super(controller, model.proposal);
+
+    controller.set('contributors', model.contributors);
   }
 
 });

@@ -1,9 +1,11 @@
 <form {{action "save" on="submit"}}>
   <p>
-    {{input type="text"
-            placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
-            value=proposal.recipientAddress
-            class=(if isValidRecipient 'valid' '')}}
+    <select required onchange={{action (mut proposal.recipientAddress) value="target.value"}}>
+      <option value="" selected disabled hidden>Contributor</option>
+      {{#each contributors as |contributor|}}
+        <option value={{contributor.address}} selected={{eq proposal.recipientAddress contributor.address}}>{{contributor.github_username}}</option>
+      {{/each}}
+    </select>
   </p>
   <p>
     {{input type="text"
