@@ -1,7 +1,7 @@
 {
   "name": "kredits-web",
-  "version": "0.1.0",
-  "description": "Small description for kredits-web goes here",
+  "version": "1.0.0",
+  "description": "Contribution dashboard of the Kosmos project",
   "license": "MIT",
   "author": "Kosmos Community",
   "contributors": [
@@ -13,7 +13,7 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "",
+  "repository": "https://github.com/67P/kredits-web",
   "scripts": {
     "start": "ember server",
     "start-local": "KREDITS_CONTRACT_ADDR=`kredits-inspect -c Kredits -r -w address` TOKEN_CONTRACT_ADDR=`kredits-inspect -c Token -r -w address` npm start",
