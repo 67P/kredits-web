@@ -47,7 +47,7 @@ export default Ember.Controller.extend({
     return this.get('model.contributors').filter(c => {
       return c.get('kredits') !== 0;
     });
-  }.property('model.contributors.[]'),
+  }.property('model.contributors.@each.kredits'),
 
   contributorsSorting: ['kredits:desc'],
   contributorsSorted: Ember.computed.sort('contributorsWithKredits', 'contributorsSorting'),
