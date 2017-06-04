@@ -51,16 +51,10 @@ export default Service.extend({
   initializeKreditsContract() {
     let contract = null;
 
-    while (contract === null) {
-      try {
-        if (isPresent(config.contractMetadata)) {
-          contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
-        } else {
-          contract = kreditsContracts(this.get('web3'))['Kredits'];
-        }
-      } catch(e) {
-        Ember.Logger.debug('[kredits] error initializing kredits contract', e);
-      }
+    if (isPresent(config.contractMetadata)) {
+      contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
+    } else {
+      contract = kreditsContracts(this.get('web3'))['Kredits'];
     }
 
     return contract;
