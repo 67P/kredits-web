@@ -52,6 +52,9 @@ export default Service.extend({
     let contract = null;
 
     if (isPresent(config.contractMetadata)) {
+      if (localStorage.getItem('config:networkId')) {
+        config.contractMetadata['networkId'] = localStorage.getItem('config:networkId');
+      }
       contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
     } else {
       contract = kreditsContracts(this.get('web3'))['Kredits'];

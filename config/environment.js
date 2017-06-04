@@ -51,6 +51,7 @@ module.exports = function(environment) {
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
   }
+  ENV.contractMetadata['networkId'] = "17";
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
