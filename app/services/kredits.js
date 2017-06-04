@@ -46,24 +46,37 @@ export default Service.extend({
 
   currentUserAccounts: function() {
     return (this.get('web3Provided') && this.get('web3').eth.accounts) || [];
-  }.property('web3', 'web3Provided'),
+  }.property('web3Provided', 'web3'),
+
+  initializeKreditsContract() {
+    let contract = null;
+
+    while (contract === null) {
+      try {
+        if (isPresent(config.contractMetadata)) {
+          contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
+        } else {
+          contract = kreditsContracts(this.get('web3'))['Kredits'];
+        }
+      } catch(e) {
+        Ember.Logger.debug('[kredits] error initializing kredits contract', e);
+      }
+    }
+
+    return contract;
+  },
 
   kreditsContract: function() {
     if (this.get('kreditsContractInstance')) {
       return this.get('kreditsContractInstance');
     }
-    let contract;
 
-    if (isPresent(config.contractMetadata)) {
-      contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
-    } else {
-      contract = kreditsContracts(this.get('web3'))['Kredits'];
-    }
+    let contract = this.initializeKreditsContract();
 
     this.set('kreditsContractInstance', contract);
-    window.Kredits = contract;
+    // window.Kredits = contract;
     return contract;
-  }.property('web3'),
+  }.property('kreditsContractInstance', 'web3'),
 
   tokenContract: function() {
     if (this.get('tokenContractInstance')) {
@@ -74,7 +87,7 @@ export default Service.extend({
     this.set('tokenContractInstance', contract);
     window.Token = contract;
     return contract;
-  }.property('web3', 'kreditsContract', 'tokenContract'),
+  }.property('tokenContractInstance', 'web3'),
 
   getValueFromContract(contract, contractMethod, ...args) {
     Ember.Logger.debug('[kredits] read from contract', contract);
@@ -207,8 +220,8 @@ export default Service.extend({
     });
   },
 
-  logKreditsContract: function() {
-    Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
-  }.on('init')
+  // logKreditsContract: function() {
+  //   Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
+  // }.on('init')
 
 });
