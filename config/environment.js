@@ -23,6 +23,7 @@ module.exports = function(environment) {
     },
 
     browserify: {
+      tests: true,
       transform: [
         ["babelify", {
           presets: ["es2015"],
