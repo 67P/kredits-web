@@ -36,7 +36,10 @@ export default Ember.Object.extend({
         let profileJSON = JSON.parse(content);
         let profile = Ember.Object.create(profileJSON);
 
-        this.set('name', profile.get('name'));
+        this.setProperties({
+          name: profile.get('name'),
+          kind: profile.get('kind')
+        });
 
         let accounts = profile.get('accounts');
         let github   = accounts.findBy('site', 'github.com');
