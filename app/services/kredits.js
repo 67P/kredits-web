@@ -101,17 +101,17 @@ export default Service.extend({
       this.getValueFromContract('kreditsContract', 'contributorAddresses', i).then(address => {
         this.getValueFromContract('kreditsContract', 'contributors', address).then(person => {
           this.getValueFromContract('tokenContract', 'balanceOf', address).then(balance => {
-            Ember.Logger.debug('person', person);
             let contributor = Contributor.create({
               address: address,
-              github_username: person[1],
-              github_uid: person[0],
               ipfsHash: person[2],
               kredits: balance.toNumber(),
               isCurrentUser: this.get('currentUserAccounts').includes(address)
             });
-            Ember.Logger.debug('[kredits] contributor', contributor);
-            resolve(contributor);
+
+            contributor.loadProfile(this.get('ipfs')).then(
+              () => resolve(contributor),
+              err => reject(err)
+            );
           });
         });
       }).catch(err => reject(err));

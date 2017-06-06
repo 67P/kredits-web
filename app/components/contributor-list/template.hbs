@@ -3,7 +3,7 @@
     <tr class="{{if contributor.isCurrentUser 'current-user'}}" {{action "toggleContributorInfo" contributor}}>
       <td class="person">
         <img class="avatar" src={{contributor.avatarURL}}>
-        {{contributor.github_username}}
+        {{contributor.name}}
       </td>
       <td class="kredits">
         <span class="amount">{{contributor.kredits}}</span>

@@ -1,5 +1,9 @@
 import Ember from 'ember';
 
+const {
+  isPresent,
+} = Ember;
+
 export default Ember.Object.extend({
 
   address: null,
@@ -18,6 +22,56 @@ export default Ember.Object.extend({
     return `https\:\/\/avatars2.githubusercontent.com/u/${this.get('github_uid')}?v=3&s=128`;
   }.property('github_uid'),
 
+
+  /**
+   * Loads the contributor's profile data from IPFS and sets local instance
+   * properties from it
+   *
+   * @method
+   * @public
+   */
+  loadProfile(ipfs) {
+    let promise = new Ember.RSVP.Promise((resolve, reject) => {
+      ipfs.getFile(this.get('ipfsHash')).then(content => {
+        let profileJSON = JSON.parse(content);
+        let profile = Ember.Object.create(profileJSON);
+
+        this.set('name', profile.get('name'));
+
+        let accounts = profile.get('accounts');
+        let github   = accounts.findBy('site', 'github.com');
+        let wiki     = accounts.findBy('site', 'wiki.kosmos.org');
+
+        if (isPresent(github)) {
+          this.setProperties({
+            github_username: github.username,
+            github_uid: github.uid,
+          });
+        }
+        if (isPresent(wiki)) {
+          this.setProperties({
+            wiki_username: wiki.username
+          });
+        }
+
+        Ember.Logger.debug('[contributor] loaded contributor profile', profile);
+        resolve();
+      }).catch((err) => {
+        Ember.Logger.error('[contributor] error trying to load contributor profile', this.get('ipfsHash'), err);
+        reject(err);
+      });
+    });
+
+    return promise;
+  },
+
+  /**
+   * Creates a JSON-LD object of the contributor, according to
+   * https://github.com/67P/kosmos-schemas/blob/master/schemas/contributor.json
+   *
+   * @method
+   * @public
+   */
   toJSON() {
     let contributor = {
       "@context": "https://schema.kosmos.org",
@@ -49,6 +103,12 @@ export default Ember.Object.extend({
     return contributor;
   },
 
+  /**
+   * Returns the JSON-LD representation of the model as a string
+   *
+   * @method
+   * @public
+   */
   serialize() {
     return JSON.stringify(this.toJSON());
   }
