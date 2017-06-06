@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Contribution dashboard of the Kosmos project",
   "license": "MIT",
-  "author": "Kosmos Community",
+  "author": "Kosmos Contributors <mail@kosmos.org>",
   "contributors": [
     "Garret Alfert <alfert@wevelop.de>",
     "Sebastian Kippe <sebastian@kip.pe>",
