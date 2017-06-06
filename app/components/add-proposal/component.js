@@ -45,7 +45,7 @@ export default Component.extend({
           .then(() => {
             this.attrs.onSave();
           }).catch((error) => {
-            Ember.Logger.error('Error creating the proposal', error);
+            Ember.Logger.error('[add-proposal] error creating the proposal', error);
             alert('Something went wrong.');
           }).finally(() => {
             this.set('inProgress', false);
