@@ -4,6 +4,7 @@ import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
 import kreditsContracts from 'npm:kredits-contracts';
+import uuid from 'npm:uuid';
 
 const {
   Service,
@@ -183,10 +184,12 @@ export default Service.extend({
       isCurrentUser: this.get('currentUserAccounts').includes(contributor.address)
     });
 
+    let id = uuid.v4();
+
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('ipfs').storeFile(contributor.serialize()).then(ipfsHash => {
         contributor.set('ipfsHash', ipfsHash);
-        this.get('kreditsContract').addContributor(contributor.address, contributor.name, contributor.ipfsHash, contributor.isCore, contributor.github_uid, (err, data) => {
+        this.get('kreditsContract').addContributor(contributor.address, contributor.name, contributor.ipfsHash, contributor.isCore, id, (err, data) => {
           if (err) { reject(err); return; }
           Ember.Logger.debug('[kredits] add contributor response', data);
           resolve(contributor);
