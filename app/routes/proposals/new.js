@@ -18,6 +18,7 @@ export default Route.extend({
       recipientAddress: params.recipient,
       amount: params.amount,
       url: params.url,
+      kind: params.kind || 'dev',
       ipfsHash: params.ipfsHash
     });
 

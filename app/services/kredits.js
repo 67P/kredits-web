@@ -102,6 +102,8 @@ export default Service.extend({
       this.getValueFromContract('kreditsContract', 'contributorAddresses', i).then(address => {
         this.getValueFromContract('kreditsContract', 'contributors', address).then(person => {
           this.getValueFromContract('tokenContract', 'balanceOf', address).then(balance => {
+            Ember.Logger.debug('[kredits] person', address, person);
+
             let contributor = Contributor.create({
               address: address,
               ipfsHash: person[2],
@@ -203,14 +205,15 @@ export default Service.extend({
       const {
         recipientAddress,
         amount,
-        url,
-        ipfsHash
-      } = proposal.getProperties('recipientAddress', 'amount', 'url', 'ipfsHash');
+        url
+      } = proposal.getProperties('recipientAddress', 'amount', 'url');
 
-      this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
-        if (err) { reject(err); return; }
-        Ember.Logger.debug('[kredits] add proposal response', data);
-        resolve();
+      this.get('ipfs').storeFile(proposal.serializeContribution()).then(ipfsHash => {
+        this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
+          if (err) { reject(err); return; }
+          Ember.Logger.debug('[kredits] add proposal response', data);
+          resolve();
+        });
       });
     });
   },
