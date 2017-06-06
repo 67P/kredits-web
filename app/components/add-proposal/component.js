@@ -20,8 +20,7 @@ export default Component.extend({
   }),
 
   isValidAmount: computed('proposal.amount', function() {
-    // TODO
-    return true;
+    return parseInt(this.get('proposal.amount')) > 0;
   }),
 
   isValidUrl: computed('proposal.url', function() {
