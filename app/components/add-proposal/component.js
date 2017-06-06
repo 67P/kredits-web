@@ -16,7 +16,7 @@ export default Component.extend({
   inProgress: false,
 
   isValidRecipient: computed('proposal.recipientAddress', function() {
-    return this.get('kredits.web3Instance').isAddress(this.get('proposal.recipientAddress'));
+    return this.get('kredits.web3').isAddress(this.get('proposal.recipientAddress'));
   }),
 
   isValidAmount: computed('proposal.amount', function() {
