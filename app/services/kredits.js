@@ -148,8 +148,16 @@ export default Service.extend({
           url              : p[6],
           ipfsHash         : p[7]
         });
-        Ember.Logger.debug('[kredits] proposal', proposal);
-        resolve(proposal);
+
+        if (proposal.get('ipfsHash')) {
+          proposal.loadContribution(this.get('ipfs')).then(
+            () => resolve(proposal),
+            err => reject(err)
+          );
+        } else {
+          Ember.Logger.warn('[kredits] proposal from blockchain is missing IPFS hash', proposal);
+          resolve(proposal);
+        }
       }).catch(err => reject(err));
     });
     return promise;
