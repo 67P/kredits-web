@@ -15,6 +15,7 @@
 @import "neat";
 @import "settings/breakpoints";
 @import "layout";
+@import "colors";
 
 $font-family-sans: 'Open Sans', sans-serif;
 
@@ -43,7 +44,7 @@ h1, h2, h3, h4, h5, input, button {
 section {
   h2 {
     font-size: 2.8rem;
-    color: lightblue;
+    color: $primaryColor;
     @include media($mobile) {
       font-size: 2rem;
     }
@@ -54,7 +55,7 @@ section {
       p.stats {
         padding-top: 3rem;
         font-size: 1rem;
-        color: lightblue;
+        color: white;
         text-align: center;
         span.number {
           font-weight: 600;
@@ -70,14 +71,14 @@ section {
     .actions {
       padding-top: 3rem;
       font-size: 1rem;
-      color: lightblue;
+      color: $primaryColor;
       text-align: center;
       @include media($mobile) {
         padding-top: 2rem;
       }
 
       a {
-        color: lightblue;
+        color: $primaryColor;
       }
     }
   }
@@ -87,7 +88,7 @@ button, input[type=submit] {
   display: inline-block;
   border: 1px solid rgba(22, 21, 40, 1);
   background-color: rgba(22, 21, 40, 0.6);
-  color: lightblue;
+  color: $primaryColor;
   border-radius: 3px;
   font-weight: 500;
   text-transform: uppercase;

@@ -22,7 +22,7 @@ table.contributor-list {
       }
 
       a {
-        color: lightblue;
+        color: $primaryColor;
         &:hover, &:active {
           color: #fff;
         }

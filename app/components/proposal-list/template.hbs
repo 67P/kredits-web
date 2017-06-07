@@ -1,6 +1,6 @@
 {{#each proposals as |proposal|}}
-  <li>
-    <span class="id">#{{proposal.id}}</span>
+  <li data-proposal-id={{proposal.id}}>
+    <span class="category {{proposal.kind}}">♥</span>
     <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
     for <span class="recipient" title="{{proposal.recipientAddress}}">{{proposal.recipientName}}</span>
     <span class="votes">({{proposal.votesCount}}/{{proposal.votesNeeded}} votes)</span>
