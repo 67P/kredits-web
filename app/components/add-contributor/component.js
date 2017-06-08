@@ -28,7 +28,7 @@ export default Component.extend({
 
   isValidURL: function() {
     return isPresent(this.get('newContributor.url'));
-  }.property('newContributor.name'),
+  }.property('newContributor.url'),
 
   isValidGithubUID: function() {
     return isPresent(this.get('newContributor.github_uid'));
