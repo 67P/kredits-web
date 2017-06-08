@@ -41,6 +41,7 @@ export default Component.extend({
     save() {
       if (! this.get('isValid')) {
         alert('Invalid data. Please review and try again.');
+        return false;
       }
       this.set('inProgress', true);
       let proposal = this.get('proposal');
