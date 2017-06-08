@@ -18,9 +18,9 @@ export default Component.extend({
   inProgress: false,
 
   isValidAddress: function() {
-    return this.get('kredits.web3Instance')
+    return this.get('kredits.web3')
                .isAddress(this.get('newContributor.address'));
-  }.property('newContributor.address'),
+  }.property('kredits.web3', 'newContributor.address'),
 
   isValidName: function() {
     return isPresent(this.get('newContributor.name'));
