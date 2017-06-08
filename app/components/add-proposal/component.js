@@ -22,7 +22,7 @@ export default Component.extend({
   }),
 
   isValidAmount: computed('proposal.amount', function() {
-    return parseInt(this.get('proposal.amount')) > 0;
+    return parseInt(this.get('proposal.amount'), 10) > 0;
   }),
 
   isValidUrl: computed('proposal.url', function() {
