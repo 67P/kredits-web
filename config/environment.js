@@ -39,7 +39,7 @@ module.exports = function(environment) {
     ipfs: {
       host: 'ipfs.kosmos.org',
       port: '5444',
-      protocol: 'http'
+      protocol: 'https'
     }
   };
 
