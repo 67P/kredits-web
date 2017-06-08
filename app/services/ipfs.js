@@ -28,7 +28,7 @@ export default Ember.Service.extend({
       return res.toString();
     }, err => {
       Ember.Logger.error('[ipfs] error trying to fetch file', hash, err);
-      return err;
+      throw err;
     });
   }
 
