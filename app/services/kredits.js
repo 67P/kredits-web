@@ -4,6 +4,7 @@ import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
 import kreditsContracts from 'npm:kredits-contracts';
+import uuid from 'npm:uuid';
 
 const {
   Service,
@@ -101,17 +102,19 @@ export default Service.extend({
       this.getValueFromContract('kreditsContract', 'contributorAddresses', i).then(address => {
         this.getValueFromContract('kreditsContract', 'contributors', address).then(person => {
           this.getValueFromContract('tokenContract', 'balanceOf', address).then(balance => {
-            Ember.Logger.debug('person', person);
+            Ember.Logger.debug('[kredits] person', address, person);
+
             let contributor = Contributor.create({
               address: address,
-              github_username: person[1],
-              github_uid: person[0],
               ipfsHash: person[2],
               kredits: balance.toNumber(),
               isCurrentUser: this.get('currentUserAccounts').includes(address)
             });
-            Ember.Logger.debug('[kredits] contributor', contributor);
-            resolve(contributor);
+
+            contributor.loadProfile(this.get('ipfs')).then(
+              () => resolve(contributor),
+              err => reject(err)
+            );
           });
         });
       }).catch(err => reject(err));
@@ -145,8 +148,16 @@ export default Service.extend({
           url              : p[6],
           ipfsHash         : p[7]
         });
-        Ember.Logger.debug('[kredits] proposal', proposal);
-        resolve(proposal);
+
+        if (proposal.get('ipfsHash')) {
+          proposal.loadContribution(this.get('ipfs')).then(
+            () => resolve(proposal),
+            err => reject(err)
+          );
+        } else {
+          Ember.Logger.warn('[kredits] proposal from blockchain is missing IPFS hash', proposal);
+          resolve(proposal);
+        }
       }).catch(err => reject(err));
     });
     return promise;
@@ -175,23 +186,20 @@ export default Service.extend({
     });
   },
 
-  addContributor(address, name, isCore, id) {
-    Ember.Logger.debug('[kredits] add contributor', name, address);
+  addContributor(contributor) {
+    Ember.Logger.debug('[kredits] add contributor', contributor);
 
-    let contributor = Contributor.create({
-      address: address,
-      github_username: name,
-      github_uid: id,
+    contributor.setProperties({
       kredits: 0,
-      isCore: isCore,
-      isCurrentUser: this.get('currentUserAccounts').includes(address)
+      isCurrentUser: this.get('currentUserAccounts').includes(contributor.address)
     });
+
+    let id = uuid.v4();
 
     return new Ember.RSVP.Promise((resolve, reject) => {
       this.get('ipfs').storeFile(contributor.serialize()).then(ipfsHash => {
         contributor.set('ipfsHash', ipfsHash);
-        Ember.Logger.debug('ADD', address, name, ipfsHash, isCore, id);
-        this.get('kreditsContract').addContributor(address, name, ipfsHash, isCore, id, (err, data) => {
+        this.get('kreditsContract').addContributor(contributor.address, contributor.name, contributor.ipfsHash, contributor.isCore, id, (err, data) => {
           if (err) { reject(err); return; }
           Ember.Logger.debug('[kredits] add contributor response', data);
           resolve(contributor);
@@ -205,14 +213,15 @@ export default Service.extend({
       const {
         recipientAddress,
         amount,
-        url,
-        ipfsHash
-      } = proposal.getProperties('recipientAddress', 'amount', 'url', 'ipfsHash');
+        url
+      } = proposal.getProperties('recipientAddress', 'amount', 'url');
 
-      this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
-        if (err) { reject(err); return; }
-        Ember.Logger.debug('[kredits] add proposal response', data);
-        resolve();
+      this.get('ipfs').storeFile(proposal.serializeContribution()).then(ipfsHash => {
+        this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
+          if (err) { reject(err); return; }
+          Ember.Logger.debug('[kredits] add proposal response', data);
+          resolve();
+        });
       });
     });
   },

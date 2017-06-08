@@ -23,7 +23,7 @@ export default Ember.Controller.extend({
     let proposals = this.get('model.proposals')
                         .filterBy('executed', false)
                         .map(p => {
-                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).github_username);
+                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).name);
                           return p;
                         });
     return proposals;
@@ -33,7 +33,7 @@ export default Ember.Controller.extend({
     let proposals = this.get('model.proposals')
                         .filterBy('executed', true)
                         .map(p => {
-                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).github_username);
+                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).name);
                           return p;
                         });
     return proposals;

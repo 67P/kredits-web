@@ -26,6 +26,9 @@ export default Ember.Service.extend({
   getFile(hash) {
     return this.get('ipfs').cat(hash, { buffer: true }).then(res => {
       return res.toString();
+    }, err => {
+      Ember.Logger.error('[ipfs] error trying to fetch file', hash, err);
+      throw err;
     });
   }
 

@@ -14,9 +14,14 @@ ul.proposal-list {
       border-top: 1px solid rgba(255,255,255,0.2);
     }
 
-    .id {
-      color: lightblue;
+    .category {
+      color: $blue;
       padding-right: 0.2rem;
+      &.community { color: $red; }
+      &.dev       { color: $pink; }
+      &.design    { color: $yellow; }
+      &.docs      { color: $green; }
+      &.ops       { color: $purple; }
     }
     .amount {
       font-weight: 500;
@@ -31,8 +36,8 @@ ul.proposal-list {
     }
     .votes {
       font-size: 1rem;
-      color: lightblue;
-      padding-left: 1rem;
+      color: $primaryColor;
+      padding-left: 0.5rem;
     }
 
     button {

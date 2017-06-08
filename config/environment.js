@@ -23,6 +23,7 @@ module.exports = function(environment) {
     },
 
     browserify: {
+      tests: true,
       transform: [
         ["babelify", {
           presets: ["es2015"],
@@ -38,7 +39,7 @@ module.exports = function(environment) {
     ipfs: {
       host: 'ipfs.kosmos.org',
       port: '5444',
-      protocol: 'http'
+      protocol: 'https'
     }
   };
 

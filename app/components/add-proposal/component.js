@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 const {
   Component,
+  isPresent,
   inject: {
     service
   },
@@ -13,47 +14,52 @@ export default Component.extend({
   kredits: service(),
 
   proposal: null,
+  contributors: null,
   inProgress: false,
 
   isValidRecipient: computed('proposal.recipientAddress', function() {
-    return this.get('kredits.web3Instance').isAddress(this.get('proposal.recipientAddress'));
+    return this.get('kredits.web3').isAddress(this.get('proposal.recipientAddress'));
   }),
 
   isValidAmount: computed('proposal.amount', function() {
-    // TODO
-    return true;
+    return parseInt(this.get('proposal.amount'), 10) > 0;
   }),
 
   isValidUrl: computed('proposal.url', function() {
-    // TODO
-    return true;
+    return isPresent(this.get('proposal.url'));
   }),
 
-  isValidIpfsHash: computed('proposal.ipfsHash', function() {
-    // TODO
-    return true;
+  isValidDescription: computed('proposal.description', function() {
+    return isPresent(this.get('proposal.description'));
   }),
 
-  isValid: computed.and('isValidRecipient', 'isValidAmount', 'isValidUrl',
-                        'isValidIpfsHash'),
+  isValid: computed.and('isValidRecipient',
+                        'isValidAmount',
+                        'isValidDescription'),
 
   actions: {
     save() {
-      if (this.get('isValid')) {
-        this.set('inProgress', true);
-
-        this.get('kredits').addProposal(this.get('proposal'))
-          .then(() => {
-            this.attrs.onSave();
-          }).catch((error) => {
-            Ember.Logger.error('Error creating the proposal', error);
-            alert('Something went wrong.');
-          }).finally(() => {
-            this.set('inProgress', false);
-          });
-      } else {
+      if (! this.get('isValid')) {
         alert('Invalid data. Please review and try again.');
+        return false;
       }
+      this.set('inProgress', true);
+      let proposal = this.get('proposal');
+
+      // Set the recipient's IPFS profile hash so it can be used in the
+      // contribution object (which is to be stored in IPFS as well)
+      let contributor = this.get('contributors').findBy('address', proposal.get('recipientAddress'));
+      proposal.set('recipientProfile', contributor.get('ipfsHash'));
+
+      this.get('kredits').addProposal(proposal)
+        .then(() => {
+          this.attrs.onSave();
+        }).catch((error) => {
+          Ember.Logger.error('[add-proposal] error creating the proposal', error);
+          alert('Something went wrong.');
+        }).finally(() => {
+          this.set('inProgress', false);
+        });
     }
   }
 

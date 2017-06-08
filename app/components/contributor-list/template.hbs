@@ -3,7 +3,7 @@
     <tr class="{{if contributor.isCurrentUser 'current-user'}}" {{action "toggleContributorInfo" contributor}}>
       <td class="person">
         <img class="avatar" src={{contributor.avatarURL}}>
-        {{contributor.github_username}}
+        {{contributor.name}}
       </td>
       <td class="kredits">
         <span class="amount">{{contributor.kredits}}</span>
@@ -12,14 +12,12 @@
     </tr>
     <tr class="metadata {{if contributor.isCurrentUser 'current-user'}} {{if contributor.showMetadata 'visible'}}">
       <td colspan="2">
-        <dl>
-          <dt>Ethereum address</dt>
-          <dd><a href="https://testnet.etherscan.io/address/{{contributor.address}}">{{contributor.address}}</a></dd>
+        <ul>
+          <li><a href="https://testnet.etherscan.io/address/{{contributor.address}}">Inspect Ethereum transactions</a></li>
           {{#if contributor.ipfsHash}}
-            <dt>IPFS profile data</dt>
-            <dd><a href="https://ipfs.io/ipfs/{{contributor.ipfsHash}}">{{contributor.ipfsHash}}</a></dd>
+            <li><a href="https://ipfs.io/ipfs/{{contributor.ipfsHash}}">Inspect IPFS profile</a></li>
           {{/if}}
-        </dl>
+        </ul>
       </td>
     </tr>
   {{/each}}

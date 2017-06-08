@@ -1,9 +1,8 @@
 {{#each proposals as |proposal|}}
-  <li>
-    <span class="id">#{{proposal.id}}</span>
-    Issue{{#if proposal.executed}}d{{/if}}
+  <li data-proposal-id={{proposal.id}} title="({{proposal.kind}}) {{proposal.description}}">
+    <span class="category {{proposal.kind}}">♥</span>
     <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
-    to <span class="recipient" title="{{proposal.recipientAddress}}">{{proposal.recipientName}}</span>
+    for <span class="recipient">{{proposal.recipientName}}</span>
     <span class="votes">({{proposal.votesCount}}/{{proposal.votesNeeded}} votes)</span>
 
     {{#unless proposal.executed}}<button {{action "confirm" proposal.id}}>+1</button>{{/unless}}

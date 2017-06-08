@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import Contributor from 'kredits-web/models/contributor';
 
 export default Ember.Route.extend({
 
@@ -10,7 +11,8 @@ export default Ember.Route.extend({
     return Ember.RSVP.hash({
       contributors: kredits.getContributors(),
       totalSupply: kredits.getValueFromContract('tokenContract', 'totalSupply'),
-      proposals: kredits.getProposals()
+      proposals: kredits.getProposals(),
+      newContributor: Contributor.create({ kind: 'person' })
     });
   }
 
