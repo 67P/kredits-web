@@ -13,6 +13,12 @@
     <link rel="stylesheet" href="{{rootURL}}assets/kredits-web.css">
 
     {{content-for "head-footer"}}
+
+    <script>
+      window.addEventListener('load', function() {
+        window.windowLoadComplete = true;
+      });
+    </script>
   </head>
   <body>
     {{content-for "body"}}

@@ -6,9 +6,14 @@
 export default {
   name: 'defer-loading',
   initialize: function(application) {
+    // Load event already fired, so web3 should be loaded if available
+    if (window.windowLoadComplete) { return true; }
+
+    // Pause app loading
     application.deferReadiness();
 
     window.addEventListener('load', function() {
+      // Continue app loading
       application.advanceReadiness();
     });
   }
