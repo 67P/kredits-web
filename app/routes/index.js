@@ -11,7 +11,7 @@ export default Ember.Route.extend({
     if (kredits.get('web3') && kredits.get('web3Provided')) {
       kredits.get('web3').eth.getAccounts((error, accounts) => {
         if (error || accounts.length === 0) {
-          if (confirm('Please unlock your accounts')) {
+          if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
             transition.retry();
           }
         }
