@@ -43,16 +43,23 @@ module.exports = function(environment) {
     }
   };
 
-  if (process.env.KREDITS_CONTRACT_ADDR) {
-    ENV.contractMetadata['Kredits'] = { address: process.env.KREDITS_CONTRACT_ADDR };
+  ENV.contractMetadata['networkId'] = "17";
+
+  if (process.env.OPERATOR_CONTRACT_ADDR) {
+    ENV.contractMetadata['Operator'] = {
+      address: process.env.OPERATOR_CONTRACT_ADDR,
+      networkId: ENV.contractMetadata['networkId']
+    };
   }
   if (process.env.TOKEN_CONTRACT_ADDR) {
-    ENV.contractMetadata['Token'] = { address: process.env.TOKEN_CONTRACT_ADDR };
+    ENV.contractMetadata['Token'] = {
+      address: process.env.TOKEN_CONTRACT_ADDR,
+      networkId: ENV.contractMetadata['networkId']
+    };
   }
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
   }
-  ENV.contractMetadata['networkId'] = "17";
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;

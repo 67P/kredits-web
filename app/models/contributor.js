@@ -13,7 +13,7 @@ export default Ember.Object.extend({
   github_username: null,
   github_uid: null,
   wiki_username: null,
-  ipfsHash: null,
+  profileHash: null,
   kredits: null,
   isCore: false,
   isCurrentUser: false,
@@ -32,7 +32,7 @@ export default Ember.Object.extend({
    */
   loadProfile(ipfs) {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      ipfs.getFile(this.get('ipfsHash')).then(content => {
+      ipfs.getFile(this.get('profileHash')).then(content => {
         let profileJSON = JSON.parse(content);
         let profile = Ember.Object.create(profileJSON);
 
@@ -60,7 +60,7 @@ export default Ember.Object.extend({
         Ember.Logger.debug('[contributor] loaded contributor profile', profile);
         resolve();
       }).catch((err) => {
-        Ember.Logger.error('[contributor] error trying to load contributor profile', this.get('ipfsHash'), err);
+        Ember.Logger.error('[contributor] error trying to load contributor profile', this.get('profileHash'), err);
         reject(err);
       });
     });

@@ -4,6 +4,7 @@ import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
 import kreditsContracts from 'npm:kredits-contracts';
+import Kredits from 'npm:kredits-contracts/operator';
 import uuid from 'npm:uuid';
 
 const {
@@ -56,9 +57,9 @@ export default Service.extend({
       if (localStorage.getItem('config:networkId')) {
         config.contractMetadata['networkId'] = localStorage.getItem('config:networkId');
       }
-      contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Kredits'];
+      contract = new Kredits(this.get('web3'), config.contractMetadata['Operator']);
     } else {
-      contract = kreditsContracts(this.get('web3'))['Kredits'];
+      contract = new Kredits(this.get('web3'));
     }
 
     return contract;
@@ -72,7 +73,7 @@ export default Service.extend({
     let contract = this.initializeKreditsContract();
 
     this.set('kreditsContractInstance', contract);
-    // window.Kredits = contract;
+
     return contract;
   }.property('kreditsContractInstance', 'web3'),
 
@@ -97,37 +98,36 @@ export default Service.extend({
     });
   },
 
-  getContributorData(i) {
+  getContributorData(id) {
+    let kredits = this.get('kreditsContract');
+
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      this.getValueFromContract('kreditsContract', 'contributorAddresses', i).then(address => {
-        this.getValueFromContract('kreditsContract', 'contributors', address).then(person => {
-          this.getValueFromContract('tokenContract', 'balanceOf', address).then(balance => {
-            Ember.Logger.debug('[kredits] person', address, person);
+      kredits.getContributor(id).then(contributorData => {
+        Ember.Logger.debug('[kredits] contributor', contributorData);
+        let contributor = Contributor.create(contributorData);
+        contributor.set('isCurrentUser', this.get('currentUserAccounts').includes(contributor.address));
 
-            let contributor = Contributor.create({
-              address: address,
-              ipfsHash: person[2],
-              kredits: balance.toNumber(),
-              isCurrentUser: this.get('currentUserAccounts').includes(address)
-            });
+        this.getValueFromContract('tokenContract', 'balanceOf', contributor.address).then(balance => {
+          contributor.set('kredits', balance.toNumber());
 
-            contributor.loadProfile(this.get('ipfs')).then(
-              () => resolve(contributor),
-              err => reject(err)
-            );
-          });
+          contributor.loadProfile(this.get('ipfs')).then(
+            () => resolve(contributor),
+            err => reject(err)
+          );
         });
       }).catch(err => reject(err));
     });
+
     return promise;
   },
 
   getContributors() {
-    return this.getValueFromContract('kreditsContract', 'contributorsCount').then(contributorsCount => {
+    return this.get('kreditsContract').contributorsCount().then(contributorsCount => {
+      Ember.Logger.debug('[kredits] contributorsCount:', contributorsCount.toNumber());
       let contributors = [];
 
-      for(var i = 0; i < contributorsCount.toNumber(); i++) {
-        contributors.push(this.getContributorData(i));
+      for(var id = 1; id <= contributorsCount.toNumber(); id++) {
+        contributors.push(this.getContributorData(id));
       }
 
       return Ember.RSVP.all(contributors);
@@ -136,7 +136,7 @@ export default Service.extend({
 
   getProposalData(i) {
     let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      this.getValueFromContract('kreditsContract', 'proposals', i).then(p => {
+      this.get('kreditsContract').proposals(i).then(p => {
         let proposal = Proposal.create({
           id               : i,
           creatorAddress   : p[0],
@@ -164,7 +164,7 @@ export default Service.extend({
   },
 
   getProposals() {
-    return this.getValueFromContract('kreditsContract', 'proposalsCount').then(proposalsCount => {
+    return this.get('kreditsContract').proposalsCount().then(proposalsCount => {
       let proposals = [];
 
       for(var i = 0; i < proposalsCount.toNumber(); i++) {
@@ -226,8 +226,8 @@ export default Service.extend({
     });
   },
 
-  // logKreditsContract: function() {
-  //   Ember.Logger.debug('[kredits] kreditsContract', this.get('kreditsContract'));
-  // }.on('init')
+  logOperatorContract: function() {
+    Ember.Logger.debug('[kredits] operatorContract', this.get('kreditsContract'));
+  }.on('init')
 
 });
