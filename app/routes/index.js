@@ -26,6 +26,7 @@ export default Ember.Route.extend({
       contributors: kredits.getContributors(),
       totalSupply: kredits.getValueFromContract('tokenContract', 'totalSupply'),
       proposals: kredits.getProposals(),
+      contributions: kredits.getContributions(),
       newContributor: Contributor.create({ kind: 'person' })
     });
   }

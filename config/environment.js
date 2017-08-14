@@ -1,4 +1,6 @@
 /* jshint node: true */
+const fs = require('fs');
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'kredits-web',
@@ -65,6 +67,8 @@ module.exports = function(environment) {
       port: '5001',
       protocol: 'http'
     };
+    const mintedEvents = JSON.parse(fs.readFileSync('config/fixtures-token-minted.json'));
+    ENV.fixtures = { mintedEvents: mintedEvents };
   }
 
   if (environment === 'test') {

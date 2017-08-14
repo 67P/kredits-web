@@ -3,6 +3,7 @@ import Web3 from 'npm:web3';
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
+import Contribution from 'kredits-web/models/contribution';
 import kreditsContracts from 'npm:kredits-contracts';
 import uuid from 'npm:uuid';
 
@@ -223,6 +224,56 @@ export default Service.extend({
           resolve();
         });
       });
+    });
+  },
+
+  getTokenMintedEvents(fromBlock=0, toBlock='latest') {
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      const minted = this.get('tokenContract')
+                         .Minted({}, {fromBlock: fromBlock, toBlock: toBlock});
+
+      minted.get((err, res) => {
+        if (err) {
+          Ember.Logger.error('[kredits] Error reading Token#Minted events', res);
+          reject(err);
+          return;
+        }
+        Ember.Logger.warn('[kredits] Token#Minted events', res);
+        resolve(res);
+      });
+    });
+  },
+
+  getContributions() {
+    // this.getTokenMintedEvents().then(events => {
+      let contributions = [];
+
+      config.fixtures.mintedEvents.forEach(mintedEvent => {
+        contributions.push(this.getContributionData(mintedEvent));
+      });
+
+      return Ember.RSVP.all(contributions);
+    // });
+  },
+
+  getContributionData(mintedEvent) {
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      let contribution = Contribution.create({
+        recipientAddress: mintedEvent.args.recipientAddress,
+        contributorId: mintedEvent.args.contributorId,
+        amount: mintedEvent.args.amount,
+        ipfsHash: mintedEvent.args.reference
+      });
+
+      if (contribution.get('ipfsHash')) {
+        contribution.loadDetails(this.get('ipfs')).then(
+          () => resolve(contribution),
+          err => reject(err)
+        );
+      } else {
+        Ember.Logger.warn('[kredits] contribution from Minted event is missing IPFS hash', contribution);
+        resolve(contribution);
+      }
     });
   },
 
