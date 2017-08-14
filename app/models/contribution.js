@@ -10,6 +10,7 @@ export default Ember.Object.extend({
   ipfsHash: null,
   amount: null,
 
+  contributor: null,
   contribution: null,
   kind: null,
   description: null,

@@ -1,0 +1,7 @@
+{{#each contributionsWithContributors as |contribution|}}
+  <li title="({{contribution.kind}}) {{contribution.description}}">
+    <span class="category {{contribution.kind}}">♥</span>
+    <span class="amount">{{contribution.amount}}</span><span class="symbol">₭S</span>
+    for <span class="recipient">{{contribution.contributor.name}}</span>
+  </li>
+{{/each}}

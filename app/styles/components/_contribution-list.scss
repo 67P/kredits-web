@@ -1,0 +1,39 @@
+ul.contribution-list {
+  clear: both;
+  width: 100%;
+  list-style: none;
+
+  li {
+    // display: block;
+    padding: 0 1.2rem;
+    line-height: 4.2rem;
+    background-color: rgba(255,255,255,0.1);
+    font-size: 1.4rem;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    &:first-of-type {
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .category {
+      color: $blue;
+      padding-right: 0.2rem;
+      &.community { color: $red; }
+      &.dev       { color: $pink; }
+      &.design    { color: $yellow; }
+      &.docs      { color: $green; }
+      &.ops       { color: $purple; }
+    }
+    .amount {
+      font-weight: 500;
+    }
+    .symbol {
+      font-size: 1rem;
+      font-weight: 500;
+      padding-left: 0.2rem;
+    }
+    .recipient {
+      font-weight: 500;
+    }
+  }
+
+}

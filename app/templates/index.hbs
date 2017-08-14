@@ -32,19 +32,13 @@
   </section>
 {{/if}}
 
-<section id="proposals-closed">
+<section id="contributions">
   <header>
-    <h2>Closed Proposals</h2>
+    <h2>Contributions</h2>
   </header>
   <div class="content">
-    {{proposal-list proposals=proposalsClosedSorted
-                    confirmAction="confirmProposal"}}
-
-    {{#if contractInteractionEnabled}}
-      <p class="actions">
-        {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-      </p>
-    {{/if}}
+    {{contribution-list contributions=model.contributions
+                        contributors=model.contributors}}
   </div>
 </section>
 
