@@ -14,16 +14,11 @@ export default Ember.Controller.extend({
 
   contractInteractionEnabled: computed.alias('kredits.web3Provided'),
 
-  findContributorByAddress(address) {
-    return this.get('model.contributors')
-               .findBy('address', address);
-  },
-
   proposalsOpen: function() {
     let proposals = this.get('model.proposals')
                         .filterBy('executed', false)
                         .map(p => {
-                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).name);
+                          p.set('recipientName', this.get('model.contributors').findBy('id', p.get('recipientId')).name);
                           return p;
                         });
     return proposals;
@@ -33,7 +28,7 @@ export default Ember.Controller.extend({
     let proposals = this.get('model.proposals')
                         .filterBy('executed', true)
                         .map(p => {
-                          p.set('recipientName', this.findContributorByAddress(p.get('recipientAddress')).name);
+                          p.set('recipientName', this.get('model.contributors').findBy('id', p.get('recipientId')).name);
                           return p;
                         });
     return proposals;

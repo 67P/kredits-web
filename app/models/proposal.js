@@ -10,6 +10,7 @@ export default Ember.Object.extend({
   id: null,
   creatorAddress: null,
   recipientAddress: null,
+  recipientId: null,
   recipientName: null,
   recipientProfile: null,
   votesCount: null,

@@ -140,13 +140,12 @@ export default Service.extend({
         let proposal = Proposal.create({
           id               : i,
           creatorAddress   : p[0],
-          recipientAddress : p[1],
+          recipientId      : p[1].toNumber(),
           votesCount       : p[2].toNumber(),
           votesNeeded      : p[3].toNumber(),
           amount           : p[4].toNumber(),
           executed         : p[5],
-          url              : p[6],
-          ipfsHash         : p[7]
+          ipfsHash         : p[6]
         });
 
         if (proposal.get('ipfsHash')) {
