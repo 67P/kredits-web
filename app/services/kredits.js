@@ -1,23 +1,44 @@
-import Ember from 'ember';
 import Web3 from 'npm:web3';
+import bs58 from 'npm:bs58';
+import NpmBuffer from 'npm:buffer';
+
+import RSVP from 'rsvp';
+import Ember from 'ember';
+import Service from 'ember-service';
+import injectService from 'ember-service/inject';
+import computed from 'ember-computed';
+
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
-import kreditsContracts from 'npm:kredits-contracts';
-import Kredits from 'npm:kredits-contracts/operator';
-import uuid from 'npm:uuid';
+
+import abis from 'contracts/abis';
+import addresses from 'contracts/addresses';
 
 const {
-  Service,
-  isPresent,
-  inject: {
-    service
+  Logger: {
+    debug,
+    warn
   }
 } = Ember;
 
+const Buffer = NpmBuffer.Buffer;
+
+function contractProxy(object) {
+  let proxy = Ember.ObjectProxy.extend({
+    invoke(contractMethod, ...args) {
+      debug('[kredits] invoke', contractMethod, ...args);
+      let contract = this.get('content');
+      return RSVP.denodeify(contract[contractMethod])(...args);
+    }
+  });
+
+  return proxy.create({ content: object });
+}
+
 export default Service.extend({
 
-  ipfs: service(),
+  ipfs: injectService(),
 
   web3Instance: null,
   web3Provided: false, // Web3 provided (using Mist Browser, Metamask et al.)
@@ -30,11 +51,11 @@ export default Service.extend({
     let web3Instance;
 
     if (typeof window.web3 !== 'undefined') {
-      Ember.Logger.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
+      debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
       web3Instance = window.web3;
       this.set('web3Provided', true);
     } else {
-      Ember.Logger.debug('[kredits] Creating new instance from npm module class');
+      debug('[kredits] Creating new instance from npm module class');
       let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
       let provider = new Web3.providers.HttpProvider(providerUrl);
       web3Instance = new Web3(provider);
@@ -50,93 +71,95 @@ export default Service.extend({
     return (this.get('web3Provided') && this.get('web3').eth.accounts) || [];
   }.property('web3Provided', 'web3'),
 
-  initializeKreditsContract() {
-    let contract = null;
+  registryContract: computed('web3', function() {
+    let networkId = this.get('web3').version.network;
+    let contract = this.get('web3')
+      .eth
+      .contract(abis['Registry'])
+      .at(addresses['Registry'][networkId]);
 
-    if (isPresent(config.contractMetadata)) {
-      if (localStorage.getItem('config:networkId')) {
-        config.contractMetadata['networkId'] = localStorage.getItem('config:networkId');
-      }
-      contract = new Kredits(this.get('web3'), config.contractMetadata['Operator']);
-    } else {
-      contract = new Kredits(this.get('web3'));
-    }
+    return RSVP.resolve(contractProxy(contract));
+  }),
 
-    return contract;
-  },
+  contributorsContract: computed('web3', function() {
+    return this.contractFor('Contributors');
+  }),
 
-  kreditsContract: function() {
-    if (this.get('kreditsContractInstance')) {
-      return this.get('kreditsContractInstance');
-    }
+  kreditsContract: computed('web3', function() {
+    return this.contractFor('Operator');
+  }),
 
-    let contract = this.initializeKreditsContract();
+  tokenContract: computed('web3', function() {
+    return this.contractFor('Token');
+  }),
 
-    this.set('kreditsContractInstance', contract);
+  contractFor(name) {
+    return this.get('registryContract')
+      .then((contract) => contract.invoke('getProxyFor', name))
+      .then((address) => {
+        debug('[kredits] get contract', name, address);
+        let contract = this.get('web3')
+          .eth
+          .contract(abis[name])
+          .at(address);
 
-    return contract;
-  }.property('kreditsContractInstance', 'web3'),
-
-  tokenContract: function() {
-    if (this.get('tokenContractInstance')) {
-      return this.get('tokenContractInstance');
-    }
-
-    let contract = kreditsContracts(this.get('web3'), config.contractMetadata)['Token'];
-    this.set('tokenContractInstance', contract);
-    window.Token = contract;
-    return contract;
-  }.property('tokenContractInstance', 'web3'),
-
-  getValueFromContract(contract, contractMethod, ...args) {
-    Ember.Logger.debug('[kredits] read from contract', contract);
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      this.get(contract)[contractMethod](...args, (err, data) => {
-        if (err) { reject(err); return; }
-        resolve(data);
+        return contractProxy(contract);
       });
-    });
   },
 
   getContributorData(id) {
-    let kredits = this.get('kreditsContract');
+    return this.get('contributorsContract')
+      .then((contract) => contract.invoke('contributors', id))
+      .then(contributorData => {
+        debug('[kredits] contributor', contributorData);
 
-    let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      kredits.getContributor(id).then(contributorData => {
-        Ember.Logger.debug('[kredits] contributor', contributorData);
-        let contributor = Contributor.create(contributorData);
-        contributor.set('isCurrentUser', this.get('currentUserAccounts').includes(contributor.address));
+        let [ address, digest, hashFunction, size, isCore ] = contributorData;
 
-        this.getValueFromContract('tokenContract', 'balanceOf', contributor.address).then(balance => {
-          contributor.set('kredits', balance.toNumber());
-
-          contributor.loadProfile(this.get('ipfs')).then(
-            () => resolve(contributor),
-            err => reject(err)
-          );
+        let profileHash = this.getMultihashFromBytes32({
+          digest,
+          hashFunction: hashFunction.toNumber(),
+          size: size.toNumber()
         });
-      }).catch(err => reject(err));
-    });
 
-    return promise;
+        let isCurrentUser = this.get('currentUserAccounts').includes(address);
+
+        return this.get('tokenContract')
+          .then((contract) => contract.invoke('balanceOf', address))
+          .then(balance => {
+            let contributor = Contributor.create({
+              id,
+              address,
+              profileHash,
+              isCore,
+              isCurrentUser,
+              kredits: balance.toNumber()
+            });
+
+            // TODO: move ipfs into model
+            return contributor.loadProfile(this.get('ipfs'));
+          });
+      });
   },
 
   getContributors() {
-    return this.get('kreditsContract').contributorsCount().then(contributorsCount => {
-      Ember.Logger.debug('[kredits] contributorsCount:', contributorsCount.toNumber());
-      let contributors = [];
+    return this.get('contributorsContract')
+      .then((contract) => contract.invoke('contributorsCount'))
+      .then(contributorsCount => {
+        debug('[kredits] contributorsCount:', contributorsCount.toNumber());
+        let contributors = [];
 
-      for(var id = 1; id <= contributorsCount.toNumber(); id++) {
-        contributors.push(this.getContributorData(id));
-      }
+        for(var id = 1; id <= contributorsCount.toNumber(); id++) {
+          contributors.push(this.getContributorData(id));
+        }
 
-      return Ember.RSVP.all(contributors);
-    });
+        return RSVP.all(contributors);
+      });
   },
 
   getProposalData(i) {
-    let promise = new Ember.RSVP.Promise((resolve, reject) => {
-      this.get('kreditsContract').proposals(i).then(p => {
+    return this.get('kreditsContract')
+      .then((contract) => contract.invoke('proposals', i))
+      .then(p => {
         let proposal = Proposal.create({
           id               : i,
           creatorAddress   : p[0],
@@ -149,84 +172,128 @@ export default Service.extend({
         });
 
         if (proposal.get('ipfsHash')) {
-          proposal.loadContribution(this.get('ipfs')).then(
-            () => resolve(proposal),
-            err => reject(err)
-          );
+          // TODO: move ipfs into model
+          return proposal
+            .loadContribution(this.get('ipfs'))
+            .then(() => { return proposal; });
         } else {
-          Ember.Logger.warn('[kredits] proposal from blockchain is missing IPFS hash', proposal);
-          resolve(proposal);
+          warn('[kredits] proposal from blockchain is missing IPFS hash', proposal);
+          return proposal;
         }
-      }).catch(err => reject(err));
-    });
-    return promise;
+      });
   },
 
   getProposals() {
-    return this.get('kreditsContract').proposalsCount().then(proposalsCount => {
-      let proposals = [];
+    return this.get('kreditsContract')
+      .then((contract) => contract.invoke('proposalsCount'))
+      .then(proposalsCount => {
+        let proposals = [];
 
-      for(var i = 0; i < proposalsCount.toNumber(); i++) {
-        proposals.push(this.getProposalData(i));
-      }
+        for(var i = 0; i < proposalsCount.toNumber(); i++) {
+          proposals.push(this.getProposalData(i));
+        }
 
-      return Ember.RSVP.all(proposals);
-    });
+        return RSVP.all(proposals);
+      });
   },
 
   vote(proposalId) {
-    Ember.Logger.debug('[kredits] vote for', proposalId);
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      this.get('kreditsContract').vote(proposalId, (err, data) => {
-        if (err) { reject(err); return; }
-        Ember.Logger.debug('[kredits] vote response', data);
-        resolve(data);
+    debug('[kredits] vote for', proposalId);
+
+    return this.get('kreditsContract')
+      .then((contract) => contract.invoke('vote', proposalId))
+      .then((data) => {
+        debug('[kredits] vote response', data);
+        return data;
       });
-    });
+  },
+
+  // TODO: move into utils
+  getMultihashFromBytes32(multihash) {
+    const { digest, hashFunction, size } = multihash;
+
+    if (size === 0) {
+      return;
+    }
+
+    const hashBytes = Buffer.from(digest.slice(2), 'hex');
+    const multiHashBytes = new (hashBytes.constructor)(2 + hashBytes.length);
+
+    multiHashBytes[0] = hashFunction; //contributorData[2];
+    multiHashBytes[1] = size; //contributorData[3];
+    multiHashBytes.set(hashBytes, 2);
+
+    return bs58.encode(multiHashBytes);
+  },
+
+  getBytes32FromMultihash(multihash) {
+    const decoded = bs58.decode(multihash);
+
+    return {
+      digest: `0x${decoded.slice(2).toString('hex')}`,
+      hashFunction: decoded[0],
+      size: decoded[1],
+    };
   },
 
   addContributor(contributor) {
-    Ember.Logger.debug('[kredits] add contributor', contributor);
+    debug('[kredits] add contributor', contributor);
 
-    contributor.setProperties({
-      kredits: 0,
-      isCurrentUser: this.get('currentUserAccounts').includes(contributor.address)
-    });
-
-    let id = uuid.v4();
-
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      this.get('ipfs').storeFile(contributor.serialize()).then(ipfsHash => {
-        contributor.set('ipfsHash', ipfsHash);
-        this.get('kreditsContract').addContributor(contributor.address, contributor.name, contributor.ipfsHash, contributor.isCore, id, (err, data) => {
-          if (err) { reject(err); return; }
-          Ember.Logger.debug('[kredits] add contributor response', data);
-          resolve(contributor);
+    return this.get('ipfs')
+      .storeFile(contributor.serialize())
+      .then(profileHash => {
+        contributor.setProperties({
+          profileHash: profileHash,
+          kredits: 0,
+          isCurrentUser: this.get('currentUserAccounts').includes(contributor.address)
         });
+
+        let {
+          digest, hashFunction, size
+        } = this.getBytes32FromMultihash(profileHash);
+
+        return this.get('kreditsContract')
+          .then((contract) => {
+            return contract.invoke(
+              'addContributor',
+              contributor.address,
+              digest,
+              hashFunction,
+              size,
+              contributor.isCore
+            );
+          })
+          .then((data) => {
+            debug('[kredits] add contributor response', data);
+            return contributor;
+          });
       });
-    });
   },
 
   addProposal(proposal) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      const {
-        recipientAddress,
-        amount,
-        url
-      } = proposal.getProperties('recipientAddress', 'amount', 'url');
+    const {
+      recipientAddress,
+      amount,
+      url
+    } = proposal.getProperties('recipientAddress', 'amount', 'url');
 
-      this.get('ipfs').storeFile(proposal.serializeContribution()).then(ipfsHash => {
-        this.get('kreditsContract').addProposal(recipientAddress, amount, url, ipfsHash, (err, data) => {
-          if (err) { reject(err); return; }
-          Ember.Logger.debug('[kredits] add proposal response', data);
-          resolve();
-        });
+    return this.get('ipfs')
+      .storeFile(proposal.serializeContribution())
+      .then(ipfsHash => {
+        return this.get('kreditsContract')
+          .then((contract) => {
+            return contract.invoke(
+              'addProposal',
+              recipientAddress,
+              amount,
+              url,
+              ipfsHash
+            );
+          })
+          .then((data) => {
+            debug('[kredits] add proposal response', data);
+            return data;
+          });
       });
-    });
   },
-
-  logOperatorContract: function() {
-    Ember.Logger.debug('[kredits] operatorContract', this.get('kreditsContract'));
-  }.on('init')
-
 });
