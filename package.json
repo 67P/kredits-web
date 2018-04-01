@@ -16,19 +16,12 @@
   "repository": "https://github.com/67P/kredits-web",
   "scripts": {
     "start": "ember server",
-    "start-local": "WEB3_PROVIDER_URL=http://localhost:8545 KREDITS_PROVIDER_URL=http://localhost:8545 OPERATOR_CONTRACT_ADDR=`kredits-inspect -c Operator -r -w address` TOKEN_CONTRACT_ADDR=`kredits-inspect -c Token -r -w address` npm start",
     "test": "ember test",
     "postinstall": "bower install",
     "build": "ember build",
     "build-prod": "ember build --environment production",
     "update-version-file": "bash scripts/update-version-file.sh",
     "deploy": "npm run build-prod && npm run update-version-file && bash scripts/deploy.sh",
-    "kredits-console": "kredits-console",
-    "kredits-parity": "kredits-parity",
-    "kredits-deploy": "kredits-deploy",
-    "kredits-inspect": "kredits-inspect",
-    "kredits-seed": "kredits-seed",
-    "kredits-watch": "kredits-watch"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.22.0",
@@ -60,7 +53,7 @@
     "ember-truth-helpers": "1.3.0",
     "ipfs-api": "^12.1.7",
     "kosmos-schemas": "^1.1.2",
-    "kredits-contracts": "github:67P/truffle-kredits#master",
+    "kredits-contracts": "*",
     "loader.js": "^4.0.10",
     "tv4": "^1.3.0",
     "bs58": "^4.0.1",

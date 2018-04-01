@@ -17,10 +17,9 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
+* `git clone git@github.com:67P/kredits-web.git` this repository
 * `cd kredits-web`
 * `npm install`
-* `bower install`
 
 ## Running / Development
 
@@ -48,26 +47,29 @@ Specify what it takes to deploy your app.
 
 ## Working with locally deployed contracts
 
-For development you might want to run your own development chain with your own development contracts.
-The kredits-contracts helper scripts are available in kredits-web. See [kredits-contracts](https://github.com/67P/kredits-contracts) for more information.
+For development you should checkout [truffle-kredits](https://github.com/67P/truffle-kredits).
+See the [README](https://github.com/67P/truffle-kredits/#readme) how to setup `truffle-kredits`.
 
-Start your parity node with a KreditsChain: 
-    
-    npm run kredits-parity
+Run the following commands in `truffle-kredits`
+* `ganache-cli -p 7545`
+* `truffle migrate`
+* `npm link`
 
-Deploy the contracts to your local chain: 
+Run ipfs local
+* `ipfs daemon --offline` See [IPFS](#ipfs) for the setup
 
-    npm run kredits-deploy
+In `kredits-web`
+* `npm link kredits-contracts`
+* `ember serve`
 
-Run kredits-web with your localy deployed contracts: 
+## IPFS
 
-    KREDITS_CONTRACT_ADDR=`kredits-inspect -c Kredits -r -w address` \
-    TOKEN_CONTRACT_ADDR=`kredits-inspect -c Token -r -w address` \
-    npm start
+Install IPFS with your favorite package manager and run
 
-    You need to have `./node_modules/.bin` in your path for this to work. Otherwise simply copy the contract addresses and set the environment variables manually.
-    
-
+    ipfs init
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["localhost:4200"]'
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
 
 ## Further Reading / Useful Links
 
