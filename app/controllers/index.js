@@ -48,27 +48,28 @@ export default Ember.Controller.extend({
   contributorsSorted: Ember.computed.sort('contributorsWithKredits', 'contributorsSorting'),
 
   watchContractEvents: function() {
-    let events = this.get('kredits.kreditsContract')
-                     .allEvents(/* [additionalFilterObject], */);
+    this.get('kredits.kreditsContract')
+      .then((contract) => contract.invoke('allEvents'))
+      .then((events) => {
+        events.watch((error, data) => {
+          Ember.Logger.debug('[index] Received contract event', data);
 
-    events.watch((error, data) => {
-      Ember.Logger.debug('[index] Received contract event', data);
-
-      switch (data.event) {
-        case 'ProposalCreated':
-          this._handleProposalCreated(data);
-          break;
-        case 'ProposalExecuted':
-          this._handleProposalExecuted(data);
-          break;
-        case 'ProposalVoted':
-          this._handleProposalVoted(data);
-          break;
-        case 'Transfer':
-          this._handleTransfer(data);
-          break;
-      }
-    });
+          switch (data.event) {
+            case 'ProposalCreated':
+              this._handleProposalCreated(data);
+              break;
+            case 'ProposalExecuted':
+              this._handleProposalExecuted(data);
+              break;
+            case 'ProposalVoted':
+              this._handleProposalVoted(data);
+              break;
+            case 'Transfer':
+              this._handleTransfer(data);
+              break;
+          }
+        });
+      });
   }.on('init'),
 
   _handleProposalCreated(data) {

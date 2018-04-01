@@ -21,11 +21,13 @@ export default Ember.Route.extend({
 
   model() {
     let kredits = this.get('kredits');
+    let totalSupply = kredits.get('tokenContract')
+      .then((contract) => contract.invoke('totalSupply'));
 
     return Ember.RSVP.hash({
       contributors: kredits.getContributors(),
-      totalSupply: kredits.getValueFromContract('tokenContract', 'totalSupply'),
       proposals: kredits.getProposals(),
+      totalSupply,
       newContributor: Contributor.create({ kind: 'person' })
     });
   }
