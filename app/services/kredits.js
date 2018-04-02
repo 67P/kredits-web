@@ -160,6 +160,13 @@ export default Service.extend({
     return this.get('kreditsContract')
       .then((contract) => contract.invoke('proposals', i))
       .then(p => {
+
+        let ipfsHash = this.getMultihashFromBytes32({
+          digest: p[6],
+          hashFunction: p[7].toNumber(),
+          size: p[8].toNumber()
+        });
+
         let proposal = Proposal.create({
           id               : i,
           creatorAddress   : p[0],
@@ -168,7 +175,7 @@ export default Service.extend({
           votesNeeded      : p[3].toNumber(),
           amount           : p[4].toNumber(),
           executed         : p[5],
-          ipfsHash         : p[6]
+          ipfsHash         : ipfsHash
         });
 
         if (proposal.get('ipfsHash')) {
