@@ -49,8 +49,8 @@ export default Ember.Controller.extend({
 
   watchContractEvents: function() {
     this.get('kredits.kreditsContract')
-      .then((contract) => contract.invoke('allEvents'))
-      .then((events) => {
+      .then((contract) => {
+        let events = contract.get('content').allEvents();
         events.watch((error, data) => {
           Ember.Logger.debug('[index] Received contract event', data);
 
