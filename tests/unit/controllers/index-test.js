@@ -18,16 +18,16 @@ let addFixtures = function(controller) {
   });
 
   [
-    { github_username: "neo", github_uid: "318", kredits: 10000 },
-    { github_username: "morpheus", github_uid: "843", kredits: 15000 },
-    { github_username: "trinity", github_uid: "123", kredits: 5000 },
-    { github_username: "mouse", github_uid: "696", kredits: 0 }
+    { github_username: "neo", github_uid: "318", balance: 10000 },
+    { github_username: "morpheus", github_uid: "843", balance: 15000 },
+    { github_username: "trinity", github_uid: "123", balance: 5000 },
+    { github_username: "mouse", github_uid: "696", balance: 0 }
   ].forEach(fixture => {
     controller.get('model.contributors').push(Contributor.create(fixture));
   });
 };
 
-test('doesn\'t contain people with 0 kredits', function(assert) {
+test('doesn\'t contain people with 0 balance', function(assert) {
   let controller = this.subject();
   addFixtures(controller);
 

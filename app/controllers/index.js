@@ -40,11 +40,11 @@ export default Ember.Controller.extend({
 
   contributorsWithKredits: function() {
     return this.get('model.contributors').filter(c => {
-      return c.get('kredits') !== 0;
+      return c.get('balance') !== 0;
     });
-  }.property('model.contributors.@each.kredits'),
+  }.property('model.contributors.@each.balance'),
 
-  contributorsSorting: ['kredits:desc'],
+  contributorsSorting: ['balance:desc'],
   contributorsSorted: Ember.computed.sort('contributorsWithKredits', 'contributorsSorting'),
 
   watchContractEvents: function() {
@@ -112,7 +112,7 @@ export default Ember.Controller.extend({
 
     this.get('model.contributors')
         .findBy('address', data.args.recipient)
-        .incrementProperty('kredits', data.args.amount.toNumber());
+        .incrementProperty('balance', data.args.amount.toNumber());
   },
 
   _handleProposalVoted(data) {
@@ -124,10 +124,10 @@ export default Ember.Controller.extend({
   _handleTransfer(data) {
     this.get('model.contributors')
         .findBy('address', data.args.from)
-        .incrementProperty('kredits', - data.args.value.toNumber());
+        .incrementProperty('balance', - data.args.value.toNumber());
     this.get('model.contributors')
         .findBy('address', data.args.to)
-        .incrementProperty('kredits', data.args.value.toNumber());
+        .incrementProperty('balance', data.args.value.toNumber());
   },
 
 
