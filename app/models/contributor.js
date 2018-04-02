@@ -1,11 +1,15 @@
 import Ember from 'ember';
+import computed from 'ember-computed';
+import injectService from 'ember-service/inject';
 
 const {
   isPresent,
 } = Ember;
 
 export default Ember.Object.extend({
+  ipfs: injectService(),
 
+  id: null,
   address: null,
   name: null,
   kind: null,
@@ -18,10 +22,12 @@ export default Ember.Object.extend({
   isCore: false,
   isCurrentUser: false,
 
-  avatarURL: function() {
-    return `https\:\/\/avatars2.githubusercontent.com/u/${this.get('github_uid')}?v=3&s=128`;
-  }.property('github_uid'),
-
+  avatarURL: computed('github_uid', function() {
+    let github_uid = this.get('github_uid');
+    if (github_uid) {
+      return `https://avatars2.githubusercontent.com/u/${github_uid}?v=3&s=128`;
+    }
+  }),
 
   /**
    * Loads the contributor's profile data from IPFS and sets local instance
@@ -30,16 +36,19 @@ export default Ember.Object.extend({
    * @method
    * @public
    */
-  loadProfile(ipfs) {
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      if (!this.get('profileHash')) {
-        resolve(this);
-        return;
-      }
+  loadProfile() {
+    let profileHash = this.get('profileHash');
+    if (!profileHash) {
+      return;
+    }
 
-      ipfs.getFile(this.get('profileHash')).then(content => {
-        let profileJSON = JSON.parse(content);
-        let profile = Ember.Object.create(profileJSON);
+    return this.get('ipfs')
+      .getFile(profileHash)
+      .then((content) => {
+        let profile = Ember.Object.create(JSON.parse(content));
+        this.set('ipfsData', JSON.stringify(profile, null, 2));
+
+        Ember.Logger.debug('[contributor] loaded contributor profile', profile);
 
         this.setProperties({
           name: profile.get('name'),
@@ -61,14 +70,9 @@ export default Ember.Object.extend({
             wiki_username: wiki.username
           });
         }
-
-        Ember.Logger.debug('[contributor] loaded contributor profile', profile);
-        resolve(this);
       }).catch((err) => {
-        Ember.Logger.error('[contributor] error trying to load contributor profile', this.get('profileHash'), err);
-        reject(err);
+        Ember.Logger.error('[contributor] error trying to load contributor profile', profileHash, err);
       });
-    });
   },
 
   /**

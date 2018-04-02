@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import Contributor from 'kredits-web/models/contributor';
 
 export default Ember.Route.extend({
 
@@ -20,6 +19,9 @@ export default Ember.Route.extend({
   },
 
   model() {
+    let newContributor = Ember.getOwner(this).lookup('model:contributor');
+    newContributor.set('kind', 'person');
+
     let kredits = this.get('kredits');
     let totalSupply = kredits.get('tokenContract')
       .then((contract) => contract.invoke('totalSupply'));
@@ -28,7 +30,7 @@ export default Ember.Route.extend({
       contributors: kredits.getContributors(),
       proposals: kredits.getProposals(),
       totalSupply,
-      newContributor: Contributor.create({ kind: 'person' })
+      newContributor: newContributor,
     });
   }
 

@@ -9,13 +9,13 @@ import injectService from 'ember-service/inject';
 import computed from 'ember-computed';
 
 import config from 'kredits-web/config/environment';
-import Contributor from 'kredits-web/models/contributor';
 import Proposal from 'kredits-web/models/proposal';
 
 import abis from 'contracts/abis';
 import addresses from 'contracts/addresses';
 
 const {
+  getOwner,
   Logger: {
     debug,
     warn
@@ -52,7 +52,7 @@ export default Service.extend({
 
     if (typeof window.web3 !== 'undefined') {
       debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
-      web3Instance = window.web3;
+      web3Instance = new Web3(window.web3.currentProvider);
       this.set('web3Provided', true);
     } else {
       debug('[kredits] Creating new instance from npm module class');
@@ -110,33 +110,34 @@ export default Service.extend({
   getContributorData(id) {
     return this.get('contributorsContract')
       .then((contract) => contract.invoke('contributors', id))
-      .then(contributorData => {
-        debug('[kredits] contributor', contributorData);
+      .then((data) => {
+        debug('[kredits] contributor', data);
 
-        let [ address, digest, hashFunction, size, isCore ] = contributorData;
-
+        let [ address, digest, hashFunction, size, isCore ] = data;
+        let isCurrentUser = this.get('currentUserAccounts').includes(address);
         let profileHash = this.getMultihashFromBytes32({
           digest,
           hashFunction: hashFunction.toNumber(),
           size: size.toNumber()
         });
 
-        let isCurrentUser = this.get('currentUserAccounts').includes(address);
-
         return this.get('tokenContract')
           .then((contract) => contract.invoke('balanceOf', address))
-          .then(balance => {
-            let contributor = Contributor.create({
+          .then((balance) => {
+            balance = balance.toNumber();
+
+            let contributor = getOwner(this).lookup('model:contributor');
+            contributor.setProperties({
               id,
               address,
               profileHash,
               isCore,
               isCurrentUser,
-              kredits: balance.toNumber()
+              balance
             });
-
-            // TODO: move ipfs into model
-            return contributor.loadProfile(this.get('ipfs'));
+            // Load data from IPFS
+            contributor.loadProfile();
+            return contributor;
           });
       });
   },

@@ -18,6 +18,9 @@
             <li><a href="https://ipfs.io/ipfs/{{contributor.profileHash}}">Inspect IPFS profile</a></li>
           {{/if}}
         </ul>
+        {{#if contributor.showMetadata}}
+          <pre>{{contributor.ipfsData}}</pre>
+        {{/if}}
       </td>
     </tr>
   {{/each}}
