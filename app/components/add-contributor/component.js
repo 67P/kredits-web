@@ -18,8 +18,8 @@ export default Component.extend({
   inProgress: false,
 
   isValidAddress: function() {
-    return this.get('kredits.web3')
-               .isAddress(this.get('newContributor.address'));
+    // TODO: add proper address validation
+    return this.get('newContributor.address') !== ''
   }.property('kredits.web3', 'newContributor.address'),
 
   isValidName: function() {

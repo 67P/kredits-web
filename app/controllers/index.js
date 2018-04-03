@@ -50,74 +50,57 @@ export default Ember.Controller.extend({
   watchContractEvents: function() {
     this.get('kredits.kreditsContract')
       .then((contract) => {
-        let events = contract.get('content').allEvents();
-        events.watch((error, data) => {
-          Ember.Logger.debug('[index] Received contract event', data);
-
-          switch (data.event) {
-            case 'ProposalCreated':
-              this._handleProposalCreated(data);
-              break;
-            case 'ProposalExecuted':
-              this._handleProposalExecuted(data);
-              break;
-            case 'ProposalVoted':
-              this._handleProposalVoted(data);
-              break;
-            case 'Transfer':
-              this._handleTransfer(data);
-              break;
-          }
-        });
+        contract.onproposalvoted = this._handleProposalVoted.bind(this); //function(a,b,c) { console.log('voted', a, b, c) }
+        contract.onproposalcreated = this._handleProposalCreated.bind(this);
+        contract.onproposalexecuted = this._handleProposalExecuted.bind(this);
+        // TODO: transfer on the token contract
       });
   }.on('init'),
 
-  _handleProposalCreated(data) {
+  _handleProposalCreated(proposalId, creatorAddress, recipientAddress, amount) {
     if (Ember.isPresent(this.get('model.proposals')
-             .findBy('id', data.args.id.toNumber()))) {
+             .findBy('id', proposalId.toNumber()))) {
       Ember.Logger.debug('[index] proposal exists, not adding from event');
       return false;
     }
 
     let proposal = Proposal.create({
-      id: data.args.id.toNumber(),
-      creatorAddress: data.args.creator,
-      recipientAddress: data.args.recipient,
+      id: proposalId.toNumber(),
+      creatorAddress: creatorAddress,
+      recipientAddress: recipientAddress,
       recipientName: null,
       votesCount: 0,
       votesNeeded: 2,
-      amount: data.args.amount.toNumber(),
-      executed: false,
-      url: data.args.url,
-      ipfsHash: data.args.ipfsHash
+      amount: amount.toNumber(),
+      executed: false
     });
 
     this.get('model.proposals').pushObject(proposal);
   },
 
-  _handleProposalExecuted(data) {
+  _handleProposalExecuted(proposalId, recipientId, amount) {
     if (this.get('model.proposals')
-            .findBy('id', data.args.id.toNumber())
+            .findBy('id', recipientId.toNumber())
             .get('executed')) {
       Ember.Logger.debug('[index] proposal already executed, not adding from event');
       return false;
     }
 
     this.get('model.proposals')
-        .findBy('id', data.args.id.toNumber())
+        .findBy('id', recipientId.toNumber())
         .setProperties({
           'executed': true,
           'votesCount': 2 // TODO use real count
         });
 
     this.get('model.contributors')
-        .findBy('address', data.args.recipient)
-        .incrementProperty('balance', data.args.amount.toNumber());
+        .findBy('id', recipientId)
+        .incrementProperty('kredits', amount.toNumber());
   },
 
-  _handleProposalVoted(data) {
+  _handleProposalVoted(proposalId, voter, totalVotes) {
     this.get('model.proposals')
-        .findBy('id', data.args.id.toNumber())
+        .findBy('id', proposalId.toNumber())
         .incrementProperty('votesCount', 1);
   },
 
@@ -134,8 +117,8 @@ export default Ember.Controller.extend({
   actions: {
 
     confirmProposal(proposalId) {
-      this.get('kredits').vote(proposalId).then(transactionId => {
-        window.confirm('Vote submitted to Ethereum blockhain: '+transactionId);
+      this.get('kredits').vote(proposalId).then(transaction => {
+        window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
       });
     }
 

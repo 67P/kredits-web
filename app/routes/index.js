@@ -8,8 +8,8 @@ export default Ember.Route.extend({
     const kredits = this.get('kredits');
 
     if (kredits.get('web3') && kredits.get('web3Provided')) {
-      kredits.get('web3').eth.getAccounts((error, accounts) => {
-        if (error || accounts.length === 0) {
+      kredits.get('listAccounts').then((accounts) => {
+        if (accounts.length === 0) {
           if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
             transition.retry();
           }
@@ -24,7 +24,7 @@ export default Ember.Route.extend({
 
     let kredits = this.get('kredits');
     let totalSupply = kredits.get('tokenContract')
-      .then((contract) => contract.invoke('totalSupply'));
+      .then((contract) => contract.totalSupply());
 
     return Ember.RSVP.hash({
       contributors: kredits.getContributors(),
