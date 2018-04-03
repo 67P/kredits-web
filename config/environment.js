@@ -43,7 +43,7 @@ module.exports = function(environment) {
     }
   };
 
-  ENV.contractMetadata['networkId'] = "17";
+  ENV.contractMetadata['networkId'] = "42";
 
   if (process.env.OPERATOR_CONTRACT_ADDR) {
     ENV.contractMetadata['Operator'] = {
