@@ -39,14 +39,14 @@ export default Service.extend({
     let web3Provider;
     if (typeof window.web3 !== 'undefined') {
       debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
-      let networkId = parseInt(web3.version.network);
-      web3Provider = new ethers.providers.Web3Provider(web3.currentProvider, {chainId: networkId});
+      let networkId = parseInt(window.web3.version.network);
+      web3Provider = new ethers.providers.Web3Provider(window.web3.currentProvider, {chainId: networkId});
       this.set('web3Provided', true);
     } else {
       debug('[kredits] Creating new instance from npm module class');
       let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
-      let networkId = web3.version.network;
-      web3Provider = new ethers.providers.JsonRpcProvider(providerUrl, {chainId: network});
+      let networkId = config.contractMetadata.networkId;
+      web3Provider = new ethers.providers.JsonRpcProvider(providerUrl, {chainId: networkId});
     }
 
     this.set('web3Provider', web3Provider);
@@ -60,7 +60,7 @@ export default Service.extend({
   currentUserAccounts: function() {
     // TODO: listAccounts returns now a promise
     return [];
-    return ethers.listAccounts();
+    //return ethers.listAccounts();
     // return (this.get('web3Provided') && this.get('web3').eth.accounts) || [];
   }.property('web3Provided', 'web3'),
 
@@ -100,8 +100,8 @@ export default Service.extend({
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
         let profileHash = this.getMultihashFromBytes32({
           digest,
-          hashFunction: hashFunction.toNumber(),
-          size: size.toNumber()
+          hashFunction: hashFunction,
+          size: size
         });
         return this.get('tokenContract')
           .then((contract) => contract.balanceOf(address))
@@ -143,7 +143,7 @@ export default Service.extend({
     return this.get('kreditsContract')
       .then((contract) => contract.proposals(i))
       .then(p => {
-        let ipfsHash = this.getMultihashFromBytes32({ digest: p.ipfsHash, hashFunction: p.hashFunction, size: p.hashSize });
+        let contributionIpfsHash = this.getMultihashFromBytes32({ digest: p.ipfsHash, hashFunction: p.hashFunction, size: p.hashSize });
 
         let proposal = Proposal.create({
           id               : i,

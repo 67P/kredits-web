@@ -101,9 +101,7 @@ export default Ember.Controller.extend({
   _handleProposalVoted(proposalId, voter, totalVotes) {
     this.get('model.proposals')
         .findBy('id', proposalId.toNumber())
-        .setProperties({
-          'votesCount', totalVotes
-        });
+        .setProperties({ 'votesCount': totalVotes });
   },
 
   _handleTransfer(data) {
