@@ -19,7 +19,7 @@ export default Component.extend({
 
   isValidRecipient: computed('proposal.recipientAddress', function() {
     // TODO: add proper address validation
-    return this.get('proposal.recipientAddress') !== ''
+    return this.get('proposal.recipientAddress') !== '';
   }),
 
   isValidAmount: computed('proposal.amount', function() {

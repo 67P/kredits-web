@@ -46,7 +46,7 @@ export default Service.extend({
       debug('[kredits] Creating new instance from npm module class');
       let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
       let networkId = web3.version.network;
-      web3Provider = new ethers.providers.Web3Provider(web3.currentProvider, {chainId: network});
+      web3Provider = new ethers.providers.JsonRpcProvider(providerUrl, {chainId: network});
     }
 
     this.set('web3Provider', web3Provider);
