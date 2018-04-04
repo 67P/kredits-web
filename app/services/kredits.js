@@ -31,6 +31,8 @@ export default Service.extend({
   ethProvider: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
 
+  // this is called called in the routes beforeModel().  So it is initialized before everything else
+  // and we can rely on the ethProvider and the potential currentUserAccounts to be available
   initEthProvider: function() {
     return new Ember.RSVP.Promise((resolve, reject) => {
       let ethProvider;
