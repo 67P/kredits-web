@@ -18,7 +18,8 @@ export default Component.extend({
   inProgress: false,
 
   isValidRecipient: computed('proposal.recipientAddress', function() {
-    return this.get('kredits.web3').isAddress(this.get('proposal.recipientAddress'));
+    // TODO: add proper address validation
+    return this.get('proposal.recipientAddress') !== '';
   }),
 
   isValidAmount: computed('proposal.amount', function() {

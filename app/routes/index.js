@@ -6,16 +6,13 @@ export default Ember.Route.extend({
 
   beforeModel(transition) {
     const kredits = this.get('kredits');
-
-    if (kredits.get('web3') && kredits.get('web3Provided')) {
-      kredits.get('web3').eth.getAccounts((error, accounts) => {
-        if (error || accounts.length === 0) {
-          if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
-            transition.retry();
-          }
+    return kredits.initEthProvider().then(() => {
+      if (kredits.get('accountNeedsUnlock')) {
+        if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
+          transition.retry();
         }
-      });
-    }
+      }
+    });
   },
 
   model() {
@@ -24,7 +21,7 @@ export default Ember.Route.extend({
 
     let kredits = this.get('kredits');
     let totalSupply = kredits.get('tokenContract')
-      .then((contract) => contract.invoke('totalSupply'));
+      .then((contract) => contract.totalSupply());
 
     return Ember.RSVP.hash({
       contributors: kredits.getContributors(),

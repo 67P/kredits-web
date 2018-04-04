@@ -1,4 +1,4 @@
-import Web3 from 'npm:web3';
+import ethers from 'npm:ethers';
 import bs58 from 'npm:bs58';
 import NpmBuffer from 'npm:buffer';
 
@@ -24,92 +24,77 @@ const {
 
 const Buffer = NpmBuffer.Buffer;
 
-function contractProxy(object) {
-  let proxy = Ember.ObjectProxy.extend({
-    invoke(contractMethod, ...args) {
-      debug('[kredits] invoke', contractMethod, ...args);
-      let contract = this.get('content');
-      return RSVP.denodeify(contract[contractMethod])(...args);
-    }
-  });
-
-  return proxy.create({ content: object });
-}
-
 export default Service.extend({
 
   ipfs: injectService(),
 
-  web3Instance: null,
-  web3Provided: false, // Web3 provided (using Mist Browser, Metamask et al.)
+  ethProvider: null,
+  currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
 
-  web3: function() {
-    if (this.get('web3Instance')) {
-      return this.get('web3Instance');
-    }
+  // this is called called in the routes beforeModel().  So it is initialized before everything else
+  // and we can rely on the ethProvider and the potential currentUserAccounts to be available
+  initEthProvider: function() {
+    return new Ember.RSVP.Promise((resolve) => {
+      let ethProvider;
+      let networkId;
+      if (typeof window.web3 !== 'undefined') {
+        debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
+        networkId = parseInt(window.web3.version.network);
+        ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider, {chainId: networkId});
+        ethProvider.listAccounts().then((accounts) => {
+          this.set('currentUserAccounts', accounts);
+          this.set('ethProvider', ethProvider);
+          resolve(ethProvider);
+        });
+      } else {
+        debug('[kredits] Creating new instance from npm module class');
+        let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
+        networkId = parseInt(config.contractMetadata.networkId);
+        ethProvider = new ethers.providers.JsonRpcProvider(providerUrl, {chainId: networkId});
+        this.set('ethProvider', ethProvider);
+        resolve(ethProvider);
+      }
+      window.ethProvider = ethProvider;
+    });
+  },
 
-    let web3Instance;
-
-    if (typeof window.web3 !== 'undefined') {
-      debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
-      web3Instance = new Web3(window.web3.currentProvider);
-      this.set('web3Provided', true);
-    } else {
-      debug('[kredits] Creating new instance from npm module class');
-      let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
-      let provider = new Web3.providers.HttpProvider(providerUrl);
-      web3Instance = new Web3(provider);
-    }
-
-    this.set('web3Instance', web3Instance);
-    window.web3 = web3Instance;
-
-    return web3Instance;
-  }.property('web3Instance'),
-
-  currentUserAccounts: function() {
-    return (this.get('web3Provided') && this.get('web3').eth.accounts) || [];
-  }.property('web3Provided', 'web3'),
-
-  registryContract: computed('web3', function() {
-    let networkId = this.get('web3').version.network;
-    let contract = this.get('web3')
-      .eth
-      .contract(abis['Registry'])
-      .at(addresses['Registry'][networkId]);
-
-    return RSVP.resolve(contractProxy(contract));
+  accountNeedsUnlock: computed('currentUserAccounts', function() {
+    return this.get('currentUserAccounts') && Ember.isEmpty(this.get('currentUserAccounts'));
   }),
 
-  contributorsContract: computed('web3', function() {
+  hasAccounts: computed('currentUserAccounts', function() {
+    return !Ember.isEmpty(this.get('currentUserAccounts'));
+  }),
+
+  registryContract: computed('ethProvider', function() {
+    let networkId = this.get('ethProvider').chainId;
+    let registry = new ethers.Contract(addresses['Registry'][networkId], abis['Registry'], this.get('ethProvider'));
+    return registry;
+  }),
+
+  contributorsContract: computed('ethProvider', function() {
     return this.contractFor('Contributors');
   }),
 
-  kreditsContract: computed('web3', function() {
+  kreditsContract: computed('ethProvider', function() {
     return this.contractFor('Operator');
   }),
 
-  tokenContract: computed('web3', function() {
+  tokenContract: computed('ethProvider', function() {
     return this.contractFor('Token');
   }),
 
   contractFor(name) {
-    return this.get('registryContract')
-      .then((contract) => contract.invoke('getProxyFor', name))
+    return this.get('registryContract').functions.getProxyFor(name)
       .then((address) => {
         debug('[kredits] get contract', name, address);
-        let contract = this.get('web3')
-          .eth
-          .contract(abis[name])
-          .at(address);
-
-        return contractProxy(contract);
+        return new ethers.Contract(address, abis[name], this.get('ethProvider').getSigner());
       });
   },
 
   getContributorData(id) {
     return this.get('contributorsContract')
-      .then((contract) => contract.invoke('contributors', id))
+      .then((contract) => contract.contributors(id))
       .then((data) => {
         debug('[kredits] contributor', data);
 
@@ -117,12 +102,11 @@ export default Service.extend({
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
         let profileHash = this.getMultihashFromBytes32({
           digest,
-          hashFunction: hashFunction.toNumber(),
-          size: size.toNumber()
+          hashFunction: hashFunction,
+          size: size
         });
-
         return this.get('tokenContract')
-          .then((contract) => contract.invoke('balanceOf', address))
+          .then((contract) => contract.balanceOf(address))
           .then((balance) => {
             balance = balance.toNumber();
 
@@ -144,7 +128,7 @@ export default Service.extend({
 
   getContributors() {
     return this.get('contributorsContract')
-      .then((contract) => contract.invoke('contributorsCount'))
+      .then((contract) => contract.contributorsCount())
       .then(contributorsCount => {
         debug('[kredits] contributorsCount:', contributorsCount.toNumber());
         let contributors = [];
@@ -159,24 +143,19 @@ export default Service.extend({
 
   getProposalData(i) {
     return this.get('kreditsContract')
-      .then((contract) => contract.invoke('proposals', i))
+      .then((contract) => contract.proposals(i))
       .then(p => {
-
-        let ipfsHash = this.getMultihashFromBytes32({
-          digest: p[6],
-          hashFunction: p[7].toNumber(),
-          size: p[8].toNumber()
-        });
+        let contributionIpfsHash = this.getMultihashFromBytes32({ digest: p.ipfsHash, hashFunction: p.hashFunction, size: p.hashSize });
 
         let proposal = Proposal.create({
           id               : i,
-          creatorAddress   : p[0],
-          recipientId      : p[1].toNumber(),
-          votesCount       : p[2].toNumber(),
-          votesNeeded      : p[3].toNumber(),
-          amount           : p[4].toNumber(),
-          executed         : p[5],
-          ipfsHash         : ipfsHash
+          creatorAddress   : p.creator,
+          recipientId      : p.recipientId.toNumber(),
+          votesCount       : p.votesCount.toNumber(),
+          votesNeeded      : p.votesNeeded.toNumber(),
+          amount           : p.amount.toNumber(),
+          executed         : p.executed,
+          ipfsHash         : contributionIpfsHash
         });
 
         if (proposal.get('ipfsHash')) {
@@ -193,7 +172,7 @@ export default Service.extend({
 
   getProposals() {
     return this.get('kreditsContract')
-      .then((contract) => contract.invoke('proposalsCount'))
+      .then((contract) => contract.proposalsCount())
       .then(proposalsCount => {
         let proposals = [];
 
@@ -209,7 +188,7 @@ export default Service.extend({
     debug('[kredits] vote for', proposalId);
 
     return this.get('kreditsContract')
-      .then((contract) => contract.invoke('vote', proposalId))
+      .then((contract) => contract.vote(proposalId))
       .then((data) => {
         debug('[kredits] vote response', data);
         return data;
@@ -252,7 +231,7 @@ export default Service.extend({
       .then(profileHash => {
         contributor.setProperties({
           profileHash: profileHash,
-          kredits: 0,
+          balance: 0,
           isCurrentUser: this.get('currentUserAccounts').includes(contributor.address)
         });
 
@@ -262,8 +241,7 @@ export default Service.extend({
 
         return this.get('kreditsContract')
           .then((contract) => {
-            return contract.invoke(
-              'addContributor',
+            return contract.addContributor(
               contributor.address,
               digest,
               hashFunction,
@@ -290,8 +268,7 @@ export default Service.extend({
       .then(ipfsHash => {
         return this.get('kreditsContract')
           .then((contract) => {
-            return contract.invoke(
-              'addProposal',
+            return contract.addProposal(
               recipientAddress,
               amount,
               url,
