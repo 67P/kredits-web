@@ -47,15 +47,16 @@ export default Ember.Controller.extend({
   contributorsSorting: ['balance:desc'],
   contributorsSorted: Ember.computed.sort('contributorsWithKredits', 'contributorsSorting'),
 
-  watchContractEvents: function() {
+  init() {
+    this._super(...arguments);
     this.get('kredits.kreditsContract')
       .then((contract) => {
-        contract.onproposalvoted = this._handleProposalVoted.bind(this); //function(a,b,c) { console.log('voted', a, b, c) }
+        contract.onproposalvoted = this._handleProposalVoted.bind(this);
         contract.onproposalcreated = this._handleProposalCreated.bind(this);
         contract.onproposalexecuted = this._handleProposalExecuted.bind(this);
         // TODO: transfer on the token contract
       });
-  }.on('init'),
+  },
 
   _handleProposalCreated(proposalId, creatorAddress, recipientAddress, amount) {
     if (Ember.isPresent(this.get('model.proposals')
