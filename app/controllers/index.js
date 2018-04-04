@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
   kredits: service(),
 
-  contractInteractionEnabled: computed.alias('kredits.web3Provided'),
+  contractInteractionEnabled: computed.alias('kredits.hasAccounts'),
 
   proposalsOpen: function() {
     let proposals = this.get('model.proposals')
@@ -96,7 +96,7 @@ export default Ember.Controller.extend({
 
     this.get('model.contributors')
         .findBy('id', recipientId)
-        .incrementProperty('kredits', amount.toNumber());
+        .incrementProperty('balance', amount.toNumber());
   },
 
   _handleProposalVoted(proposalId, voter, totalVotes) {

@@ -6,16 +6,13 @@ export default Ember.Route.extend({
 
   beforeModel(transition) {
     const kredits = this.get('kredits');
-
-    if (kredits.get('web3') && kredits.get('web3Provided')) {
-      kredits.get('listAccounts').then((accounts) => {
-        if (accounts.length === 0) {
-          if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
-            transition.retry();
-          }
+    return kredits.initEthProvider().then((ethProvider) => {
+      if (kredits.get('accountNeedsUnlock')) {
+        if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
+          transition.retry();
         }
-      });
-    }
+      }
+    });
   },
 
   model() {

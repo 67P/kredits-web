@@ -20,7 +20,7 @@ export default Component.extend({
   isValidAddress: function() {
     // TODO: add proper address validation
     return this.get('newContributor.address') !== '';
-  }.property('kredits.web3', 'newContributor.address'),
+  }.property('kredits.ethProvider', 'newContributor.address'),
 
   isValidName: function() {
     return isPresent(this.get('newContributor.name'));
