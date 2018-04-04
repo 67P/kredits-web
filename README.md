@@ -50,23 +50,32 @@ Specify what it takes to deploy your app.
 For development you should checkout [truffle-kredits](https://github.com/67P/truffle-kredits).
 See the [README](https://github.com/67P/truffle-kredits/#readme) how to setup `truffle-kredits`.
 
-Run the following commands in `truffle-kredits`
-* `ganache-cli -p 7545`
-* `truffle migrate`
-* `npm link`
+### Basic idea:
 
-Run ipfs local
-* `ipfs daemon --offline` See [IPFS](#ipfs) for the setup
+To run the app locally with a locally deployed contract most likely in a ethereum simulator like [ganache](http://truffleframework.com/ganache/) or [ganache-cli](https://github.com/trufflesuite/ganache-cli)  
+[truffle-kredits](https://github.com/67P/truffle-kredits) holds all the tools to start and setup that local simulation network (and generally to deply the contracts)
 
-In `kredits-web`
-* `npm link kredits-contracts`
-* `ember serve`
+Get familiar with truffle and truffle-kredits, but these are the basic steps to get up and running: 
+
+1. truffle-kredits (get the local ethereum node running)
+  * setup (clone and npm install) truffle-kredits
+  * `npm run ganache` - which is basically: `ganache-cli -p 7545 -i 100` (we use the non-default port for local networks and a fixed network id)
+  * `npm bootstrap` - bootstrap runs fresh migrations, adds some seed data and writes the address/abi information to JSON that will be used by kredits-web
+  * `npm link` - link the truffle-kredits dependency to kredits-web
+
+2. IPFS (run a local ipfs deamon in offline mode)
+  * make sure the ipfs cors header are configured - See [IPFS](#ipfs) for more configurations 
+  * `ipfs daemon --offline` 
+
+3. kredits-web
+  * `npm link kredits-contracts` - link the local truffle-kredits package
+  * `ember serve` 
 
 ## IPFS
 
 Install IPFS with your favorite package manager and run
 
-    ipfs init
+    ipfs init (on initial installation)
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["localhost:4200"]'
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
