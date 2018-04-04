@@ -34,7 +34,7 @@ export default Service.extend({
   // this is called called in the routes beforeModel().  So it is initialized before everything else
   // and we can rely on the ethProvider and the potential currentUserAccounts to be available
   initEthProvider: function() {
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new Ember.RSVP.Promise((resolve) => {
       let ethProvider;
       let networkId;
       if (typeof window.web3 !== 'undefined') {
@@ -43,7 +43,7 @@ export default Service.extend({
         ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider, {chainId: networkId});
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
-          this.set('ethProvider', ethProvider)
+          this.set('ethProvider', ethProvider);
           resolve(ethProvider);
         });
       } else {

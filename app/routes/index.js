@@ -6,7 +6,7 @@ export default Ember.Route.extend({
 
   beforeModel(transition) {
     const kredits = this.get('kredits');
-    return kredits.initEthProvider().then((ethProvider) => {
+    return kredits.initEthProvider().then(() => {
       if (kredits.get('accountNeedsUnlock')) {
         if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
           transition.retry();
