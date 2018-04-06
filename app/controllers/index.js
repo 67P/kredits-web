@@ -116,13 +116,18 @@ export default Ember.Controller.extend({
 
 
   actions: {
-
     confirmProposal(proposalId) {
       this.get('kredits').vote(proposalId).then(transaction => {
         window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
       });
+    },
+
+    save(contributor) {
+      return this.get('kredits').addContributor(contributor)
+        .then((contributor) => {
+          this.get('model.contributors').pushObject(contributor);
+          return contributor;
+        });
     }
-
   }
-
 });

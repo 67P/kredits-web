@@ -1,81 +1,67 @@
-import Ember from 'ember';
-import Contributor from 'kredits-web/models/contributor';
+import Component from 'ember-component';
+import computed, { and } from 'ember-computed';
+import injectService from 'ember-service/inject';
+import isPresent from 'kredits-web/utils/cps/is-present';
 
-const {
-  Component,
-  isPresent,
-  inject: {
-    service
-  },
-  computed
-} = Ember;
 
 export default Component.extend({
+  kredits: injectService(),
 
-  kredits: service(),
+  // Default attributes used by reset
+  attributes: {
+    address: null,
+    name: null,
+    kind: 'person',
+    url: null,
+    github_username: null,
+    github_uid: null,
+    wiki_username: null,
+    profileHash: null,
+    isCore: false,
+  },
 
-  newContributor: null,
-  inProgress: false,
+  didInsertElement() {
+    this._super(...arguments);
+    this.reset();
+  },
 
-  isValidAddress: function() {
+  isValidAddress: computed('kredits.ethProvider', 'address', function() {
     // TODO: add proper address validation
-    return this.get('newContributor.address') !== '';
-  }.property('kredits.ethProvider', 'newContributor.address'),
-
-  isValidName: function() {
-    return isPresent(this.get('newContributor.name'));
-  }.property('newContributor.name'),
-
-  isValidURL: function() {
-    return isPresent(this.get('newContributor.url'));
-  }.property('newContributor.url'),
-
-  isValidGithubUID: function() {
-    return isPresent(this.get('newContributor.github_uid'));
-  }.property('newContributor.github_uid'),
-
-  isValidGithubUsername: function() {
-    return isPresent(this.get('newContributor.github_username'));
-  }.property('newContributor.github_username'),
-
-  isValidWikiUsername: function() {
-    return isPresent(this.get('newContributor.wiki_username'));
-  }.property('newContributor.wiki_username'),
-
-  isValid: computed.and(
+    return this.get('address') !== '';
+  }),
+  isValidName: isPresent('name'),
+  isValidURL: isPresent('url'),
+  isValidGithubUID: isPresent('github_uid'),
+  isValidGithubUsername: isPresent('github_username'),
+  isValidWikiUsername: isPresent('wiki_username'),
+  isValid: and(
     'isValidAddress',
     'isValidName',
     'isValidGithubUID'
   ),
 
   reset: function() {
-    this.setProperties({
-      newContributor: Contributor.create({ kind: 'person' }),
-      inProgress: false
-    });
+    this.setProperties(this.get('attributes'));
   },
 
   actions: {
-
-    save() {
-      if (!this.get('contractInteractionEnabled')) {
-        alert('Only core team members can add new contributors. Please ask someone to set you up.');
+    submit() {
+      if (!this.get('isValid')) {
+        alert('Invalid data. Please review and try again.');
         return;
       }
 
-      if (this.get('isValid')) {
-        this.set('inProgress', true);
+      let attributes = Object.keys(this.get('attributes'));
+      let contributor = this.getProperties(attributes);
+      let saved = this.save(contributor);
 
-        this.get('kredits').addContributor(this.get('newContributor')).then(contributor => {
-          this.reset();
-          this.get('contributors').pushObject(contributor);
-          window.scroll(0,0);
-        });
-      } else {
-        alert('Invalid data. Please review and try again.');
-      }
+      // The promise handles inProgress
+      this.set('inProgress', saved);
+
+      saved.then(() => {
+        this.reset();
+        window.scroll(0,0);
+      });
     }
-
   }
-
 });
