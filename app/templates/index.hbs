@@ -1,13 +1,13 @@
 {{#if kredits.hasAccounts }}
-<section id="user-account">
-  {{#if kredits.currentUser }}
-    {{ kredits.currentUser.name }}
-    {{#if kredits.currentUserIsCore }}
-      (core)
+  <section id="user-account">
+    {{#if kredits.currentUser }}
+      {{ kredits.currentUser.name }}
+      {{#if kredits.currentUserIsCore }}
+        (core)
+      {{/if}}
+      Account: {{kredits.currentUser.address}}
     {{/if}}
-    Account: {{kredits.currentUser.address}}
-  {{/if}}
-</section>
+  </section>
 {{/if}}
 
 <section id="contributors">

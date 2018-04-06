@@ -7,6 +7,7 @@ import Ember from 'ember';
 import Service from 'ember-service';
 import injectService from 'ember-service/inject';
 import computed, { alias } from 'ember-computed';
+import { isEmpty, isPresent } from 'ember-utils';
 
 import config from 'kredits-web/config/environment';
 import Proposal from 'kredits-web/models/proposal';
@@ -32,14 +33,14 @@ export default Service.extend({
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
   currentUserIsContributor: computed('currentUser', function() {
-    return Ember.isPresent(this.get('currentUser'));
+    return isPresent(this.get('currentUser'));
   }),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: computed('currentUserAccounts', function() {
-    return !Ember.isEmpty(this.get('currentUserAccounts'));
+    return !isEmpty(this.get('currentUserAccounts'));
   }),
   accountNeedsUnlock: computed('currentUserAccounts', function() {
-    return this.get('currentUserAccounts') && Ember.isEmpty(this.get('currentUserAccounts'));
+    return this.get('currentUserAccounts') && isEmpty(this.get('currentUserAccounts'));
   }),
 
   // this is called called in the routes beforeModel().  So it is initialized before everything else
@@ -293,17 +294,16 @@ export default Service.extend({
   },
 
   getCurrentUser: computed('ethProvider', function() {
-    if (Ember.isEmpty(this.get('currentUserAccounts'))) {
-      return Ember.RSVP.resolve();
+    if (isEmpty(this.get('currentUserAccounts'))) {
+      return RSVP.resolve();
     }
     return this.get('contributorsContract')
       .then((contract) => {
-        console.log('user accounts', this.get('currentUserAccounts')[0]);
-        return contract.getContributorIdByAddress(this.get('currentUserAccounts')[0])
+        return contract.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
           .then((id) => {
             // check if the user is a contributor or not
             if( id.toNumber() === 0) {
-              return Ember.RSVP.resolve();
+              return RSVP.resolve();
             } else {
               return this.getContributorData(id.toNumber());
             }
