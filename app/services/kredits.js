@@ -6,7 +6,8 @@ import RSVP from 'rsvp';
 import Ember from 'ember';
 import Service from 'ember-service';
 import injectService from 'ember-service/inject';
-import computed from 'ember-computed';
+import computed, { alias } from 'ember-computed';
+import { isEmpty, isPresent } from 'ember-utils';
 
 import config from 'kredits-web/config/environment';
 import Proposal from 'kredits-web/models/proposal';
@@ -30,6 +31,17 @@ export default Service.extend({
 
   ethProvider: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
+  currentUser: null,
+  currentUserIsContributor: computed('currentUser', function() {
+    return isPresent(this.get('currentUser'));
+  }),
+  currentUserIsCore: alias('currentUser.isCore'),
+  hasAccounts: computed('currentUserAccounts', function() {
+    return !isEmpty(this.get('currentUserAccounts'));
+  }),
+  accountNeedsUnlock: computed('currentUserAccounts', function() {
+    return this.get('currentUserAccounts') && isEmpty(this.get('currentUserAccounts'));
+  }),
 
   // this is called called in the routes beforeModel().  So it is initialized before everything else
   // and we can rely on the ethProvider and the potential currentUserAccounts to be available
@@ -44,7 +56,14 @@ export default Service.extend({
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
           this.set('ethProvider', ethProvider);
-          resolve(ethProvider);
+          if (accounts.length > 0) {
+            this.get('getCurrentUser').then((contributorData) => {
+              this.set('currentUser', contributorData);
+              resolve(ethProvider);
+            });
+          } else {
+            resolve(ethProvider);
+          }
         });
       } else {
         debug('[kredits] Creating new instance from npm module class');
@@ -57,14 +76,6 @@ export default Service.extend({
       window.ethProvider = ethProvider;
     });
   },
-
-  accountNeedsUnlock: computed('currentUserAccounts', function() {
-    return this.get('currentUserAccounts') && Ember.isEmpty(this.get('currentUserAccounts'));
-  }),
-
-  hasAccounts: computed('currentUserAccounts', function() {
-    return !Ember.isEmpty(this.get('currentUserAccounts'));
-  }),
 
   registryContract: computed('ethProvider', function() {
     let networkId = this.get('ethProvider').chainId;
@@ -281,4 +292,22 @@ export default Service.extend({
           });
       });
   },
+
+  getCurrentUser: computed('ethProvider', function() {
+    if (isEmpty(this.get('currentUserAccounts'))) {
+      return RSVP.resolve();
+    }
+    return this.get('contributorsContract')
+      .then((contract) => {
+        return contract.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
+          .then((id) => {
+            // check if the user is a contributor or not
+            if( id.toNumber() === 0) {
+              return RSVP.resolve();
+            } else {
+              return this.getContributorData(id.toNumber());
+            }
+          });
+      });
+  })
 });
