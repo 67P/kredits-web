@@ -294,7 +294,7 @@ export default Service.extend({
 
   getCurrentUser: computed('ethProvider', function() {
     if (Ember.isEmpty(this.get('currentUserAccounts'))) {
-      return new Promise((resolve) => resolve(null));
+      return Ember.RSVP.resolve();
     }
     return this.get('contributorsContract')
       .then((contract) => {
