@@ -1,6 +1,9 @@
-<form {{action "save" on="submit"}}>
+<form {{action "submit" on="submit"}}>
   <p>
-    {{input type="checkbox" name="is-core" id="is-core" checked=newContributor.isCore}}
+    {{input name="is-core"
+            type="checkbox"
+            id="is-core"
+            checked=isCore}}
     <label for="is-core" class="checkbox">
       Core team member (can add contributors)
     </label>
@@ -9,51 +12,53 @@
     {{input name="address"
             type="text"
             placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
-            value=newContributor.address
+            value=address
             class=(if isValidAddress 'valid' '')}}
   </p>
   <p>
-    <select required onchange={{action (mut newContributor.kind) value="target.value"}}>
-      <option value="person" selected={{eq newContributor.kind "person"}}>Person</option>
-      <option value="organization" selected={{eq newContributor.kind "organization"}}>Organization</option>
+    <select required onchange={{action (mut kind) value="target.value"}}>
+      <option value="person" selected={{eq kind "person"}}>Person</option>
+      <option value="organization" selected={{eq kind "organization"}}>Organization</option>
     </select>
   </p>
   <p>
     {{input name="name"
             type="text"
             placeholder="Name"
-            value=newContributor.name
+            value=name
             class=(if isValidName 'valid' '')}}
   </p>
   <p>
     {{input name="url"
             type="text"
             placeholder="URL"
-            value=newContributor.url
+            value=url
             class=(if isValidURL 'valid' '')}}
   </p>
   <p>
     {{input name="github_uid"
             type="text"
             placeholder="GitHub UID (123)"
-            value=newContributor.github_uid
+            value=github_uid
             class=(if isValidGithubUID 'valid' '')}}
   </p>
   <p>
     {{input name="github_username"
             type="text"
             placeholder="GitHub username"
-            value=newContributor.github_username
+            value=github_username
             class=(if isValidGithubUsername 'valid' '')}}
   </p>
   <p>
     {{input name="wiki_username"
             type="text"
             placeholder="Wiki Username"
-            value=newContributor.wiki_username
+            value=wiki_username
             class=(if isValidWikiUsername 'valid' '')}}
   </p>
   <p class="actions">
-    {{input type="submit" value=(if inProgress 'Processing' 'Save') disabled=inProgress}}
+    {{input type="submit"
+            disabled=(is-pending inProgress)
+            value=(if (is-pending inProgress) 'Processing' 'Save')}}
   </p>
 </form>

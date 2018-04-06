@@ -65,8 +65,11 @@
   </header>
 
   <div class="content">
-    {{add-contributor contributors=model.contributors
-                      newContributor=model.newContributor
-                      contractInteractionEnabled=contractInteractionEnabled}}
+    {{!--
+      TODO:
+      only show the form if currentUser.isCore else show:
+      Only core team members can add new contributors. Please ask someone to set you up.
+    --}}
+    {{add-contributor contributors=model.contributors save=(action 'save')}}
   </div>
 </section>
