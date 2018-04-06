@@ -303,11 +303,11 @@ export default Service.extend({
           .then((id) => {
             // check if the user is a contributor or not
             if( id.toNumber() === 0) {
-              return Ember.RSVP.resolve()
+              return Ember.RSVP.resolve();
             } else {
               return this.getContributorData(id.toNumber());
             }
-          })
+          });
       });
   })
 });
