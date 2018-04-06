@@ -14,12 +14,14 @@ import Proposal from 'kredits-web/models/proposal';
 
 import abis from 'contracts/abis';
 import addresses from 'contracts/addresses';
+import { ContributorSerializer } from 'kredits-web/lib/kredits';
 
 const {
   getOwner,
   Logger: {
     debug,
-    warn
+    warn,
+    error
   }
 } = Ember;
 
@@ -103,37 +105,55 @@ export default Service.extend({
       });
   },
 
-  getContributorData(id) {
+  // TODO: Should be part of the service
+  buildContributor(attributes) {
+    debug('[kredits] buildContributor', attributes);
+
+    let contributor = getOwner(this).lookup('model:contributor');
+    contributor.setProperties(attributes);
+    return contributor;
+  },
+
+  getContributorById(id) {
     return this.get('contributorsContract')
       .then((contract) => contract.contributors(id))
-      .then((data) => {
-        debug('[kredits] contributor', data);
+      // Set basic data
+      .then(({
+          account: address,
+          hashFunction,
+          hashSize,
+          isCore,
+          profileHash: digest,
+        }) => {
 
-        let [ address, digest, hashFunction, size, isCore ] = data;
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
         let profileHash = this.getMultihashFromBytes32({
           digest,
-          hashFunction: hashFunction,
-          size: size
+          hashFunction,
+          size: hashSize
         });
-        return this.get('tokenContract')
-          .then((contract) => contract.balanceOf(address))
-          .then((balance) => {
-            balance = balance.toNumber();
 
-            let contributor = getOwner(this).lookup('model:contributor');
-            contributor.setProperties({
-              id,
-              address,
-              profileHash,
-              isCore,
-              isCurrentUser,
-              balance
-            });
-            // Load data from IPFS
-            contributor.loadProfile();
-            return contributor;
+        return {
+          id,
+          address,
+          isCore,
+          isCurrentUser,
+          profileHash,
+        };
+      })
+      // Add the balance
+      .then((data) => {
+        return this.get('tokenContract')
+          .then((contract) => contract.balanceOf(data.address))
+          .then((balance) => {
+            data.balance = balance.toNumber();
+            return data;
           });
+      })
+      // Fetch IPFS data if available
+      .then(this.loadContributorProfile.bind(this))
+      .then((attributes) => {
+        return this.buildContributor(attributes);
       });
   },
 
@@ -145,10 +165,40 @@ export default Service.extend({
         let contributors = [];
 
         for(var id = 1; id <= contributorsCount.toNumber(); id++) {
-          contributors.push(this.getContributorData(id));
+          contributors.push(this.getContributorById(id));
         }
 
         return RSVP.all(contributors);
+      });
+  },
+
+
+  /**
+   * Loads the contributor's profile data from IPFS and returns the attributes
+   *
+   * @method
+   * @public
+   */
+  loadContributorProfile(data) {
+    let profileHash = data.profileHash;
+
+    if (!profileHash) {
+      return data;
+    }
+
+    return this.get('ipfs')
+      .getFile(profileHash)
+      .then(ContributorSerializer.deserialize)
+      .then((attributes) => {
+        debug('[kredits] loaded contributor profile', attributes);
+        return Object.assign(data, attributes);
+      })
+      .catch((err) => {
+        error(
+          '[kredits] error trying to load contributor profile',
+          profileHash,
+          err
+        );
       });
   },
 
@@ -234,36 +284,42 @@ export default Service.extend({
     };
   },
 
-  addContributor(contributor) {
-    debug('[kredits] add contributor', contributor);
+
+  // TODO: extract common logic to module
+  addContributor(attributes) {
+    debug('[kredits] add contributor', attributes);
+
+    let json = ContributorSerializer.serialize(attributes);
 
     return this.get('ipfs')
-      .storeFile(contributor.serialize())
-      .then(profileHash => {
-        contributor.setProperties({
-          profileHash: profileHash,
-          balance: 0,
-          isCurrentUser: this.get('currentUserAccounts').includes(contributor.address)
-        });
-
-        let {
-          digest, hashFunction, size
-        } = this.getBytes32FromMultihash(profileHash);
+      .storeFile(json)
+      .then((profileHash) => {
+        // Set new attributes
+        attributes.profileHash = profileHash;
+        attributes.balance = 0;
+        attributes.isCurrentUser = this.get('currentUserAccounts')
+          .includes(attributes.address);
 
         return this.get('kreditsContract')
           .then((contract) => {
+            let { address, isCore } = attributes;
+            let {
+              digest, hashFunction, size
+            } = this.getBytes32FromMultihash(profileHash);
+
+            debug('[kredits] addContributor', address, digest, hashFunction, size, isCore);
             return contract.addContributor(
-              contributor.address,
+              address,
               digest,
               hashFunction,
               size,
-              contributor.isCore
+              isCore
             );
-          })
-          .then((data) => {
-            debug('[kredits] add contributor response', data);
-            return contributor;
           });
+      })
+      .then((data) => {
+        debug('[kredits] add contributor response', data);
+        return this.buildContributor(attributes);
       });
   },
 
@@ -301,11 +357,12 @@ export default Service.extend({
       .then((contract) => {
         return contract.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
           .then((id) => {
+            id = id.toNumber();
             // check if the user is a contributor or not
-            if( id.toNumber() === 0) {
+            if (id === 0) {
               return RSVP.resolve();
             } else {
-              return this.getContributorData(id.toNumber());
+              return this.getContributorById(id);
             }
           });
       });
