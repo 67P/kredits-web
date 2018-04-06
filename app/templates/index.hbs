@@ -1,8 +1,19 @@
+{{#if kredits.hasAccounts }}
+<section id="user-account">
+  {{#if kredits.currentUser }}
+    {{ kredits.currentUser.name }}
+    {{#if kredits.currentUserIsCore }}
+      (core)
+    {{/if}}
+    Account: {{kredits.currentUser.address}}
+  {{/if}}
+</section>
+{{/if}}
+
 <section id="contributors">
   <header>
     <h2>Kosmos Contributors</h2>
   </header>
-
   <div class="content">
     {{contributor-list contributors=contributorsSorted}}
 
