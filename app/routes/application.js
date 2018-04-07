@@ -1,4 +1,18 @@
-import Ember from 'ember';
+import injectService from 'ember-service/inject';
+import Route from 'ember-route';
 
-export default Ember.Route.extend({
+export default Route.extend({
+  kredits: injectService(),
+
+  beforeModel(transition) {
+    const kredits = this.get('kredits');
+
+    return kredits.initEthProvider().then(() => {
+      if (kredits.get('accountNeedsUnlock')) {
+        if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
+          transition.retry();
+        }
+      }
+    });
+  },
 });
