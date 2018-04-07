@@ -1,5 +1,8 @@
 import ContributorSerializer from './serializers/contributor';
+import { fromBytes32, toBytes32 } from './utils/multihash';
 
 export {
-  ContributorSerializer
+  ContributorSerializer,
+  fromBytes32,
+  toBytes32
 };
