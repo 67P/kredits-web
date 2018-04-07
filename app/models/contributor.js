@@ -11,7 +11,7 @@ export default EmberObject.extend({
   github_uid: null,
   wiki_username: null,
   profileHash: null,
-  balance: null,
+  balance: 0,
   isCore: false,
   isCurrentUser: false,
 

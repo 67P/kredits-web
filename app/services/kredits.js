@@ -191,7 +191,7 @@ export default Service.extend({
       .then(ContributorSerializer.deserialize)
       .then((attributes) => {
         debug('[kredits] loaded contributor profile', attributes);
-        return Object.assign(data, attributes);
+        return Object.assign({}, data, attributes);
       })
       .catch((err) => {
         error(
@@ -293,28 +293,28 @@ export default Service.extend({
 
     return this.get('ipfs')
       .storeFile(json)
+      // Set profileHash
       .then((profileHash) => {
-        // Set new attributes
         attributes.profileHash = profileHash;
-        attributes.balance = 0;
-        attributes.isCurrentUser = this.get('currentUserAccounts')
-          .includes(attributes.address);
-
+        return attributes;
+      })
+      .then((attributes) => {
         return this.get('kreditsContract')
           .then((contract) => {
-            let { address, isCore } = attributes;
+            let { address, isCore, profileHash } = attributes;
             let {
               digest, hashFunction, size
             } = this.getBytes32FromMultihash(profileHash);
 
-            debug('[kredits] addContributor', address, digest, hashFunction, size, isCore);
-            return contract.addContributor(
+            let contributor = [
               address,
               digest,
               hashFunction,
               size,
-              isCore
-            );
+              isCore,
+            ];
+            debug('[kredits] addContributor', ...contributor);
+            return contract.addContributor(...contributor);
           });
       })
       .then((data) => {
