@@ -118,7 +118,7 @@ export default Service.extend({
   getContributorById(id) {
     return this.get('contributorsContract')
       .then((contract) => contract.getContributorById(id))
-      .then(this.replaceIpfsHash)
+      .then(this.reassembleIpfsHash)
       // Set basic data
       .then(({ account: address, balance, ipfsHash, isCore }) => {
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
@@ -157,9 +157,12 @@ export default Service.extend({
       });
   },
 
-  replaceIpfsHash(data) {
+  reassembleIpfsHash(data) {
     let { ipfsHash: digest, hashFunction, hashSize } = data;
     data.ipfsHash = fromBytes32({ digest, hashFunction, hashSize });
+    delete data.hashFunction;
+    delete data.hashSize;
+
     return data;
   },
 
