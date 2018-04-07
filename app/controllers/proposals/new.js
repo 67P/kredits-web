@@ -1,29 +1,24 @@
-import Ember from 'ember';
-import QueryParams from 'ember-parachute';
+import Controller from 'ember-controller';
+import { filterBy } from 'ember-computed';
+import injectService from 'ember-service/inject';
 
-export const queryParams = new QueryParams({
-  recipient: {
-    defaultValue: ''
-  },
-  amount: {
-    defaultValue: ''
-  },
-  url: {
-    defaultValue: ''
-  },
-  ipfsHash: {
-    defaultValue: ''
-  }
-});
+export default Controller.extend({
+  kredits: injectService(),
 
-export default Ember.Controller.extend(queryParams.Mixin, {
-
-  contributors: null,
+  contributors: [],
+  minedContributors: filterBy('contributors', 'id'),
 
   actions: {
-    onSave() {
-      this.transitionToRoute('index');
+    save(proposal) {
+      // contributorIpfsHash is needed for the proposal ipfs data. I'm not happy to do this here but I think to load all the contributors in addProposal again is a bit too much. I hope we can refactor it later.
+      let contributor = this.get('contributors').findBy('id', proposal.recipientId);
+      proposal.contributorIpfsHash = contributor.get('ipfsHash');
+
+      return this.get('kredits').addProposal(proposal)
+        .then((proposal) => {
+          this.transitionToRoute('index');
+          return proposal;
+        });
     }
   }
-
 });
