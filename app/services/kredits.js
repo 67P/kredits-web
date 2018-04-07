@@ -1,6 +1,4 @@
 import ethers from 'npm:ethers';
-import bs58 from 'npm:bs58';
-import NpmBuffer from 'npm:buffer';
 
 import RSVP from 'rsvp';
 import Ember from 'ember';
@@ -14,7 +12,11 @@ import Proposal from 'kredits-web/models/proposal';
 
 import abis from 'contracts/abis';
 import addresses from 'contracts/addresses';
-import { ContributorSerializer } from 'kredits-web/lib/kredits';
+import {
+  ContributorSerializer,
+  fromBytes32,
+  toBytes32
+} from 'kredits-web/lib/kredits';
 
 const {
   getOwner,
@@ -25,7 +27,6 @@ const {
   }
 } = Ember;
 
-const Buffer = NpmBuffer.Buffer;
 
 export default Service.extend({
 
@@ -127,11 +128,7 @@ export default Service.extend({
         }) => {
 
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
-        let profileHash = this.getMultihashFromBytes32({
-          digest,
-          hashFunction,
-          size: hashSize
-        });
+        let profileHash = fromBytes32({ digest, hashFunction, hashSize });
 
         return {
           id,
@@ -206,7 +203,8 @@ export default Service.extend({
     return this.get('kreditsContract')
       .then((contract) => contract.proposals(i))
       .then(p => {
-        let contributionIpfsHash = this.getMultihashFromBytes32({ digest: p.ipfsHash, hashFunction: p.hashFunction, size: p.hashSize });
+        let { ipfsHash: digest, hashFunction, hashSize } = p;
+        let ipfsHash = fromBytes32({ digest, hashFunction, hashSize });
 
         let proposal = Proposal.create({
           id               : i,
@@ -216,7 +214,7 @@ export default Service.extend({
           votesNeeded      : p.votesNeeded.toNumber(),
           amount           : p.amount.toNumber(),
           executed         : p.executed,
-          ipfsHash         : contributionIpfsHash
+          ipfsHash
         });
 
         if (proposal.get('ipfsHash')) {
@@ -256,35 +254,6 @@ export default Service.extend({
       });
   },
 
-  // TODO: move into utils
-  getMultihashFromBytes32(multihash) {
-    const { digest, hashFunction, size } = multihash;
-
-    if (size === 0) {
-      return;
-    }
-
-    const hashBytes = Buffer.from(digest.slice(2), 'hex');
-    const multiHashBytes = new (hashBytes.constructor)(2 + hashBytes.length);
-
-    multiHashBytes[0] = hashFunction; //contributorData[2];
-    multiHashBytes[1] = size; //contributorData[3];
-    multiHashBytes.set(hashBytes, 2);
-
-    return bs58.encode(multiHashBytes);
-  },
-
-  getBytes32FromMultihash(multihash) {
-    const decoded = bs58.decode(multihash);
-
-    return {
-      digest: `0x${decoded.slice(2).toString('hex')}`,
-      hashFunction: decoded[0],
-      size: decoded[1],
-    };
-  },
-
-
   // TODO: extract common logic to module
   addContributor(attributes) {
     debug('[kredits] add contributor', attributes);
@@ -302,15 +271,13 @@ export default Service.extend({
         return this.get('kreditsContract')
           .then((contract) => {
             let { address, isCore, profileHash } = attributes;
-            let {
-              digest, hashFunction, size
-            } = this.getBytes32FromMultihash(profileHash);
+            let { digest, hashFunction, hashSize } = toBytes32(profileHash);
 
             let contributor = [
               address,
               digest,
               hashFunction,
-              size,
+              hashSize,
               isCore,
             ];
             debug('[kredits] addContributor', ...contributor);
