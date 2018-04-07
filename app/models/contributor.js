@@ -2,17 +2,24 @@ import computed from 'ember-computed';
 import EmberObject from 'ember-object';
 
 export default EmberObject.extend({
+  // Contract
   id: null,
+  // TODO: Should we rename it to account like in the contract?
   address: null,
-  name: null,
+  balance: 0,
+  isCore: false,
+  ipfsHash: null,
+
+  // IPFS
   kind: null,
+  name: null,
   url: null,
   github_username: null,
   github_uid: null,
   wiki_username: null,
-  profileHash: null,
-  balance: 0,
-  isCore: false,
+  ipfsData: '',
+
+  // Deprecated
   isCurrentUser: false,
 
   avatarURL: computed('github_uid', function() {
