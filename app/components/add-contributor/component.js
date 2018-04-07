@@ -16,7 +16,6 @@ export default Component.extend({
     github_username: null,
     github_uid: null,
     wiki_username: null,
-    profileHash: null,
     isCore: false,
   },
 
@@ -61,6 +60,7 @@ export default Component.extend({
       saved.then(() => {
         this.reset();
         window.scroll(0,0);
+        window.alert('Contributor added.');
       });
     }
   }
