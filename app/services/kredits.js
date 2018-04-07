@@ -118,29 +118,24 @@ export default Service.extend({
   getContributorById(id) {
     return this.get('contributorsContract')
       .then((contract) => contract.getContributorById(id))
+      .then(this.replaceIpfsHash)
       // Set basic data
-      .then(({
-          account: address,
-          hashFunction,
-          hashSize,
-          isCore,
-          profileHash: digest,
-          balance
-        }) => {
+      .then(({ account: address, balance, ipfsHash, isCore }) => {
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
-        let profileHash = fromBytes32({ digest, hashFunction, hashSize });
 
         return {
           id,
           address,
+          balance: balance.toNumber(),
+          ipfsHash,
           isCore,
           isCurrentUser,
-          profileHash,
-          balance: balance.toNumber()
         };
       })
       // Fetch IPFS data if available
-      .then(this.loadContributorProfile.bind(this))
+      .then((data) => {
+        return this.fetchAndMergeIpfsData(data, ContributorSerializer);
+      })
       .then((attributes) => {
         return this.buildContributor(attributes);
       });
@@ -149,11 +144,12 @@ export default Service.extend({
   getContributors() {
     return this.get('contributorsContract')
       .then((contract) => contract.contributorsCount())
-      .then(contributorsCount => {
-        debug('[kredits] contributorsCount:', contributorsCount.toNumber());
+      .then((count) => {
+        count = count.toNumber();
+        debug('[kredits] contributors count:', count);
         let contributors = [];
 
-        for(var id = 1; id <= contributorsCount.toNumber(); id++) {
+        for(var id = 1; id <= count; id++) {
           contributors.push(this.getContributorById(id));
         }
 
@@ -161,6 +157,11 @@ export default Service.extend({
       });
   },
 
+  replaceIpfsHash(data) {
+    let { ipfsHash: digest, hashFunction, hashSize } = data;
+    data.ipfsHash = fromBytes32({ digest, hashFunction, hashSize });
+    return data;
+  },
 
   /**
    * Loads the contributor's profile data from IPFS and returns the attributes
@@ -168,26 +169,22 @@ export default Service.extend({
    * @method
    * @public
    */
-  loadContributorProfile(data) {
-    let profileHash = data.profileHash;
+  fetchAndMergeIpfsData(data, Serializer) {
+    let ipfsHash = data.ipfsHash;
 
-    if (!profileHash) {
+    if (!ipfsHash) {
       return data;
     }
 
     return this.get('ipfs')
-      .getFile(profileHash)
-      .then(ContributorSerializer.deserialize)
+      .getFile(ipfsHash)
+      .then(Serializer.deserialize)
       .then((attributes) => {
-        debug('[kredits] loaded contributor profile', attributes);
+        debug('[kredits] fetched ipfs data:', attributes);
         return Object.assign({}, data, attributes);
       })
       .catch((err) => {
-        error(
-          '[kredits] error trying to load contributor profile',
-          profileHash,
-          err
-        );
+        error('[kredits] error trying to fetch', ipfsHash, err);
       });
   },
 
@@ -251,19 +248,20 @@ export default Service.extend({
     debug('[kredits] add contributor', attributes);
 
     let json = ContributorSerializer.serialize(attributes);
+    // TODO: validate against schema
 
     return this.get('ipfs')
       .storeFile(json)
-      // Set profileHash
-      .then((profileHash) => {
-        attributes.profileHash = profileHash;
+      // Set ipfsHash
+      .then((ipfsHash) => {
+        attributes.ipfsHash = ipfsHash;
         return attributes;
       })
       .then((attributes) => {
         return this.get('kreditsContract')
           .then((contract) => {
-            let { address, isCore, profileHash } = attributes;
-            let { digest, hashFunction, hashSize } = toBytes32(profileHash);
+            let { address, isCore, ipfsHash } = attributes;
+            let { digest, hashFunction, hashSize } = toBytes32(ipfsHash);
 
             let contributor = [
               address,
