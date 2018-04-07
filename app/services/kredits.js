@@ -116,7 +116,7 @@ export default Service.extend({
 
   getContributorById(id) {
     return this.get('contributorsContract')
-      .then((contract) => contract.contributors(id))
+      .then((contract) => contract.getContributorById(id))
       // Set basic data
       .then(({
           account: address,
@@ -124,8 +124,8 @@ export default Service.extend({
           hashSize,
           isCore,
           profileHash: digest,
+          balance
         }) => {
-
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
         let profileHash = this.getMultihashFromBytes32({
           digest,
@@ -139,16 +139,8 @@ export default Service.extend({
           isCore,
           isCurrentUser,
           profileHash,
+          balance: balance.toNumber()
         };
-      })
-      // Add the balance
-      .then((data) => {
-        return this.get('tokenContract')
-          .then((contract) => contract.balanceOf(data.address))
-          .then((balance) => {
-            data.balance = balance.toNumber();
-            return data;
-          });
       })
       // Fetch IPFS data if available
       .then(this.loadContributorProfile.bind(this))
