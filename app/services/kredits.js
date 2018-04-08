@@ -123,6 +123,8 @@ export default Service.extend({
   },
 
   getContributorById(id) {
+    id = ethers.utils.bigNumberify(id);
+
     return this.get('contributorsContract')
       .then((contract) => contract.getContributorById(id))
       .then(this.reassembleIpfsHash)
@@ -199,6 +201,8 @@ export default Service.extend({
   },
 
   getProposalById(id) {
+    id = ethers.utils.bigNumberify(id);
+
     return this.get('kreditsContract')
       .then((contract) => contract.proposals(id))
       .then(this.reassembleIpfsHash)

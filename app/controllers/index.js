@@ -29,9 +29,8 @@ export default Controller.extend({
                .map((proposal) => {
                  let contributor = this.get('contributors')
                                        .findBy('id', proposal.get('recipientId'));
-                 if (contributor) {
-                   proposal.set('contributor', contributor);
-                 }
+
+                 proposal.set('contributor', contributor);
 
                  return proposal;
                });
@@ -51,15 +50,7 @@ export default Controller.extend({
       return;
     }
 
-    // TODO: we should remove votesNeeded
-    proposal = this.get('kredits').buildModel('proposal', {
-      id: proposalId,
-      creatorAddress: creatorAddress,
-      recipientId: recipientId.toString(),
-      votesNeeded: 2,
-      amount: amount.toNumber(),
-    });
-
+    proposal = this.get('kredits').getProposalById(proposalId);
     this.get('proposals').pushObject(proposal);
   },
 
@@ -88,13 +79,14 @@ export default Controller.extend({
         .setProperties({ 'votesCount': totalVotes });
   },
 
-  _handleTransfer(data) {
+  _handleTransfer(from, to, value) {
+    value = value.toNumber();
     this.get('contributors')
-        .findBy('address', data.args.from)
-        .incrementProperty('balance', - data.args.value.toNumber());
+        .findBy('address', from)
+        .decrementProperty('balance', value);
     this.get('contributors')
-        .findBy('address', data.args.to)
-        .incrementProperty('balance', data.args.value.toNumber());
+        .findBy('address', to)
+        .incrementProperty('balance', value);
   },
 
 
