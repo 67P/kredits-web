@@ -8,11 +8,11 @@ import computed, { alias } from 'ember-computed';
 import { isEmpty, isPresent } from 'ember-utils';
 
 import config from 'kredits-web/config/environment';
-import Proposal from 'kredits-web/models/proposal';
 
 import abis from 'contracts/abis';
 import addresses from 'contracts/addresses';
 import {
+  ContributionSerializer,
   ContributorSerializer,
   fromBytes32,
   toBytes32
@@ -22,7 +22,6 @@ const {
   getOwner,
   Logger: {
     debug,
-    warn,
     error
   }
 } = Ember;
@@ -82,7 +81,11 @@ export default Service.extend({
 
   registryContract: computed('ethProvider', function() {
     let networkId = this.get('ethProvider').chainId;
-    let registry = new ethers.Contract(addresses['Registry'][networkId], abis['Registry'], this.get('ethProvider'));
+    let registry = new ethers.Contract(
+      addresses['Registry'][networkId],
+      abis['Registry'],
+      this.get('ethProvider')
+    );
     return registry;
   }),
 
@@ -115,6 +118,14 @@ export default Service.extend({
     return contributor;
   },
 
+  buildProposal(attributes) {
+    debug('[kredits] buildProposal', attributes);
+
+    let proposal = getOwner(this).lookup('model:proposal');
+    proposal.setProperties(attributes);
+    return proposal;
+  },
+
   getContributorById(id) {
     return this.get('contributorsContract')
       .then((contract) => contract.getContributorById(id))
@@ -124,7 +135,7 @@ export default Service.extend({
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
 
         return {
-          id,
+          id: id.toString(),
           address,
           balance: balance.toNumber(),
           ipfsHash,
@@ -191,44 +202,50 @@ export default Service.extend({
       });
   },
 
-  getProposalData(i) {
+  getProposalById(id) {
     return this.get('kreditsContract')
-      .then((contract) => contract.proposals(i))
-      .then(p => {
-        let { ipfsHash: digest, hashFunction, hashSize } = p;
-        let ipfsHash = fromBytes32({ digest, hashFunction, hashSize });
-
-        let proposal = Proposal.create({
-          id               : i,
-          creatorAddress   : p.creator,
-          recipientId      : p.recipientId.toNumber(),
-          votesCount       : p.votesCount.toNumber(),
-          votesNeeded      : p.votesNeeded.toNumber(),
-          amount           : p.amount.toNumber(),
-          executed         : p.executed,
+      .then((contract) => contract.proposals(id))
+      .then(this.reassembleIpfsHash)
+      // Set basic data
+      .then(({
+        creator: creatorAddress,
+        recipientId,
+        votesCount,
+        votesNeeded,
+        amount,
+        executed,
+        ipfsHash,
+      }) => {
+        return {
+          id: id.toString(),
+          creatorAddress,
+          recipientId: recipientId.toNumber(),
+          votesCount: votesCount.toNumber(),
+          votesNeeded: votesNeeded.toNumber(),
+          amount: amount.toNumber(),
+          executed,
           ipfsHash
-        });
-
-        if (proposal.get('ipfsHash')) {
-          // TODO: move ipfs into model
-          return proposal
-            .loadContribution(this.get('ipfs'))
-            .then(() => { return proposal; });
-        } else {
-          warn('[kredits] proposal from blockchain is missing IPFS hash', proposal);
-          return proposal;
-        }
+        };
+      })
+      // Fetch IPFS data if available
+      .then((data) => {
+        return this.fetchAndMergeIpfsData(data, ContributionSerializer);
+      })
+      .then((attributes) => {
+        return this.buildProposal(attributes);
       });
   },
 
   getProposals() {
     return this.get('kreditsContract')
       .then((contract) => contract.proposalsCount())
-      .then(proposalsCount => {
+      .then((count) => {
+        count = count.toNumber();
+        debug('[kredits] proposals count:', count);
         let proposals = [];
 
-        for(var i = 0; i < proposalsCount.toNumber(); i++) {
-          proposals.push(this.getProposalData(i));
+        for(var i = 0; i < count; i++) {
+          proposals.push(this.getProposalById(i));
         }
 
         return RSVP.all(proposals);
@@ -283,29 +300,40 @@ export default Service.extend({
       });
   },
 
-  addProposal(proposal) {
-    const {
-      recipientAddress,
-      amount,
-      url
-    } = proposal.getProperties('recipientAddress', 'amount', 'url');
+  addProposal(attributes) {
+    debug('[kredits] add proposal', attributes);
+
+    let json = ContributionSerializer.serialize(attributes);
+    // TODO: validate against schema
 
     return this.get('ipfs')
-      .storeFile(proposal.serializeContribution())
-      .then(ipfsHash => {
+      .storeFile(json)
+      // Set ipfsHash
+      .then((ipfsHash) => {
+        delete attributes.contributorIpfsHash;
+        attributes.ipfsHash = ipfsHash;
+        return attributes;
+      })
+      .then((attributes) => {
         return this.get('kreditsContract')
           .then((contract) => {
-            return contract.addProposal(
-              recipientAddress,
+            let { recipientId, amount, ipfsHash } = attributes;
+            let { digest, hashFunction, hashSize } = toBytes32(ipfsHash);
+
+            let proposal = [
+              recipientId,
               amount,
-              url,
-              ipfsHash
-            );
-          })
-          .then((data) => {
-            debug('[kredits] add proposal response', data);
-            return data;
+              digest,
+              hashFunction,
+              hashSize,
+            ];
+            debug('[kredits] addProposal', ...proposal);
+            return contract.addProposal(...proposal);
           });
+      })
+      .then((data) => {
+        debug('[kredits] add proposal response', data);
+        return this.buildProposal(attributes);
       });
   },
 
