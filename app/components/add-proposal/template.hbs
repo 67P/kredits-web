@@ -1,41 +1,43 @@
-<form {{action "save" on="submit"}}>
+<form {{action "submit" on="submit"}}>
   <p>
-    <select required onchange={{action (mut proposal.recipientAddress) value="target.value"}}>
+    <select required onchange={{action (mut recipientId) value="target.value"}}>
       <option value="" selected disabled hidden>Contributor</option>
       {{#each contributors as |contributor|}}
-        <option value={{contributor.address}} selected={{eq proposal.recipientAddress contributor.address}}>{{contributor.github_username}}</option>
+        <option value={{contributor.id}} selected={{eq recipientId contributor.id}}>{{contributor.github_username}}</option>
       {{/each}}
     </select>
   </p>
   <p>
-    <select required onchange={{action (mut proposal.kind) value="target.value"}}>
-      <option value="community" selected={{eq proposal.kind "community"}}>Community</option>
-      <option value="design" selected={{eq proposal.kind "design"}}>Design</option>
-      <option value="dev" selected={{eq proposal.kind "dev"}}>Development</option>
-      <option value="docs" selected={{eq proposal.kind "docs"}}>Documentation</option>
-      <option value="ops" selected={{eq proposal.kind "ops"}}>IT Operations</option>
+    <select required onchange={{action (mut kind) value="target.value"}}>
+      <option value="community" selected={{eq kind "community"}}>Community</option>
+      <option value="design" selected={{eq kind "design"}}>Design</option>
+      <option value="dev" selected={{eq kind "dev"}}>Development</option>
+      <option value="docs" selected={{eq kind "docs"}}>Documentation</option>
+      <option value="ops" selected={{eq kind "ops"}}>IT Operations</option>
     </select>
   </p>
   <p>
     {{input type="text"
             placeholder="100"
-            value=proposal.amount
+            value=amount
             class=(if isValidAmount 'valid' '')}}
   </p>
   <p>
     {{input type="text"
             placeholder="Description"
-            value=proposal.description
+            value=description
             class=(if isValidDescription 'valid' '')}}
   </p>
   <p>
     {{input type="text"
             placeholder="URL (optional)"
-            value=proposal.url
+            value=url
             class=(if isValidUrl 'valid' '')}}
   </p>
   <p class="actions">
-    {{input type="submit" value=(if inProgress 'Processing' 'Save') disabled=inProgress}}
+    {{input type="submit"
+            disabled=(is-pending inProgress)
+            value=(if (is-pending inProgress) 'Processing' 'Save')}}
     {{#link-to 'index'}}Back{{/link-to}}
   </p>
 </form>

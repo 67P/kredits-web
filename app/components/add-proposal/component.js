@@ -1,67 +1,60 @@
-import Ember from 'ember';
-
-const {
-  Component,
-  isPresent,
-  inject: {
-    service
-  },
-  computed
-} = Ember;
+import Component from 'ember-component';
+import computed, { and } from 'ember-computed';
+import injectService from 'ember-service/inject';
+import isPresent from 'kredits-web/utils/cps/is-present';
 
 export default Component.extend({
+  kredits: injectService(),
 
-  kredits: service(),
+  // Default attributes used by reset
+  attributes: {
+    recipientId: null,
+    kind: 'community',
+    amount: null,
+    description: null,
+    url: null,
+  },
 
-  proposal: null,
-  contributors: null,
-  inProgress: false,
+  didInsertElement() {
+    this._super(...arguments);
+    this.reset();
+  },
 
-  isValidRecipient: computed('proposal.recipientAddress', function() {
-    // TODO: add proper address validation
-    return this.get('proposal.recipientAddress') !== '';
+  contributors: [],
+
+  isValidRecipient: isPresent('recipientId'),
+  isValidAmount: computed('amount', function() {
+    return parseInt(this.get('amount'), 10) > 0;
   }),
+  isValidDescription: isPresent('description'),
+  isValidUrl: isPresent('url'),
+  isValid: and('isValidRecipient',
+               'isValidAmount',
+               'isValidDescription'),
 
-  isValidAmount: computed('proposal.amount', function() {
-    return parseInt(this.get('proposal.amount'), 10) > 0;
-  }),
-
-  isValidUrl: computed('proposal.url', function() {
-    return isPresent(this.get('proposal.url'));
-  }),
-
-  isValidDescription: computed('proposal.description', function() {
-    return isPresent(this.get('proposal.description'));
-  }),
-
-  isValid: computed.and('isValidRecipient',
-                        'isValidAmount',
-                        'isValidDescription'),
+  reset: function() {
+    this.setProperties(this.get('attributes'));
+  },
 
   actions: {
-    save() {
-      if (! this.get('isValid')) {
+    submit() {
+      if (!this.get('isValid')) {
         alert('Invalid data. Please review and try again.');
-        return false;
+        return;
       }
-      this.set('inProgress', true);
-      let proposal = this.get('proposal');
 
-      // Set the recipient's IPFS profile hash so it can be used in the
-      // contribution object (which is to be stored in IPFS as well)
-      let contributor = this.get('contributors').findBy('address', proposal.get('recipientAddress'));
-      proposal.set('recipientProfile', contributor.get('ipfsHash'));
+      let attributes = Object.keys(this.get('attributes'));
+      let proposal = this.getProperties(attributes);
+      let saved = this.save(proposal);
 
-      this.get('kredits').addProposal(proposal)
-        .then(() => {
-          this.attrs.onSave();
-        }).catch((error) => {
-          Ember.Logger.error('[add-proposal] error creating the proposal', error);
-          alert('Something went wrong.');
-        }).finally(() => {
-          this.set('inProgress', false);
-        });
+      // The promise handles inProgress
+      this.set('inProgress', saved);
+
+      saved.then(() => {
+        this.reset();
+        window.scroll(0,0);
+        window.alert('Contributor added.');
+      });
     }
   }
-
 });
