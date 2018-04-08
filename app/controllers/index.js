@@ -41,7 +41,7 @@ export default Controller.extend({
   proposalsClosedSorted: sort('proposalsClosed', 'proposalsSorting'),
   proposalsOpenSorted: sort('proposalsOpen', 'proposalsSorting'),
 
-  _handleProposalCreated(proposalId, creatorAddress, recipientId, amount) {
+  _handleProposalCreated(proposalId) {
     // TODO: check if proposalId is already a string
     let proposal = this.get('proposals')
                        .findBy('id', proposalId.toString());
