@@ -1,4 +1,5 @@
 import EmberObject from 'ember-object';
+import { alias } from 'ember-computed';
 
 export default EmberObject.extend({
   // Contract
@@ -11,6 +12,9 @@ export default EmberObject.extend({
   executed: null,
   ipfsHash: null,
 
+  // Shortcuts
+  isExecuted: alias('executed'),
+
   // IPFS
   kind: null,
   description: null,
@@ -18,10 +22,6 @@ export default EmberObject.extend({
   url: null,
   ipfsData: '',
 
-  // Deprecated
-  recipientAddress: null,
-  recipientName: null,
-  recipientProfile: null,
-
-  // TODO: add contributor relation
+  // Relationships
+  contributor: null,
 });

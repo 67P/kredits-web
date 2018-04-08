@@ -30,11 +30,13 @@
       <h2>Open Proposals</h2>
     </header>
     <div class="content">
+      {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
       {{proposal-list proposals=proposalsOpenSorted
                       confirmAction="confirmProposal"
-                      contractInteractionEnabled=contractInteractionEnabled}}
+                      contractInteractionEnabled=kredits.hasAccounts}}
 
-      {{#if contractInteractionEnabled}}
+      {{!-- TODO: We need a better naming --}}
+      {{#if kredits.hasAccounts}}
         <p class="actions">
           {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
         </p>
@@ -51,7 +53,8 @@
     {{proposal-list proposals=proposalsClosedSorted
                     confirmAction="confirmProposal"}}
 
-    {{#if contractInteractionEnabled}}
+    {{!-- TODO: We need a better naming --}}
+    {{#if kredits.hasAccounts}}
       <p class="actions">
         {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
       </p>
@@ -65,11 +68,10 @@
   </header>
 
   <div class="content">
-    {{!--
-      TODO:
-      only show the form if currentUser.isCore else show:
+    {{#if currentUser.isCore}}
+      {{add-contributor contributors=model.contributors save=(action 'save')}}
+    {{else}}
       Only core team members can add new contributors. Please ask someone to set you up.
-    --}}
-    {{add-contributor contributors=model.contributors save=(action 'save')}}
+    {{/if}}
   </div>
 </section>

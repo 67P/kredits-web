@@ -109,21 +109,17 @@ export default Service.extend({
       });
   },
 
-  // TODO: Should be part of the service
-  buildContributor(attributes) {
-    debug('[kredits] buildContributor', attributes);
+  buildModel(name, attributes) {
+    debug('[kredits] build', name, attributes);
+    let model = getOwner(this).lookup(`model:${name}`);
 
-    let contributor = getOwner(this).lookup('model:contributor');
-    contributor.setProperties(attributes);
-    return contributor;
-  },
+    // coerce id to string
+    if (attributes.id) {
+      attributes.id = attributes.id.toString();
+    }
 
-  buildProposal(attributes) {
-    debug('[kredits] buildProposal', attributes);
-
-    let proposal = getOwner(this).lookup('model:proposal');
-    proposal.setProperties(attributes);
-    return proposal;
+    model.setProperties(attributes);
+    return model;
   },
 
   getContributorById(id) {
@@ -135,7 +131,7 @@ export default Service.extend({
         let isCurrentUser = this.get('currentUserAccounts').includes(address);
 
         return {
-          id: id.toString(),
+          id: id,
           address,
           balance: balance.toNumber(),
           ipfsHash,
@@ -148,7 +144,7 @@ export default Service.extend({
         return this.fetchAndMergeIpfsData(data, ContributorSerializer);
       })
       .then((attributes) => {
-        return this.buildContributor(attributes);
+        return this.buildModel('contributor', attributes);
       });
   },
 
@@ -217,9 +213,9 @@ export default Service.extend({
         ipfsHash,
       }) => {
         return {
-          id: id.toString(),
+          id: id,
           creatorAddress,
-          recipientId: recipientId.toNumber(),
+          recipientId: recipientId.toString(),
           votesCount: votesCount.toNumber(),
           votesNeeded: votesNeeded.toNumber(),
           amount: amount.toNumber(),
@@ -232,7 +228,7 @@ export default Service.extend({
         return this.fetchAndMergeIpfsData(data, ContributionSerializer);
       })
       .then((attributes) => {
-        return this.buildProposal(attributes);
+        return this.buildModel('proposal', attributes);
       });
   },
 
@@ -296,7 +292,7 @@ export default Service.extend({
       })
       .then((data) => {
         debug('[kredits] add contributor response', data);
-        return this.buildContributor(attributes);
+        return this.buildModel('contributor', attributes);
       });
   },
 
@@ -333,7 +329,7 @@ export default Service.extend({
       })
       .then((data) => {
         debug('[kredits] add proposal response', data);
-        return this.buildProposal(attributes);
+        return this.buildModel('proposal', attributes);
       });
   },
 
