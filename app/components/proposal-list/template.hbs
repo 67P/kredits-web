@@ -2,9 +2,11 @@
   <li data-proposal-id={{proposal.id}} title="({{proposal.kind}}) {{proposal.description}}">
     <span class="category {{proposal.kind}}">♥</span>
     <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
-    for <span class="recipient">{{proposal.recipientName}}</span>
+    for <span class="recipient">{{proposal.contributor.name}}</span>
     <span class="votes">({{proposal.votesCount}}/{{proposal.votesNeeded}} votes)</span>
 
-    {{#unless proposal.executed}}<button {{action "confirm" proposal.id}}>+1</button>{{/unless}}
+    {{#unless proposal.isExecuted}}
+      <button {{action "confirm" proposal.id}}>+1</button>
+    {{/unless}}
   </li>
 {{/each}}

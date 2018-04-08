@@ -7,7 +7,6 @@ module('Serializers contribution');
 
 test('#serialize returns a valid JSON-LD representation', function(assert) {
   let serialized = ContributionSerializer.serialize({
-    recipientAddress: '0xd4a64570b12da659ee4bbd41c3509b7b1f9c51ac',
     kind: 'design',
     description: 'New logo design',
     url: 'http://opensourcedesign.org',

@@ -1,51 +1,10 @@
 import Ember from 'ember';
-import Proposal from 'kredits-web/models/proposal';
+import Controller from 'ember-controller';
+import computed, { alias, filter, filterBy, sort } from 'ember-computed';
+import injectService from 'ember-service/inject';
 
-const {
-  computed,
-  inject: {
-    service
-  }
-} = Ember;
-
-export default Ember.Controller.extend({
-
-  kredits: service(),
-
-  contractInteractionEnabled: computed.alias('kredits.hasAccounts'),
-
-  proposalsOpen: function() {
-    let proposals = this.get('model.proposals')
-                        .filterBy('executed', false)
-                        .map(p => {
-                          p.set('recipientName', this.get('model.contributors').findBy('id', p.get('recipientId')).name);
-                          return p;
-                        });
-    return proposals;
-  }.property('model.proposals.[]', 'model.proposals.@each.executed', 'model.contributors.[]'),
-
-  proposalsClosed: function() {
-    let proposals = this.get('model.proposals')
-                        .filterBy('executed', true)
-                        .map(p => {
-                          p.set('recipientName', this.get('model.contributors').findBy('id', p.get('recipientId')).name);
-                          return p;
-                        });
-    return proposals;
-  }.property('model.proposals.[]', 'model.proposals.@each.executed', 'model.contributors.[]'),
-
-  proposalsSorting: ['id:desc'],
-  proposalsClosedSorted: Ember.computed.sort('proposalsClosed', 'proposalsSorting'),
-  proposalsOpenSorted: Ember.computed.sort('proposalsOpen', 'proposalsSorting'),
-
-  contributorsWithKredits: function() {
-    return this.get('model.contributors').filter(c => {
-      return c.get('balance') !== 0;
-    });
-  }.property('model.contributors.@each.balance'),
-
-  contributorsSorting: ['balance:desc'],
-  contributorsSorted: Ember.computed.sort('contributorsWithKredits', 'contributorsSorting'),
+export default Controller.extend({
+  kredits: injectService(),
 
   init() {
     this._super(...arguments);
@@ -58,60 +17,76 @@ export default Ember.Controller.extend({
       });
   },
 
-  _handleProposalCreated(proposalId, creatorAddress, recipientAddress, amount) {
-    if (Ember.isPresent(this.get('model.proposals')
-             .findBy('id', proposalId.toNumber()))) {
+  contributors: alias('model.contributors'),
+  contributorsWithKredits: filter('contributors', function(contributor) {
+    return contributor.get('balance') !== 0;
+  }),
+  contributorsSorting: ['balance:desc'],
+  contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
+
+  proposals: computed('model.proposals.[]', 'contributors.[]', function() {
+    return this.get('model.proposals')
+               .map((proposal) => {
+                 let contributor = this.get('contributors')
+                                       .findBy('id', proposal.get('recipientId'));
+
+                 proposal.set('contributor', contributor);
+
+                 return proposal;
+               });
+  }),
+  proposalsOpen: filterBy('proposals', 'isExecuted', false),
+  proposalsClosed: filterBy('proposals', 'isExecuted', true),
+  proposalsSorting: ['id:desc'],
+  proposalsClosedSorted: sort('proposalsClosed', 'proposalsSorting'),
+  proposalsOpenSorted: sort('proposalsOpen', 'proposalsSorting'),
+
+  _handleProposalCreated(proposalId) {
+    // TODO: check if proposalId is already a string
+    let proposal = this.get('proposals')
+                       .findBy('id', proposalId.toString());
+    if (proposal) {
       Ember.Logger.debug('[index] proposal exists, not adding from event');
-      return false;
+      return;
     }
 
-    let proposal = Proposal.create({
-      id: proposalId.toNumber(),
-      creatorAddress: creatorAddress,
-      recipientAddress: recipientAddress,
-      recipientName: null,
-      votesCount: 0,
-      votesNeeded: 2,
-      amount: amount.toNumber(),
-      executed: false
-    });
-
-    this.get('model.proposals').pushObject(proposal);
+    proposal = this.get('kredits').getProposalById(proposalId);
+    this.get('proposals').pushObject(proposal);
   },
 
   _handleProposalExecuted(proposalId, recipientId, amount) {
-    if (this.get('model.proposals')
-            .findBy('id', recipientId.toNumber())
-            .get('executed')) {
+    // TODO: check if proposalId is already a string
+    let proposal = this.get('proposals')
+                       .findBy('id', proposalId.toString());
+
+    if (proposal.get('isExecuted')) {
       Ember.Logger.debug('[index] proposal already executed, not adding from event');
-      return false;
+      return;
     }
 
-    this.get('model.proposals')
-        .findBy('id', recipientId.toNumber())
-        .setProperties({
-          'executed': true,
-          'votesCount': 2 // TODO use real count
-        });
+    proposal.setProperties({
+      'executed': true,
+    });
 
-    this.get('model.contributors')
-        .findBy('id', recipientId)
+    this.get('contributors')
+        .findBy('id', recipientId.toString())
         .incrementProperty('balance', amount.toNumber());
   },
 
   _handleProposalVoted(proposalId, voter, totalVotes) {
-    this.get('model.proposals')
-        .findBy('id', proposalId.toNumber())
+    this.get('proposals')
+        .findBy('id', proposalId.toString())
         .setProperties({ 'votesCount': totalVotes });
   },
 
-  _handleTransfer(data) {
-    this.get('model.contributors')
-        .findBy('address', data.args.from)
-        .incrementProperty('balance', - data.args.value.toNumber());
-    this.get('model.contributors')
-        .findBy('address', data.args.to)
-        .incrementProperty('balance', data.args.value.toNumber());
+  _handleTransfer(from, to, value) {
+    value = value.toNumber();
+    this.get('contributors')
+        .findBy('address', from)
+        .decrementProperty('balance', value);
+    this.get('contributors')
+        .findBy('address', to)
+        .incrementProperty('balance', value);
   },
 
 
@@ -125,7 +100,7 @@ export default Ember.Controller.extend({
     save(contributor) {
       return this.get('kredits').addContributor(contributor)
         .then((contributor) => {
-          this.get('model.contributors').pushObject(contributor);
+          this.get('contributors').pushObject(contributor);
           return contributor;
         });
     }
