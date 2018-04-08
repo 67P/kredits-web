@@ -278,7 +278,7 @@ export default Service.extend({
         return attributes;
       })
       .then((attributes) => {
-        return this.get('kreditsContract')
+        return this.get('contributorsContract')
           .then((contract) => {
             let { address, isCore, ipfsHash } = attributes;
             let { digest, hashFunction, hashSize } = toBytes32(ipfsHash);
