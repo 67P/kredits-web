@@ -26,6 +26,8 @@ You will need the following things properly installed on your computer.
 * `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
+See [working with locally deployed contracts](https://github.com/67P/kredits-web#working-with-locally-deployed-contracts) for details on how to develop with locally deployed contracts.
+
 ### Code Generators
 
 Make use of the many generators for code, try `ember help generate` for more details
@@ -60,7 +62,7 @@ Get familiar with truffle and truffle-kredits, but these are the basic steps to 
 1. truffle-kredits (get the local ethereum node running)
   * setup (clone and npm install) truffle-kredits
   * `npm run ganache` - which is basically: `ganache-cli -p 7545 -i 100` (we use the non-default port for local networks and a fixed network id)
-  * `npm bootstrap` - bootstrap runs fresh migrations, adds some seed data and writes the address/abi information to JSON that will be used by kredits-web
+  * `npm run bootstrap` - bootstrap runs fresh migrations, adds some seed data and writes the address/abi information to JSON that will be used by kredits-web
   * `npm link` - link the truffle-kredits dependency to kredits-web
 
 2. IPFS (run a local ipfs deamon in offline mode)
@@ -68,7 +70,7 @@ Get familiar with truffle and truffle-kredits, but these are the basic steps to 
   * `ipfs daemon --offline` 
 
 3. kredits-web
-  * `npm link kredits-contracts` - link the local truffle-kredits package
+  * `npm link kredits-contracts` - link the local truffle-kredits package (attention: the naming! we need to make the new truffle-kredits the official kredits-contracts package)
   * `ember serve` 
 
 ## IPFS
