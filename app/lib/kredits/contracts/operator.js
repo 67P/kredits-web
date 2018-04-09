@@ -1,10 +1,8 @@
 import ethers from 'npm:ethers';
 import RSVP from 'rsvp';
-import multihashes from 'npm:multihashes';
 
 import Kredits from '../kredits';
 import ContributionSerializer from '../serializers/contribution';
-import { toBytes32 } from '../utils/multihash';
 
 import Base from './base';
 

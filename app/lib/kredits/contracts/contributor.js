@@ -3,7 +3,6 @@ import RSVP from 'rsvp';
 
 import Kredits from '../kredits';
 import ContributorSerializer from '../serializers/contributor';
-import { toBytes32 } from '../utils/multihash';
 
 import Base from './base';
 
