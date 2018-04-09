@@ -17,7 +17,7 @@ export default Controller.extend({
 
   contributors: alias('model.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
-    return contributor.get('balance') !== 0;
+    return contributor.get('balance').toString() !== "0";
   }),
   contributorsSorting: ['balance:desc'],
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
