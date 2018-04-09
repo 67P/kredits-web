@@ -8,13 +8,11 @@ export default Controller.extend({
 
   init() {
     this._super(...arguments);
-    this.get('kredits.kreditsContract')
-      .then((contract) => {
-        contract.onproposalvoted = this._handleProposalVoted.bind(this);
-        contract.onproposalcreated = this._handleProposalCreated.bind(this);
-        contract.onproposalexecuted = this._handleProposalExecuted.bind(this);
-        // TODO: transfer on the token contract
-      });
+    let contract = this.get('kredits.kredits').Operator.contract;
+    contract.onproposalvoted = this._handleProposalVoted.bind(this);
+    contract.onproposalcreated = this._handleProposalCreated.bind(this);
+    contract.onproposalexecuted = this._handleProposalExecuted.bind(this);
+    // TODO: transfer on the token contract
   },
 
   contributors: alias('model.contributors'),
@@ -50,7 +48,7 @@ export default Controller.extend({
       return;
     }
 
-    proposal = this.get('kredits').getProposalById(proposalId);
+    proposal = this.get('kredits.kredits').Operator.getById(proposalId);
     this.get('proposals').pushObject(proposal);
   },
 

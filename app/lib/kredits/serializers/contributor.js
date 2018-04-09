@@ -18,7 +18,7 @@ export default class Contributor {
       kind,
       url,
       accounts,
-    } = JSON.parse(serialized);
+    } = JSON.parse(serialized.toString('utf8'));
 
     let github_username, github_uid, wiki_username;
     let github = accounts.find((a) => a.site === 'github.com');

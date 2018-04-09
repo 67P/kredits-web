@@ -68,7 +68,7 @@
   </header>
 
   <div class="content">
-    {{#if currentUser.isCore}}
+    {{#if kredits.currentUser.isCore}}
       {{add-contributor contributors=model.contributors save=(action 'save')}}
     {{else}}
       Only core team members can add new contributors. Please ask someone to set you up.

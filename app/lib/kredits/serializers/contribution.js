@@ -18,7 +18,7 @@ export default class Contributor {
       description,
       details,
       url,
-    } = JSON.parse(serialized);
+    } = JSON.parse(serialized.toString('utf8'));
 
     return {
       kind,
