@@ -35,30 +35,23 @@ export default class Contributor extends Base {
       })
       // Fetch IPFS data if available
       .then((data) => {
-        return this.fetchAndMergeIpfsData(data, ContributorSerializer);
+        return Kredits.ipfs.catAndMerge(data, ContributorSerializer.deserialize);
       });
   }
 
-  add(attributes) {
-    console.log(attributes);
-
-    let json = ContributorSerializer.serialize(attributes);
+  add(contributorAttr) {
+    let json = ContributorSerializer.serialize(contributorAttr);
     // TODO: validate against schema
 
     return Kredits.ipfs
-      .add(new Kredits.ipfs.Buffer(json))
-      .then((res) => res[0].hash)
-      .then((ipfsHash) => {
-        Object.assign(attributes, this.decodeIpfsHash(ipfsHash));
-        return attributes;
-      })
-      .then((attr) => {
+      .add(json)
+      .then((ipfsHashAttr) => {
         let contributor = [
-          attr.address,
-          attr.ipfsHash,
-          attr.hashFunction,
-          attr.hashSize,
-          attr.isCore,
+          contributorAttr.address,
+          ipfsHashAttr.ipfsHash,
+          ipfsHashAttr.hashFunction,
+          ipfsHashAttr.hashSize,
+          contributorAttr.isCore,
         ];
 
         console.log('[kredits] addContributor', ...contributor);

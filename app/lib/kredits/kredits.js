@@ -1,11 +1,11 @@
 import ethers from 'npm:ethers';
-import ipfsAPI from 'npm:ipfs-api';
 import RSVP from 'rsvp';
 
 import abis from 'contracts/abis';
 import addresses from 'contracts/addresses';
 
 import contracts from './contracts';
+import IPFS from './utils/ipfs';
 
 // Helpers
 function capitalize(word) {
@@ -25,7 +25,7 @@ export default class Kredits {
 
   static setup(provider, signer, ipfsConfig) {
     this.ipfsConfig = ipfsConfig;
-    this.ipfs = ipfsAPI(ipfsConfig);
+    this.ipfs = new IPFS(ipfsConfig);
 
     let registryContract = this.initRegistryContract(provider);
 

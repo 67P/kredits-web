@@ -35,30 +35,23 @@ export default class Operator extends Base {
       })
       // Fetch IPFS data if available
       .then((data) => {
-        return this.fetchAndMergeIpfsData(data, ContributionSerializer);
+        return Kredits.ipfs.catAndMerge(data, ContributionSerializer.deserialize);
       });
   }
 
-  addProposal(attributes) {
-    console.log(attributes);
-
-    let json = ContributionSerializer.serialize(attributes);
+  addProposal(proposalAttr) {
+    let json = ContributionSerializer.serialize(proposalAttr);
     // TODO: validate against schema
 
     return Kredits.ipfs
-      .add(new Kredits.ipfs.Buffer(json))
-      .then((res) => res[0].hash)
-      .then((ipfsHash) => {
-        Object.assign(attributes, this.decodeIpfsHash(ipfsHash));
-        return attributes;
-      })
-      .then((attr) => {
+      .add(json)
+      .then((ipfsHashAttr) => {
         let proposal = [
-          attr.recipientId,
-          attr.amount,
-          attr.ipfsHash,
-          attr.hashFunction,
-          attr.hashSize,
+          proposalAttr.recipientId,
+          proposalAttr.amount,
+          ipfsHashAttr.ipfsHash,
+          ipfsHashAttr.hashFunction,
+          ipfsHashAttr.hashSize,
         ];
 
         console.log('[kredits] addProposal', ...proposal);
