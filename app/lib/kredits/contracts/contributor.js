@@ -53,15 +53,13 @@ export default class Contributor extends Base {
         Object.assign(attributes, this.decodeIpfsHash(ipfsHash));
         return attributes;
       })
-      .then((attributes) => {
-        let { address, digest, hashFunction, hashSize, isCore } = attributes;
-
+      .then((attr) => {
         let contributor = [
-          address,
-          digest,
-          hashFunction,
-          hashSize,
-          isCore,
+          attr.address,
+          attr.ipfsHash,
+          attr.hashFunction,
+          attr.hashSize,
+          attr.isCore,
         ];
 
         console.log('[kredits] addContributor', ...contributor);

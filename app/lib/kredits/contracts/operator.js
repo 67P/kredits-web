@@ -56,12 +56,13 @@ export default class Operator extends Base {
       })
       .then((attr) => {
         let proposal = [
-          parseInt(attr.recipientId),
-          parseInt(attr.amount),
+          attr.recipientId,
+          attr.amount,
           attr.ipfsHash,
           attr.hashFunction,
           attr.hashSize,
         ];
+
         console.log('[kredits] addProposal', ...proposal);
         return this.contract.functions.addProposal(...proposal);
       });
