@@ -53,7 +53,7 @@ export default Component.extend({
       saved.then(() => {
         this.reset();
         window.scroll(0,0);
-        window.alert('Contributor added.');
+        window.alert('Proposal added.');
       });
     }
   }
