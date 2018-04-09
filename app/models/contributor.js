@@ -1,12 +1,13 @@
 import computed from 'ember-computed';
 import EmberObject from 'ember-object';
+import bignumber from 'kredits-web/utils/cps/bignumber';
 
 export default EmberObject.extend({
   // Contract
-  id: null,
+  id: bignumber('idRaw', 'toString'),
   // TODO: Should we rename it to account like in the contract?
   address: null,
-  balance: 0,
+  balance: bignumber('balanceRaw', 'toNumber'),
   isCore: false,
   ipfsHash: null,
 

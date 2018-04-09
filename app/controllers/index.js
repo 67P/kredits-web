@@ -17,7 +17,7 @@ export default Controller.extend({
 
   contributors: alias('model.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
-    return contributor.get('balance').toString() !== "0";
+    return contributor.get('balance') !== 0;
   }),
   contributorsSorting: ['balance:desc'],
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
@@ -68,7 +68,7 @@ export default Controller.extend({
 
     this.get('contributors')
         .findBy('id', recipientId.toString())
-        .incrementProperty('balance', amount.toNumber());
+        .incrementProperty('balance', amount);
   },
 
   _handleProposalVoted(proposalId, voter, totalVotes) {
