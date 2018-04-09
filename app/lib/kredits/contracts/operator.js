@@ -1,5 +1,6 @@
 import ethers from 'npm:ethers';
 import RSVP from 'rsvp';
+import multihashes from 'npm:multihashes';
 
 import Kredits from '../kredits';
 import ContributionSerializer from '../serializers/contribution';
@@ -26,7 +27,6 @@ export default class Operator extends Base {
     id = ethers.utils.bigNumberify(id);
 
     return this.contract.functions.proposals(id)
-      .then(this.reassembleIpfsHash)
       .then((data) => {
         // TODO: remove as soon as the contract provides the id
         data.id = id;
@@ -51,20 +51,17 @@ export default class Operator extends Base {
       .add(new Kredits.ipfs.Buffer(json))
       .then((res) => res[0].hash)
       .then((ipfsHash) => {
-        Object.assign(attributes, toBytes32(ipfsHash));
+        Object.assign(attributes, this.decodeIpfsHash(ipfsHash));
         return attributes;
       })
-      .then((attributes) => {
-        let { recipientId, amount, digest, hashFunction, hashSize } = attributes;
-
+      .then((attr) => {
         let proposal = [
-          recipientId,
-          amount,
-          digest,
-          hashFunction,
-          hashSize,
+          parseInt(attr.recipientId),
+          parseInt(attr.amount),
+          attr.ipfsHash,
+          attr.hashFunction,
+          attr.hashSize,
         ];
-
         console.log('[kredits] addProposal', ...proposal);
         return this.contract.functions.addProposal(...proposal);
       });

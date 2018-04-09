@@ -26,7 +26,6 @@ export default class Contributor extends Base {
     id = ethers.utils.bigNumberify(id);
 
     return this.contract.functions.getContributorById(id)
-      .then(this.reassembleIpfsHash)
       .then((data) => {
         // TODO: remove as soon as the contract provides the id
         data.id = id;
@@ -51,7 +50,7 @@ export default class Contributor extends Base {
       .add(new Kredits.ipfs.Buffer(json))
       .then((res) => res[0].hash)
       .then((ipfsHash) => {
-        Object.assign(attributes, toBytes32(ipfsHash));
+        Object.assign(attributes, this.decodeIpfsHash(ipfsHash));
         return attributes;
       })
       .then((attributes) => {

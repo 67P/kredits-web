@@ -1,5 +1,5 @@
 import Kredits from '../kredits';
-import { fromBytes32 } from '../utils/multihash';
+import multihashes from 'npm:multihashes';
 
 export default class Base {
   constructor(contract) {
@@ -12,11 +12,11 @@ export default class Base {
 
   // TODO: move into utils
   fetchAndMergeIpfsData(data, Serializer) {
-    let ipfsHash = data.ipfsHash;
-
-    if (!ipfsHash) {
+    if (!data.hashSize || data.hashSize === 0) {
       return data;
     }
+    let digest = Kredits.ipfs.Buffer.from(data.ipfsHash.slice(2), 'hex');
+    let ipfsHash = multihashes.encode(digest, data.hashFunction, data.hashSize);
 
     return Kredits.ipfs
       .cat(ipfsHash)
@@ -26,12 +26,12 @@ export default class Base {
       });
   }
 
-  reassembleIpfsHash(data) {
-    let { ipfsHash: digest, hashFunction, hashSize } = data;
-    data.ipfsHash = fromBytes32({ digest, hashFunction, hashSize });
-    delete data.hashFunction;
-    delete data.hashSize;
-
-    return data;
+  decodeIpfsHash(ipfsHash) {
+    let multihash = multihashes.decode(multihashes.fromB58String(ipfsHash));
+    return {
+      ipfsHash: '0x' + multihashes.toHexString(multihash.digest),
+      hashSize: multihash.length,
+      hashFunction: multihash.code
+    };
   }
 }
