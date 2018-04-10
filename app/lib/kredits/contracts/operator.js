@@ -13,7 +13,7 @@ export default class Operator extends Base {
         count = count.toNumber();
         let proposals = [];
 
-        for (let id = 0; id < count; id++) {
+        for (let id = 1; id <= count; id++) {
           proposals.push(this.getById(id));
         }
 
