@@ -8,13 +8,13 @@ export default class IPFS {
     this._config = config;
   }
 
-  catAndMerge(data, deserializer) {
+  catAndMerge(data, deserialize) {
     // if no hash details are found simply return the data; nothing to merge
     if (!data.hashSize || data.hashSize === 0) {
       return data;
     }
     return this.cat(data)
-      .then(deserializer)
+      .then(deserialize)
       .then((attributes) => {
         return Object.assign({}, data, attributes);
       });

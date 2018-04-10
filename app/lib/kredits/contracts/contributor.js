@@ -8,7 +8,7 @@ import Base from './base';
 
 export default class Contributor extends Base {
   all() {
-    return this.contract.functions.contributorsCount()
+    return this.functions.contributorsCount()
       .then((count) => {
         count = count.toNumber();
         let contributors = [];
@@ -24,7 +24,7 @@ export default class Contributor extends Base {
   getById(id) {
     id = ethers.utils.bigNumberify(id);
 
-    return this.contract.functions.getContributorById(id)
+    return this.functions.getContributorById(id)
       .then((data) => {
         // TODO: remove as soon as the contract provides the id
         data.id = id;
@@ -55,7 +55,7 @@ export default class Contributor extends Base {
         ];
 
         console.log('[kredits] addContributor', ...contributor);
-        return this.contract.functions.addContributor(...contributor);
+        return this.functions.addContributor(...contributor);
       });
   }
 }

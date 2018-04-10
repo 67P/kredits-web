@@ -26,7 +26,7 @@ export default Controller.extend({
     return this.get('model.proposals')
                .map((proposal) => {
                  let contributor = this.get('contributors')
-                                       .findBy('id', proposal.get('recipientId').toString());
+                                       .findBy('id', proposal.get('recipientId'));
 
                  proposal.set('contributor', contributor);
 

@@ -8,7 +8,7 @@ import Base from './base';
 
 export default class Operator extends Base {
   all() {
-    return this.contract.functions.proposalsCount()
+    return this.functions.proposalsCount()
       .then((count) => {
         count = count.toNumber();
         let proposals = [];
@@ -24,7 +24,7 @@ export default class Operator extends Base {
   getById(id) {
     id = ethers.utils.bigNumberify(id);
 
-    return this.contract.functions.proposals(id)
+    return this.functions.proposals(id)
       .then((data) => {
         // TODO: remove as soon as the contract provides the id
         data.id = id;
@@ -55,7 +55,7 @@ export default class Operator extends Base {
         ];
 
         console.log('[kredits] addProposal', ...proposal);
-        return this.contract.functions.addProposal(...proposal);
+        return this.functions.addProposal(...proposal);
       });
   }
 }
