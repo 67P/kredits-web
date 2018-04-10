@@ -1,14 +1,15 @@
 import EmberObject from 'ember-object';
 import { alias } from 'ember-computed';
+import bignumber from 'kredits-web/utils/cps/bignumber';
 
 export default EmberObject.extend({
   // Contract
-  id: null,
+  id: bignumber('idRaw', 'toString'),
   creatorAddress: null,
-  recipientId: null,
-  amount: null,
-  votesCount: null,
-  votesNeeded: null,
+  recipientId: bignumber('recipientIdRaw', 'toString'),
+  amount: bignumber('amountRaw', 'toNumber'),
+  votesCount: bignumber('votesCountRaw', 'toNumber'),
+  votesNeeded: bignumber('votesNeededRaw', 'toNumber'),
   executed: null,
   ipfsHash: null,
 

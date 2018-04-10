@@ -9,8 +9,7 @@ export default Ember.Route.extend({
     newContributor.set('kind', 'person');
 
     let kredits = this.get('kredits');
-    let totalSupply = kredits.get('tokenContract')
-      .then((contract) => contract.totalSupply());
+    let totalSupply = kredits.get('kredits').Token.functions.totalSupply();
 
     return Ember.RSVP.hash({
       contributors: kredits.getContributors(),

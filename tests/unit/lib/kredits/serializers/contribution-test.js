@@ -1,7 +1,7 @@
 import { module, test } from 'ember-qunit';
 import schemas from 'npm:kosmos-schemas';
 import tv4 from 'npm:tv4';
-import { ContributionSerializer } from 'kredits-web/lib/kredits';
+import ContributionSerializer from 'kredits-web/lib/kredits/serializers/contribution';
 
 module('Serializers contribution');
 
