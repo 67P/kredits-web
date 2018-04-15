@@ -47,7 +47,7 @@ export default class Operator extends Base {
       .add(json)
       .then((ipfsHashAttr) => {
         let proposal = [
-          proposalAttr.recipientId,
+          proposalAttr.contributorId,
           proposalAttr.amount,
           ipfsHashAttr.ipfsHash,
           ipfsHashAttr.hashFunction,

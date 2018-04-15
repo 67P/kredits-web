@@ -26,7 +26,7 @@ export default Controller.extend({
     return this.get('model.proposals')
                .map((proposal) => {
                  let contributor = this.get('contributors')
-                                       .findBy('id', proposal.get('recipientId'));
+                                       .findBy('id', proposal.get('contributorId'));
 
                  proposal.set('contributor', contributor);
 
@@ -52,10 +52,9 @@ export default Controller.extend({
     this.get('proposals').pushObject(proposal);
   },
 
-  _handleProposalExecuted(proposalId, recipientId, amount) {
-    // TODO: check if proposalId is already a string
+  _handleProposalExecuted(proposalId, contributorId, amount) {
     let proposal = this.get('proposals')
-                       .findBy('id', proposalId.toString());
+                       .findBy('id', proposalId);
 
     if (proposal.get('isExecuted')) {
       Ember.Logger.debug('[index] proposal already executed, not adding from event');
@@ -67,13 +66,13 @@ export default Controller.extend({
     });
 
     this.get('contributors')
-        .findBy('id', recipientId.toString())
+        .findBy('id', contributorId)
         .incrementProperty('balance', amount);
   },
 
   _handleProposalVoted(proposalId, voter, totalVotes) {
     this.get('proposals')
-        .findBy('id', proposalId.toString())
+        .findBy('id', proposalId)
         .setProperties({ 'votesCount': totalVotes });
   },
 
