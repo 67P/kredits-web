@@ -24,7 +24,15 @@ export default class Operator extends Base {
   getById(id) {
     id = ethers.utils.bigNumberify(id);
 
-    return this.functions.getProposal(id)
+    return this.functions.proposals(id)
+      .then((data) => {
+        // TODO: remove as soon as the contract provides the id
+        data.id = id;
+        // TODO: rename creatorAddress to creator
+        data.creatorAddress = data.creator;
+
+        return data;
+      })
       // Fetch IPFS data if available
       .then((data) => {
         return Kredits.ipfs.catAndMerge(data, ContributionSerializer.deserialize);
