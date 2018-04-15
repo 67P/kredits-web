@@ -9,7 +9,7 @@ export default Component.extend({
 
   // Default attributes used by reset
   attributes: {
-    account: null,
+    address: null,
     name: null,
     kind: 'person',
     url: null,
@@ -24,9 +24,9 @@ export default Component.extend({
     this.reset();
   },
 
-  isValidAccount: computed('kredits.ethProvider', 'account', function() {
+  isValidAddress: computed('kredits.ethProvider', 'address', function() {
     // TODO: add proper address validation
-    return this.get('account') !== '';
+    return this.get('address') !== '';
   }),
   isValidName: isPresent('name'),
   isValidURL: isPresent('url'),
@@ -34,7 +34,7 @@ export default Component.extend({
   isValidGithubUsername: isPresent('github_username'),
   isValidWikiUsername: isPresent('wiki_username'),
   isValid: and(
-    'isValidAccount',
+    'isValidAddress',
     'isValidName',
     'isValidGithubUID'
   ),
