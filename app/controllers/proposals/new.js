@@ -11,7 +11,7 @@ export default Controller.extend({
   actions: {
     save(proposal) {
       // contributorIpfsHash is needed for the proposal ipfs data. I'm not happy to do this here but I think to load all the contributors in addProposal again is a bit too much. I hope we can refactor it later.
-      let contributor = this.get('contributors').findBy('id', proposal.recipientId);
+      let contributor = this.get('contributors').findBy('id', proposal.contributorId);
       proposal.contributorIpfsHash = contributor.get('ipfsHash');
 
       return this.get('kredits').addProposal(proposal)

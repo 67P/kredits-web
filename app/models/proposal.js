@@ -8,8 +8,8 @@ export default EmberObject.extend({
 
   // Contract
   id: bignumber('idRaw', 'toString'),
-  creatorAddress: null,
-  recipientId: bignumber('recipientIdRaw', 'toString'),
+  creatorAccount: null,
+  contributorId: bignumber('contributorIdRaw', 'toString'),
   amount: bignumber('amountRaw', 'toNumber'),
   votesCount: bignumber('votesCountRaw', 'toNumber'),
   votesNeeded: bignumber('votesNeededRaw', 'toNumber'),
@@ -28,7 +28,7 @@ export default EmberObject.extend({
 
   // Relationships
   // TODO: Optimize it. We don't need to find the contributor every time we add a new one
-  contributor: computed('recipientId', 'kredits.contributors.[]', function() {
-    return this.get('kredits.contributors').findBy('id', this.get('recipientId'));
+  contributor: computed('contributorId', 'kredits.contributors.[]', function() {
+    return this.get('kredits.contributors').findBy('id', this.get('contributorId'));
   })
 });

@@ -8,7 +8,7 @@ export default Component.extend({
 
   // Default attributes used by reset
   attributes: {
-    recipientId: null,
+    contributorId: null,
     kind: 'community',
     amount: null,
     description: null,
@@ -22,7 +22,7 @@ export default Component.extend({
 
   contributors: [],
 
-  isValidRecipient: isPresent('recipientId'),
+  isValidRecipient: isPresent('contributorId'),
   isValidAmount: computed('amount', function() {
     return parseInt(this.get('amount'), 10) > 0;
   }),

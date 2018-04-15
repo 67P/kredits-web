@@ -1,9 +1,9 @@
 <form {{action "submit" on="submit"}}>
   <p>
-    <select required onchange={{action (mut recipientId) value="target.value"}}>
+    <select required onchange={{action (mut contributorId) value="target.value"}}>
       <option value="" selected disabled hidden>Contributor</option>
       {{#each contributors as |contributor|}}
-        <option value={{contributor.id}} selected={{eq recipientId contributor.id}}>{{contributor.github_username}}</option>
+        <option value={{contributor.id}} selected={{eq contributorId contributor.id}}>{{contributor.github_username}}</option>
       {{/each}}
     </select>
   </p>

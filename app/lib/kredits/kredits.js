@@ -27,22 +27,44 @@ export default class Kredits {
     this.ipfsConfig = ipfsConfig;
     this.ipfs = new IPFS(ipfsConfig);
 
-    let registryContract = this.initRegistryContract(provider);
+    return this.ipfs._ipfsAPI.id().catch((error) => {
+      throw new Error(`IPFS node not available; config: ${JSON.stringify(ipfsConfig)} - ${error.message}`);
+    }).then(() => {
 
-    let addresses = Object.keys(contracts).reduce((mem, name) => {
-      let contractName = capitalize(name);
-      mem[contractName] = registryContract.functions.getProxyFor(contractName);
-      return mem;
-    }, {});
+      let registryContract = this.initRegistryContract(provider);
 
-    return RSVP.hash(addresses)
-      .then((addresses) => {
-        return new Kredits(provider, signer, addresses);
-      });
+      let addresses = Object.keys(contracts).reduce((mem, name) => {
+        let contractName = capitalize(name);
+        mem[contractName] = registryContract.functions.getProxyFor(contractName).catch((error) => {
+          throw new Error(`Failed to get address for ${contractName} from registry at ${registryContract.address}
+            - correct registry? does it have version entry? - ${error.message}`
+          );
+        });
+        return mem;
+      }, {});
+
+      return RSVP.hash(addresses)
+        .then((addresses) => {
+          return new Kredits(provider, signer, addresses);
+        });
+    });
   }
 
   static initRegistryContract(provider) {
     let address = addresses['Registry'][provider.chainId];
+    if (!address) {
+      throw new Error(`Registry address not found; invalid network?
+        requested network: ${provider.chainId}
+        supported networks: ${Object.keys(addresses['Registry'])}
+      `);
+    }
+    provider.getCode(address).then((code) => {
+      // not sure if we always get the same return value of the code is not available
+      // that's why checking if it is < 5 long
+      if (code === '0x00' || code.length < 5) {
+        throw new Error(`Registry not found at ${address} on network ${provider.chainId}`);
+      }
+    });
     let abi = abis['Registry'];
     console.log('Initialize registry contract:', address, abi, provider);
     return new ethers.Contract(address, abi, provider);
@@ -69,6 +91,9 @@ export default class Kredits {
 
     let contractName = capitalize(name);
     let address = this.addresses[contractName];
+    if (!address || !abis[contractName]) {
+      throw new Error(`Address or ABI not found for ${contractName}`);
+    }
     let contract = new ethers.Contract(address, abis[contractName], this.signer);
     this.contracts[name] = new contracts[contractName](contract);
 

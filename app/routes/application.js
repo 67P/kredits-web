@@ -13,6 +13,8 @@ export default Route.extend({
           transition.retry();
         }
       }
+    }).catch((error) => {
+      console.log('Error initializing Kredits', error);
     });
   },
 

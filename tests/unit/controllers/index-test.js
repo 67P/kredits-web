@@ -12,20 +12,12 @@ moduleFor('controller:index', 'Unit | Controller | index', {
 });
 
 let addFixtures = function(controller) {
-  controller.set('model', {
-    contributors: [],
-    proposals: []
-  });
-
   [
     { github_username: "neo", github_uid: "318", balance: 10000 },
     { github_username: "morpheus", github_uid: "843", balance: 15000 },
     { github_username: "trinity", github_uid: "123", balance: 5000 },
     { github_username: "mouse", github_uid: "696", balance: 0 }
   ].forEach(fixture => {
-    // we expect a bignumer but I don't want to add the bignumber dependency here... so this is some hack to return an object that looks good enough for the test
-    let fakeBignumber = function(balance) { return { toNumber: function() { return balance; } }; };
-    fixture.balance = fakeBignumber(fixture.balance);
     controller.get('kredits.contributors').push(Contributor.create(fixture));
   });
 };
