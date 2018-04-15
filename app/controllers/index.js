@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Controller from 'ember-controller';
-import computed, { alias, filter, filterBy, sort } from 'ember-computed';
+import { alias, filter, filterBy, sort } from 'ember-computed';
 import injectService from 'ember-service/inject';
 
 export default Controller.extend({
