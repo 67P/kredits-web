@@ -86,8 +86,8 @@ export default Service.extend({
       contributors: this.getContributors(),
       proposals: this.getProposals(),
     }).then(({ contributors, proposals }) => {
-      this.set('contributors', contributors);
-      this.set('proposals', proposals);
+      this.get('contributors').pushObjects(contributors);
+      this.get('proposals').pushObjects(proposals);
     });
   },
 
@@ -95,11 +95,6 @@ export default Service.extend({
   buildModel(name, attributes) {
     debug('[kredits] build', name, attributes);
     let model = getOwner(this).lookup(`model:${name}`);
-
-    // coerce id to string
-    if (attributes.id) {
-      attributes.id = attributes.id.toString();
-    }
 
     model.setProperties(attributes);
     return model;
@@ -169,5 +164,73 @@ export default Service.extend({
           return this.get('kredits').Contributor.getById(id);
         }
       });
-  })
+  }),
+
+  findProposalById(proposalId) {
+    return this.get('proposals').findBy('id', proposalId.toString());
+  },
+
+  // Contract events
+  addContractEventHandlers() {
+    // Operator events
+    this.get('kredits').Operator
+      .on('ProposalCreated', this.handleProposalCreated.bind(this))
+      .on('ProposalVoted', this.handleProposalVoted.bind(this))
+      .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
+
+    // Token events
+    this.get('kredits').Token
+      .on('Transfer', this.handleTransfer.bind(this));
+  },
+
+  handleProposalCreated(proposalId) {
+    let proposal = this.findProposalById(proposalId);
+
+    if (proposal) {
+      debug('[events] proposal exists, not adding from event');
+      return;
+    }
+
+    this.get('kredits').Operator.getById(proposalId)
+      .then((proposal) => {
+        proposal = this.buildModel('proposal', proposal);
+        this.get('proposals').pushObject(proposal);
+      });
+  },
+
+  // TODO: We may want to reload that proposal to show the voter as voted
+  handleProposalVoted(proposalId, voterId, totalVotes) {
+    let proposal = this.findProposalById(proposalId);
+
+    if (proposal) {
+      proposal.set('votesCount', totalVotes);
+    }
+  },
+
+  handleProposalExecuted(proposalId, contributorId, amount) {
+    let proposal = this.findProposalById(proposalId);
+
+    if (proposal.get('isExecuted')) {
+      debug('[events] proposal already executed, not adding from event');
+      return;
+    }
+
+    proposal.set('executed', true);
+
+    this.get('contributors')
+        .findBy('id', contributorId.toString())
+        .incrementProperty('balance', amount.toNumber());
+  },
+
+  handleTransfer(from, to, value) {
+    value = value.toNumber();
+
+    this.get('contributors')
+        .findBy('address', from)
+        .decrementProperty('balance', value);
+
+    this.get('contributors')
+        .findBy('address', to)
+        .incrementProperty('balance', value);
+  },
 });
