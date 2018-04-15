@@ -92,7 +92,7 @@ export default class Kredits {
     let contractName = capitalize(name);
     let address = this.addresses[contractName];
     if (!address || !abis[contractName]) {
-      throw new Error('Address or ABI not found for ' + contractName);
+      throw new Error(`Address or ABI not found for ${contractName}`);
     }
     let contract = new ethers.Contract(address, abis[contractName], this.signer);
     this.contracts[name] = new contracts[contractName](contract);
