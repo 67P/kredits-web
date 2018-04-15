@@ -86,29 +86,9 @@ export default Service.extend({
       contributors: this.getContributors(),
       proposals: this.getProposals(),
     }).then(({ contributors, proposals }) => {
-      this.set('contributors', contributors);
-      this.set('proposals', proposals);
+      this.get('contributors').pushObjects(contributors);
+      this.get('proposals').pushObjects(proposals);
     });
-  },
-
-  addContractEventHandlers() {
-    // Operator events
-    this.get('kredits').Operator
-      .on('ProposalCreated', (proposalId) => {
-        this.handleProposalCreated(proposalId);
-      })
-      .on('ProposalVoted', (proposalId, voter, totalVotes) => {
-        this.handleProposalVoted(proposalId, totalVotes);
-      })
-      .on('ProposalExecuted', (proposalId, contributorId, amount) => {
-        this.handleProposalExecuted(proposalId, contributorId, amount);
-      });
-
-    // Token events
-    this.get('kredits').Token
-      .on('Transfer', (from, to, value) => {
-        this.handleTransfer(from, to, value);
-      });
   },
 
   // TODO: Only assign valid attributes
@@ -191,6 +171,18 @@ export default Service.extend({
   },
 
   // Contract events
+  addContractEventHandlers() {
+    // Operator events
+    this.get('kredits').Operator
+      .on('ProposalCreated', this.handleProposalCreated.bind(this))
+      .on('ProposalVoted', this.handleProposalVoted.bind(this))
+      .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
+
+    // Token events
+    this.get('kredits').Token
+      .on('Transfer', this.handleTransfer.bind(this));
+  },
+
   handleProposalCreated(proposalId) {
     let proposal = this.findProposalById(proposalId);
 
@@ -201,12 +193,13 @@ export default Service.extend({
 
     this.get('kredits').Operator.getById(proposalId)
       .then((proposal) => {
+        proposal = this.buildModel('proposal', proposal);
         this.get('proposals').pushObject(proposal);
       });
   },
 
   // TODO: We may want to reload that proposal to show the voter as voted
-  handleProposalVoted(proposalId, totalVotes) {
+  handleProposalVoted(proposalId, voterId, totalVotes) {
     let proposal = this.findProposalById(proposalId);
 
     if (proposal) {
@@ -226,7 +219,7 @@ export default Service.extend({
 
     this.get('contributors')
         .findBy('id', contributorId.toString())
-        .incrementProperty('balance', amount);
+        .incrementProperty('balance', amount.toNumber());
   },
 
   handleTransfer(from, to, value) {
