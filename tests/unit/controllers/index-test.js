@@ -26,7 +26,7 @@ let addFixtures = function(controller) {
     // we expect a bignumer but I don't want to add the bignumber dependency here... so this is some hack to return an object that looks good enough for the test
     let fakeBignumber = function(balance) { return { toNumber: function() { return balance; } }; };
     fixture.balance = fakeBignumber(fixture.balance);
-    controller.get('model.contributors').push(Contributor.create(fixture));
+    controller.get('kredits.contributors').push(Contributor.create(fixture));
   });
 };
 

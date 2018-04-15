@@ -1,8 +1,11 @@
 import EmberObject from 'ember-object';
-import { alias } from 'ember-computed';
+import computed, { alias } from 'ember-computed';
+import injectService from 'ember-service/inject';
 import bignumber from 'kredits-web/utils/cps/bignumber';
 
 export default EmberObject.extend({
+  kredits: injectService(),
+
   // Contract
   id: bignumber('idRaw', 'toString'),
   creatorAddress: null,
@@ -24,5 +27,8 @@ export default EmberObject.extend({
   ipfsData: '',
 
   // Relationships
-  contributor: null,
+  // TODO: Optimize it. We don't need to find the contributor every time we add a new one
+  contributor: computed('recipientId', 'kredits.contributors.[]', function() {
+    return this.get('kredits.contributors').findBy('id', this.get('recipientId'));
+  })
 });

@@ -15,4 +15,8 @@ export default Route.extend({
       }
     });
   },
+
+  afterModel() {
+    return this.get('kredits').loadContributorsAndProposals();
+  }
 });

@@ -1,11 +1,11 @@
 import Controller from 'ember-controller';
-import { filterBy } from 'ember-computed';
+import { alias, filterBy } from 'ember-computed';
 import injectService from 'ember-service/inject';
 
 export default Controller.extend({
   kredits: injectService(),
 
-  contributors: [],
+  contributors: alias('kredits.contributors'),
   minedContributors: filterBy('contributors', 'id'),
 
   actions: {

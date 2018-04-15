@@ -18,7 +18,7 @@
     {{contributor-list contributors=contributorsSorted}}
 
     <p class="stats">
-      <span class="number">{{model.totalSupply}}</span> kredits issued and distributed among
+      <span class="number">{{await kredits.totalSupply}}</span> kredits issued and distributed among
       <span class="number">{{contributorsWithKredits.length}}</span> contributors.
     </p>
   </div>
@@ -69,7 +69,7 @@
 
   <div class="content">
     {{#if kredits.currentUser.isCore}}
-      {{add-contributor contributors=model.contributors save=(action 'save')}}
+      {{add-contributor contributors=contributors save=(action 'save')}}
     {{else}}
       Only core team members can add new contributors. Please ask someone to set you up.
     {{/if}}

@@ -15,24 +15,14 @@ export default Controller.extend({
     // TODO: transfer on the token contract
   },
 
-  contributors: alias('model.contributors'),
+  contributors: alias('kredits.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
     return contributor.get('balance') !== 0;
   }),
   contributorsSorting: ['balance:desc'],
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
 
-  proposals: computed('model.proposals.[]', 'contributors.[]', function() {
-    return this.get('model.proposals')
-               .map((proposal) => {
-                 let contributor = this.get('contributors')
-                                       .findBy('id', proposal.get('recipientId'));
-
-                 proposal.set('contributor', contributor);
-
-                 return proposal;
-               });
-  }),
+  proposals: alias('kredits.proposals'),
   proposalsOpen: filterBy('proposals', 'isExecuted', false),
   proposalsClosed: filterBy('proposals', 'isExecuted', true),
   proposalsSorting: ['id:desc'],
