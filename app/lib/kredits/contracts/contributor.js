@@ -1,7 +1,7 @@
 import ethers from 'npm:ethers';
 import RSVP from 'rsvp';
 
-import Organization from '../kredits';
+import Organization from '../organization';
 import ContributorSerializer from '../serializers/contributor';
 
 import Base from './base';
