@@ -1,1 +1,1 @@
-export { default } from './kredits';
+export { default } from './organization';
