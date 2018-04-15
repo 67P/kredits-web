@@ -23,9 +23,6 @@ let addFixtures = function(controller) {
     { github_username: "trinity", github_uid: "123", balance: 5000 },
     { github_username: "mouse", github_uid: "696", balance: 0 }
   ].forEach(fixture => {
-    // we expect a bignumer but I don't want to add the bignumber dependency here... so this is some hack to return an object that looks good enough for the test
-    let fakeBignumber = function(balance) { return { toNumber: function() { return balance; } }; };
-    fixture.balance = fakeBignumber(fixture.balance);
     controller.get('model.contributors').push(Contributor.create(fixture));
   });
 };
