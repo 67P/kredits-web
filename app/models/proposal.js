@@ -5,7 +5,7 @@ import bignumber from 'kredits-web/utils/cps/bignumber';
 export default EmberObject.extend({
   // Contract
   id: bignumber('idRaw', 'toString'),
-  creatorAccount: null,
+  creatorAddress: null,
   recipientId: bignumber('recipientIdRaw', 'toString'),
   amount: bignumber('amountRaw', 'toNumber'),
   votesCount: bignumber('votesCountRaw', 'toNumber'),

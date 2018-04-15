@@ -79,6 +79,11 @@ export default Service.extend({
     debug('[kredits] build', name, attributes);
     let model = getOwner(this).lookup(`model:${name}`);
 
+    // coerce id to string
+    if (attributes.id) {
+      attributes.id = attributes.id.toString();
+    }
+
     model.setProperties(attributes);
     return model;
   },
