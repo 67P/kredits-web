@@ -6,7 +6,7 @@ export default EmberObject.extend({
   // Contract
   id: bignumber('idRaw', 'toString'),
   creatorAccount: null,
-  recipientId: bignumber('recipientIdRaw', 'toString'),
+  contributorId: bignumber('contributorIdRaw', 'toString'),
   amount: bignumber('amountRaw', 'toNumber'),
   votesCount: bignumber('votesCountRaw', 'toNumber'),
   votesNeeded: bignumber('votesNeededRaw', 'toNumber'),
