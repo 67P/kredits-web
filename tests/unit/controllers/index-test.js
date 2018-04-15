@@ -23,12 +23,7 @@ let addFixtures = function(controller) {
 };
 
 test('doesn\'t contain people with 0 balance', function(assert) {
-  // This is a bit strange... we do not want the controller to call the init function defined in the controller that
-  // initializes the event handlers on the contracts. Main reason is that we do not have proper contracts in test mode.
-  // this seems to work. but probably kills some controller stuff, which is fine in this test
-  let controller = this.subject({
-    init: function() { }
-  });
+  let controller = this.subject();
   addFixtures(controller);
 
   let contributorsSorted = controller.get('contributorsSorted');

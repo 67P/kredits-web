@@ -88,6 +88,22 @@ export default Service.extend({
     }).then(({ contributors, proposals }) => {
       this.set('contributors', contributors);
       this.set('proposals', proposals);
+    }).then(() => {
+      this.get('kredits').Operator
+        .on('ProposalCreated', (proposalId) => {
+          this.handleProposalCreated(proposalId);
+        })
+        .on('ProposalVoted', (proposalId, voter, totalVotes) => {
+          this.handleProposalVoted(proposalId, totalVotes);
+        })
+        .on('ProposalExecuted', (proposalId, contributorId, amount) => {
+          this.handleProposalExecuted(proposalId, contributorId, amount);
+        });
+
+      this.get('kredits').Token
+        .on('Transfer', (from, to, value) => {
+          this.handleTransfer(from, to, value);
+        });
     });
   },
 
@@ -169,5 +185,60 @@ export default Service.extend({
           return this.get('kredits').Contributor.getById(id);
         }
       });
-  })
+  }),
+
+  findProposalById(proposalId) {
+    return this.get('proposals').findBy('id', proposalId.toString());
+  },
+
+  // Contract events
+  handleProposalCreated(proposalId) {
+    let proposal = this.findProposalById(proposalId);
+
+    if (proposal) {
+      debug('[events] proposal exists, not adding from event');
+      return;
+    }
+
+    this.get('kredits').Operator.getById(proposalId)
+      .then((proposal) => {
+        this.get('proposals').pushObject(proposal);
+      });
+  },
+
+  // TODO: We may want to reload that proposal to show the voter as voted
+  handleProposalVoted(proposalId, totalVotes) {
+    let proposal = this.findProposalById(proposalId);
+
+    if (proposal) {
+      proposal.set('votesCount', totalVotes);
+    }
+  },
+
+  handleProposalExecuted(proposalId, contributorId, amount) {
+    let proposal = this.findProposalById(proposalId);
+
+    if (proposal.get('isExecuted')) {
+      debug('[events] proposal already executed, not adding from event');
+      return;
+    }
+
+    proposal.set('executed', true);
+
+    this.get('contributors')
+        .findBy('id', contributorId.toString())
+        .incrementProperty('balance', amount);
+  },
+
+  handleTransfer(from, to, value) {
+    value = value.toNumber();
+
+    this.get('contributors')
+        .findBy('address', from)
+        .decrementProperty('balance', value);
+
+    this.get('contributors')
+        .findBy('address', to)
+        .incrementProperty('balance', value);
+  },
 });
