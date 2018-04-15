@@ -88,34 +88,33 @@ export default Service.extend({
     }).then(({ contributors, proposals }) => {
       this.set('contributors', contributors);
       this.set('proposals', proposals);
-    }).then(() => {
-      this.get('kredits').Operator
-        .on('ProposalCreated', (proposalId) => {
-          this.handleProposalCreated(proposalId);
-        })
-        .on('ProposalVoted', (proposalId, voter, totalVotes) => {
-          this.handleProposalVoted(proposalId, totalVotes);
-        })
-        .on('ProposalExecuted', (proposalId, contributorId, amount) => {
-          this.handleProposalExecuted(proposalId, contributorId, amount);
-        });
-
-      this.get('kredits').Token
-        .on('Transfer', (from, to, value) => {
-          this.handleTransfer(from, to, value);
-        });
     });
+  },
+
+  addContractEventHandlers() {
+    // Operator events
+    this.get('kredits').Operator
+      .on('ProposalCreated', (proposalId) => {
+        this.handleProposalCreated(proposalId);
+      })
+      .on('ProposalVoted', (proposalId, voter, totalVotes) => {
+        this.handleProposalVoted(proposalId, totalVotes);
+      })
+      .on('ProposalExecuted', (proposalId, contributorId, amount) => {
+        this.handleProposalExecuted(proposalId, contributorId, amount);
+      });
+
+    // Token events
+    this.get('kredits').Token
+      .on('Transfer', (from, to, value) => {
+        this.handleTransfer(from, to, value);
+      });
   },
 
   // TODO: Only assign valid attributes
   buildModel(name, attributes) {
     debug('[kredits] build', name, attributes);
     let model = getOwner(this).lookup(`model:${name}`);
-
-    // coerce id to string
-    if (attributes.id) {
-      attributes.id = attributes.id.toString();
-    }
 
     model.setProperties(attributes);
     return model;

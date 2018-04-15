@@ -19,6 +19,9 @@ export default Route.extend({
   },
 
   afterModel() {
-    return this.get('kredits').loadContributorsAndProposals();
+    return this.get('kredits').loadContributorsAndProposals()
+      .then(() => {
+        this.get('kredits').addContractEventHandlers();
+      });
   }
 });
