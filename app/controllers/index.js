@@ -40,7 +40,6 @@ export default Controller.extend({
   proposalsOpenSorted: sort('proposalsOpen', 'proposalsSorting'),
 
   _handleProposalCreated(proposalId) {
-    // TODO: check if proposalId is already a string
     let proposal = this.get('proposals')
                        .findBy('id', proposalId.toString());
     if (proposal) {
@@ -53,7 +52,6 @@ export default Controller.extend({
   },
 
   _handleProposalExecuted(proposalId, recipientId, amount) {
-    // TODO: check if proposalId is already a string
     let proposal = this.get('proposals')
                        .findBy('id', proposalId.toString());
 
@@ -80,10 +78,10 @@ export default Controller.extend({
   _handleTransfer(from, to, value) {
     value = value.toNumber();
     this.get('contributors')
-        .findBy('address', from)
+        .findBy('account', from)
         .decrementProperty('balance', value);
     this.get('contributors')
-        .findBy('address', to)
+        .findBy('account', to)
         .incrementProperty('balance', value);
   },
 
