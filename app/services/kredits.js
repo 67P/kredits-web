@@ -74,6 +74,23 @@ export default Service.extend({
     });
   },
 
+  totalSupply: computed(function() {
+    return this.get('kredits').Token.functions.totalSupply();
+  }),
+
+  contributors: [],
+  proposals: [],
+
+  loadContributorsAndProposals() {
+    return RSVP.hash({
+      contributors: this.getContributors(),
+      proposals: this.getProposals(),
+    }).then(({ contributors, proposals }) => {
+      this.set('contributors', contributors);
+      this.set('proposals', proposals);
+    });
+  },
+
   // TODO: Only assign valid attributes
   buildModel(name, attributes) {
     debug('[kredits] build', name, attributes);

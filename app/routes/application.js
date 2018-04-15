@@ -17,4 +17,8 @@ export default Route.extend({
       console.log('Error initializing Kredits', error);
     });
   },
+
+  afterModel() {
+    return this.get('kredits').loadContributorsAndProposals();
+  }
 });

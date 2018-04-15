@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Controller from 'ember-controller';
-import computed, { alias, filter, filterBy, sort } from 'ember-computed';
+import { alias, filter, filterBy, sort } from 'ember-computed';
 import injectService from 'ember-service/inject';
 
 export default Controller.extend({
@@ -15,24 +15,14 @@ export default Controller.extend({
     // TODO: transfer on the token contract
   },
 
-  contributors: alias('model.contributors'),
+  contributors: alias('kredits.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
     return contributor.get('balance') !== 0;
   }),
   contributorsSorting: ['balance:desc'],
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
 
-  proposals: computed('model.proposals.[]', 'contributors.[]', function() {
-    return this.get('model.proposals')
-               .map((proposal) => {
-                 let contributor = this.get('contributors')
-                                       .findBy('id', proposal.get('contributorId'));
-
-                 proposal.set('contributor', contributor);
-
-                 return proposal;
-               });
-  }),
+  proposals: alias('kredits.proposals'),
   proposalsOpen: filterBy('proposals', 'isExecuted', false),
   proposalsClosed: filterBy('proposals', 'isExecuted', true),
   proposalsSorting: ['id:desc'],

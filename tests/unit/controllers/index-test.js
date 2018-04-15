@@ -12,18 +12,13 @@ moduleFor('controller:index', 'Unit | Controller | index', {
 });
 
 let addFixtures = function(controller) {
-  controller.set('model', {
-    contributors: [],
-    proposals: []
-  });
-
   [
     { github_username: "neo", github_uid: "318", balance: 10000 },
     { github_username: "morpheus", github_uid: "843", balance: 15000 },
     { github_username: "trinity", github_uid: "123", balance: 5000 },
     { github_username: "mouse", github_uid: "696", balance: 0 }
   ].forEach(fixture => {
-    controller.get('model.contributors').push(Contributor.create(fixture));
+    controller.get('kredits.contributors').push(Contributor.create(fixture));
   });
 };
 
