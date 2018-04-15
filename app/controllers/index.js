@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import Controller from 'ember-controller';
 import { alias, filter, filterBy, sort } from 'ember-computed';
 import injectService from 'ember-service/inject';
