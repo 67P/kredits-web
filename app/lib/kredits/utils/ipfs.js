@@ -51,5 +51,4 @@ export default class IPFS {
     return multihashes.encode(digest, hashData.hashFunction, hashData.hashSize);
   }
 
-
 }
