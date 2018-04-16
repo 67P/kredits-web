@@ -1,10 +1,15 @@
-import { moduleFor, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleFor('model:contributor', 'Unit | Model | contributor');
+import { run } from '@ember/runloop';
 
-test('#avatarURL() returns correct URL', function(assert) {
-  let model = this.subject();
-  model.set('github_uid', '318');
+module('Unit | Model | contributor', function(hooks) {
+  setupTest(hooks);
 
-  assert.equal(model.get('avatarURL'), 'https://avatars2.githubusercontent.com/u/318?v=3&s=128');
+  test('#avatarURL() returns correct URL', function(assert) {
+    let model = run(() => this.owner.lookup('service:store').createRecord('contributor'));
+    model.set('github_uid', '318');
+
+    assert.equal(model.get('avatarURL'), 'https://avatars2.githubusercontent.com/u/318?v=3&s=128');
+  });
 });

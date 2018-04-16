@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
 
   tagName: 'ul',
   classNames: ['proposal-list'],
@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   actions: {
 
     confirm(proposalId) {
-      if (this.get('contractInteractionEnabled')) {
+      if (this.contractInteractionEnabled) {
         this.sendAction('confirmAction', proposalId);
       } else {
         window.alert('Only members can vote on proposals. Please ask someone to set you up.');

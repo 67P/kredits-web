@@ -1,11 +1,11 @@
-import injectService from 'ember-service/inject';
-import Route from 'ember-route';
+import { inject as injectService } from '@ember/service';
+import Route from '@ember/routing/route';
 
 export default Route.extend({
   kredits: injectService(),
 
   beforeModel(transition) {
-    const kredits = this.get('kredits');
+    const kredits = this.kredits;
 
     return kredits.setup().then(() => {
       if (kredits.get('accountNeedsUnlock')) {
@@ -19,9 +19,9 @@ export default Route.extend({
   },
 
   afterModel() {
-    return this.get('kredits').loadContributorsAndProposals()
+    return this.kredits.loadContributorsAndProposals()
       .then(() => {
-        this.get('kredits').addContractEventHandlers();
+        this.kredits.addContractEventHandlers();
       });
   }
 });

@@ -1,6 +1,7 @@
-import EmberObject from 'ember-object';
-import computed, { alias } from 'ember-computed';
-import injectService from 'ember-service/inject';
+import EmberObject from '@ember/object';
+import { computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
+import { inject as injectService } from '@ember/service';
 import bignumber from 'kredits-web/utils/cps/bignumber';
 
 export default EmberObject.extend({
@@ -29,6 +30,6 @@ export default EmberObject.extend({
   // Relationships
   // TODO: Optimize it. We don't need to find the contributor every time we add a new one
   contributor: computed('contributorId', 'kredits.contributors.[]', function() {
-    return this.get('kredits.contributors').findBy('id', this.get('contributorId'));
+    return this.get('kredits.contributors').findBy('id', this.contributorId);
   })
 });
