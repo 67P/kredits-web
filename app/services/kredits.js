@@ -1,15 +1,17 @@
-import { getOwner } from '@ember/application';
-import ethers from 'npm:ethers';
-import Kredits from 'kredits-web/lib/kredits';
-import RSVP from 'rsvp';
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
+import RSVP from 'rsvp';
+import Kredits from 'kredits-web/lib/kredits';
+import Contributor from 'kredits-web/models/contributor'
+import Proposal from 'kredits-web/models/proposal'
+import ethers from 'npm:ethers';
 
 import config from 'kredits-web/config/environment';
 
 export default Service.extend({
+
   ethProvider: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
@@ -76,23 +78,20 @@ export default Service.extend({
   proposals: [],
 
   loadContributorsAndProposals() {
-    return RSVP.hash({
-      contributors: this.getContributors(),
-      proposals: this.getProposals(),
-    }).then(({ contributors, proposals }) => {
-      this.contributors.pushObjects(contributors);
-      this.proposals.pushObjects(proposals);
-    });
+    return this.getContributors()
+               .then(contributors => this.contributors.pushObjects(contributors))
+               .then(() => this.getProposals())
+               .then(proposals => this.proposals.pushObjects(proposals))
   },
 
   // TODO: Only assign valid attributes
-  buildModel(name, attributes) {
-    console.debug('[kredits] build', name, attributes);
-    let model = getOwner(this).lookup(`model:${name}`);
-
-    model.setProperties(attributes);
-    return model;
-  },
+  // buildModel(name, attributes) {
+  //   console.debug('[kredits] build', name, attributes);
+  //   let model = getOwner(this).lookup(`model:${name}`);
+  //
+  //   model.setProperties(attributes);
+  //   return model;
+  // },
 
   addContributor(attributes) {
     console.debug('[kredits] add contributor', attributes);
@@ -100,7 +99,7 @@ export default Service.extend({
     return this.kredits.Contributor.add(attributes)
       .then((data) => {
         console.debug('[kredits] add contributor response', data);
-        return this.buildModel('contributor', attributes);
+        return Contributor.create(attributes);
       });
   },
 
@@ -108,7 +107,7 @@ export default Service.extend({
     return this.kredits.Contributor.all()
       .then((contributors) => {
         return contributors.map((contributor) => {
-          return this.buildModel('contributor', contributor);
+          return Contributor.create(contributor);
         });
       });
   },
@@ -119,7 +118,8 @@ export default Service.extend({
     return this.kredits.Operator.addProposal(attributes)
       .then((data) => {
         console.debug('[kredits] add proposal response', data);
-        return this.buildModel('proposal', attributes);
+        attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
+        return Proposal.create(attributes);
       });
   },
 
@@ -127,7 +127,8 @@ export default Service.extend({
     return this.kredits.Operator.all()
       .then((proposals) => {
         return proposals.map((proposal) => {
-          return this.buildModel('proposal', proposal);
+          proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
+          return Proposal.create(proposal);
         });
       });
   },

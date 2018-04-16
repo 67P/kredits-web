@@ -1,11 +1,8 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
-import { inject as injectService } from '@ember/service';
 
 export default Component.extend({
-  kredits: injectService(),
-
   // Default attributes used by reset
   attributes: {
     contributorId: null,

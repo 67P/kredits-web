@@ -1,7 +1,7 @@
 import { isEmpty, isPresent } from '@ember/utils';
-import Contributor from 'kredits-web/models/contributor';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import Contributor from 'kredits-web/models/contributor';
 
 module('Unit | Controller | index', function(hooks) {
   setupTest(hooks);
