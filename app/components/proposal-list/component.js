@@ -9,7 +9,7 @@ export default Component.extend({
 
     confirm(proposalId) {
       if (this.contractInteractionEnabled) {
-        this.sendAction('confirmAction', proposalId);
+        this.confirmProposal(proposalId);
       } else {
         window.alert('Only members can vote on proposals. Please ask someone to set you up.');
       }

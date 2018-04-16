@@ -4,6 +4,9 @@ module.exports = {
     ecmaVersion: 2017,
     sourceType: 'module'
   },
+  globals: {
+    console: true
+  },
   plugins: [
     'ember'
   ],
@@ -15,6 +18,8 @@ module.exports = {
     browser: true
   },
   rules: {
+    'ember/avoid-leaking-state-in-ember-objects': 'warn',
+    'no-console': 'off'
   },
   overrides: [
     // node files
