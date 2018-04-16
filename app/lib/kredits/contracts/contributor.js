@@ -1,7 +1,7 @@
 import ethers from 'npm:ethers';
 import RSVP from 'rsvp';
 
-import Kredits from '../kredits';
+import Organization from '../organization';
 import ContributorSerializer from '../serializers/contributor';
 
 import Base from './base';
@@ -35,7 +35,7 @@ export default class Contributor extends Base {
       })
       // Fetch IPFS data if available
       .then((data) => {
-        return Kredits.ipfs.catAndMerge(data, ContributorSerializer.deserialize);
+        return Organization.ipfs.catAndMerge(data, ContributorSerializer.deserialize);
       });
   }
 
@@ -43,7 +43,7 @@ export default class Contributor extends Base {
     let json = ContributorSerializer.serialize(contributorAttr);
     // TODO: validate against schema
 
-    return Kredits.ipfs
+    return Organization.ipfs
       .add(json)
       .then((ipfsHashAttr) => {
         let contributor = [
@@ -54,7 +54,6 @@ export default class Contributor extends Base {
           contributorAttr.isCore,
         ];
 
-        console.log('[kredits] addContributor', ...contributor);
         return this.functions.addContributor(...contributor);
       });
   }

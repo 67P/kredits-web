@@ -13,7 +13,7 @@ function capitalize(word) {
   return `${first.toUpperCase()}${rest.join('')}`;
 }
 
-export default class Kredits {
+export default class Organization {
   constructor(provider, signer, addresses) {
     this.provider = provider;
     this.signer = signer;
@@ -45,7 +45,7 @@ export default class Kredits {
 
       return RSVP.hash(addresses)
         .then((addresses) => {
-          return new Kredits(provider, signer, addresses);
+          return new Organization(provider, signer, addresses);
         });
     });
   }

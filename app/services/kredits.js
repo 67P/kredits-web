@@ -1,5 +1,5 @@
 import ethers from 'npm:ethers';
-import Kredits from 'kredits-web/lib/kredits';
+import Organization from 'kredits-web/lib/kredits';
 import RSVP from 'rsvp';
 import Ember from 'ember';
 import Service from 'ember-service';
@@ -60,8 +60,8 @@ export default Service.extend({
   setup() {
     return this.initEthProvider().then((ethProvider) => {
       let signer = ethProvider.getSigner();
-      return Kredits.setup(ethProvider, signer, config.ipfs).then((kredits) => {
-          this.set('kredits', kredits);
+      return Organization.setup(ethProvider, signer, config.ipfs).then((kredits) => {
+          this.set('organization', organization);
 
           // TODO: Cleanup
           if (this.get('currentUserAccounts').length > 0) {
@@ -69,13 +69,13 @@ export default Service.extend({
               this.set('currentUser', contributorData);
             });
           }
-          return kredits;
+          return organization;
         });
     });
   },
 
   totalSupply: computed(function() {
-    return this.get('kredits').Token.functions.totalSupply();
+    return this.get('organization').Token.functions.totalSupply();
   }),
 
   contributors: [],
@@ -103,7 +103,7 @@ export default Service.extend({
   addContributor(attributes) {
     debug('[kredits] add contributor', attributes);
 
-    return this.get('kredits').Contributor.add(attributes)
+    return this.get('organization').Contributor.add(attributes)
       .then((data) => {
         debug('[kredits] add contributor response', data);
         return this.buildModel('contributor', attributes);
@@ -111,7 +111,7 @@ export default Service.extend({
   },
 
   getContributors() {
-    return this.get('kredits').Contributor.all()
+    return this.get('organization').Contributor.all()
       .then((contributors) => {
         return contributors.map((contributor) => {
           return this.buildModel('contributor', contributor);
@@ -122,7 +122,7 @@ export default Service.extend({
   addProposal(attributes) {
     debug('[kredits] add proposal', attributes);
 
-    return this.get('kredits').Operator.addProposal(attributes)
+    return this.get('organization').Operator.addProposal(attributes)
       .then((data) => {
         debug('[kredits] add proposal response', data);
         return this.buildModel('proposal', attributes);
@@ -130,7 +130,7 @@ export default Service.extend({
   },
 
   getProposals() {
-    return this.get('kredits').Operator.all()
+    return this.get('organization').Operator.all()
       .then((proposals) => {
         return proposals.map((proposal) => {
           return this.buildModel('proposal', proposal);
@@ -141,7 +141,7 @@ export default Service.extend({
   vote(proposalId) {
     debug('[kredits] vote for', proposalId);
 
-    return this.get('kredits').Operator.functions.vote(proposalId)
+    return this.get('organization').Operator.functions.vote(proposalId)
       .then((data) => {
         debug('[kredits] vote response', data);
         return data;
@@ -153,7 +153,7 @@ export default Service.extend({
     if (isEmpty(this.get('currentUserAccounts'))) {
       return RSVP.resolve();
     }
-    return this.get('kredits').Contributor
+    return this.get('organization').Contributor
       .functions.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
       .then((id) => {
         id = id.toNumber();
@@ -161,7 +161,7 @@ export default Service.extend({
         if (id === 0) {
           return RSVP.resolve();
         } else {
-          return this.get('kredits').Contributor.getById(id);
+          return this.get('organization').Contributor.getById(id);
         }
       });
   }),
@@ -173,13 +173,13 @@ export default Service.extend({
   // Contract events
   addContractEventHandlers() {
     // Operator events
-    this.get('kredits').Operator
+    this.get('organization').Operator
       .on('ProposalCreated', this.handleProposalCreated.bind(this))
       .on('ProposalVoted', this.handleProposalVoted.bind(this))
       .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
 
     // Token events
-    this.get('kredits').Token
+    this.get('organization').Token
       .on('Transfer', this.handleTransfer.bind(this));
   },
 
@@ -191,7 +191,7 @@ export default Service.extend({
       return;
     }
 
-    this.get('kredits').Operator.getById(proposalId)
+    this.get('organization').Operator.getById(proposalId)
       .then((proposal) => {
         proposal = this.buildModel('proposal', proposal);
         this.get('proposals').pushObject(proposal);
