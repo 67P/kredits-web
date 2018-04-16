@@ -4,7 +4,10 @@ import ethers from 'npm:ethers';
 export default function(dependentKey, converterMethod) {
   return computed(dependentKey, {
     get () {
-      return this.get(dependentKey)[converterMethod]();
+      let value = this.get(dependentKey);
+      if (value) {
+        return this.get(dependentKey)[converterMethod]();
+      }
     },
     set (key, value) {
       value = ethers.utils.bigNumberify(value);
