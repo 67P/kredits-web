@@ -44,36 +44,50 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Deploying
 
-Specify what it takes to deploy your app.
+_(You need collaborator permissions on the 5apps Deploy project.)_
 
+`npm run deploy`
 
 ## Working with locally deployed contracts
 
-For development you should checkout [truffle-kredits](https://github.com/67P/truffle-kredits).
-See the [README](https://github.com/67P/truffle-kredits/#readme) how to setup `truffle-kredits`.
+The smart contracts and their JavaScript wrapper library are developed in the
+[truffle-kredits](https://github.com/67P/truffle-kredits) repo/package.
 
-### Basic idea:
+You can run `kredits-web` on your machine, against a local, simulated Ethereum
+network, provided e.g. by [ganache](http://truffleframework.com/ganache/) or
+[ganache-cli](https://github.com/trufflesuite/ganache-cli).
 
-To run the app locally with a locally deployed contract most likely in a ethereum simulator like [ganache](http://truffleframework.com/ganache/) or [ganache-cli](https://github.com/trufflesuite/ganache-cli)  
-[truffle-kredits](https://github.com/67P/truffle-kredits) holds all the tools to start and setup that local simulation network (and generally to deply the contracts)
+[truffle-kredits](https://github.com/67P/truffle-kredits) holds all the tools
+to start and set up such a simulated network, as well as to deploy smart
+contracts to it.
 
-Get familiar with truffle and truffle-kredits, but these are the basic steps to get up and running: 
+These are the basic steps to get up and running:
 
-1. truffle-kredits (get the local ethereum node running)
-  * setup (clone and npm install) truffle-kredits
+#### 1. IPFS
+
+Run a local IPFS deamon in offline mode.
+
+  * Make sure CORS headers are configured. See [IPFS](#ipfs) for more info.
+  * `ipfs daemon --offline`
+
+#### 2. truffle-kredits
+
+Get your local Ethereum development node running.
+
+  * Clone [truffle-kredits](https://github.com/67P/truffle-kredits)
+  * `npm install`
   * `npm run ganache` - which is basically: `ganache-cli -p 7545 -i 100` (we use the non-default port for local networks and a fixed network id)
   * `npm run bootstrap` - bootstrap runs fresh migrations, adds some seed data and writes the address/abi information to JSON that will be used by kredits-web
-  * `npm link` - link the truffle-kredits dependency to kredits-web
+  * `npm link` - make the `truffle-kredits` module linkable as `kredits-contracts` on your machine
 
-2. IPFS (run a local ipfs deamon in offline mode)
-  * make sure the ipfs cors header are configured - See [IPFS](#ipfs) for more configurations 
-  * `ipfs daemon --offline` 
+#### 3. kredits-web
 
-3. kredits-web
-  * `npm link kredits-contracts` - link the local truffle-kredits package (attention: the naming! we need to make the new truffle-kredits the official kredits-contracts package)
-  * `ember serve` 
+With IPFS and Ethereum/ganache running, you can now start this Ember app.
 
-## IPFS
+  * `npm link kredits-contracts` - link the local `truffle-kredits` package (it will become `kredits-contracts` soon)
+  * `npm start`
+
+#### IPFS
 
 Install IPFS with your favorite package manager and run
 
