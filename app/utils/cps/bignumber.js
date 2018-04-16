@@ -5,8 +5,10 @@ export default function(dependentKey, converterMethod) {
   return computed(dependentKey, {
     get () {
       let value = this.get(dependentKey);
-      if (value) {
-        return this.get(dependentKey)[converterMethod]();
+      if (value && ethers.utils.isBigNumber(value)) {
+        return value[converterMethod]();
+      } else {
+        return value;
       }
     },
     set (key, value) {
