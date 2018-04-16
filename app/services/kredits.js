@@ -1,5 +1,5 @@
 import ethers from 'npm:ethers';
-import Kredits from 'kredits-web/lib/kredits';
+import Organization from 'kredits-web/lib/kredits';
 import RSVP from 'rsvp';
 import Ember from 'ember';
 import Service from 'ember-service';
@@ -60,7 +60,7 @@ export default Service.extend({
   setup() {
     return this.initEthProvider().then((ethProvider) => {
       let signer = ethProvider.getSigner();
-      return Kredits.setup(ethProvider, signer, config.ipfs).then((kredits) => {
+      return Organization.setup(ethProvider, signer, config.ipfs).then((kredits) => {
           this.set('organization', organization);
 
           // TODO: Cleanup
