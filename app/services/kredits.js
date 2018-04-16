@@ -35,36 +35,39 @@ export default Service.extend({
   initEthProvider: function() {
     return new RSVP.Promise((resolve) => {
       let ethProvider;
+      let ethSigner;
       let networkId;
       if (typeof window.web3 !== 'undefined') {
         debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         networkId = parseInt(window.web3.version.network);
         ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider, {chainId: networkId});
+        ethSigner = ethProvider.getSigner();
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
           this.set('ethProvider', ethProvider);
-          resolve(ethProvider);
+          this.set('ethSigner', ethSigner);
+          resolve(ethProvider, ethSigner);
         });
       } else {
         debug('[kredits] Creating new instance from npm module class');
         let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
         networkId = parseInt(config.contractMetadata.networkId);
         ethProvider = new ethers.providers.JsonRpcProvider(providerUrl, {chainId: networkId});
+        ethSigner = null; // no signer as no local web3 object is available
         this.set('ethProvider', ethProvider);
-        resolve(ethProvider);
+        this.set('ethSigner', ethSigner);
+        resolve(ethProvider, ethSigner);
       }
       window.ethProvider = ethProvider;
     });
   },
 
   setup() {
-    return this.initEthProvider().then((ethProvider) => {
-      let signer = ethProvider.getSigner();
-      return Kredits.setup(ethProvider, signer, config.ipfs).then((kredits) => {
+    return this.initEthProvider().then((ethProvider, ethSigner) => {
+      return Kredits.setup(ethProvider, ethSigner, config.ipfs).then((kredits) => {
           this.set('kredits', kredits);
-
-          // TODO: Cleanup
-          if (this.get('currentUserAccounts').length > 0) {
+          // TODO: Cleanup (!!!)
+          if (this.get('currentUserAccounts') && this.get('currentUserAccounts').length > 0) {
             this.get('getCurrentUser').then((contributorData) => {
               this.set('currentUser', contributorData);
             });
