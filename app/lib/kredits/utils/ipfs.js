@@ -13,6 +13,9 @@ export default class IPFS {
     if (!data.hashSize || data.hashSize === 0) {
       return data;
     }
+    // merge ipfsHash (encoded from hashDigest, hashSize, hashFunction)
+    data.ipfsHash = this.encodeHash(data);
+
     return this.cat(data)
       .then(deserialize)
       .then((attributes) => {
@@ -39,15 +42,15 @@ export default class IPFS {
   decodeHash(ipfsHash) {
     let multihash = multihashes.decode(multihashes.fromB58String(ipfsHash));
     return {
-      ipfsHash: '0x' + multihashes.toHexString(multihash.digest),
+      hashDigest: '0x' + multihashes.toHexString(multihash.digest),
       hashSize: multihash.length,
       hashFunction: multihash.code,
-      sourceHash: ipfsHash
+      ipfsHash: ipfsHash
     };
   }
 
   encodeHash(hashData) {
-    let digest = this._ipfsAPI.Buffer.from(hashData.ipfsHash.slice(2), 'hex');
+    let digest = this._ipfsAPI.Buffer.from(hashData.hashDigest.slice(2), 'hex');
     return multihashes.encode(digest, hashData.hashFunction, hashData.hashSize);
   }
 

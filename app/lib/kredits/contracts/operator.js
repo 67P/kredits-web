@@ -24,13 +24,10 @@ export default class Operator extends Base {
   getById(id) {
     id = ethers.utils.bigNumberify(id);
 
-    return this.functions.proposals(id)
+    return this.functions.getProposal(id)
       .then((data) => {
-        // TODO: remove as soon as the contract provides the id
-        data.id = id;
-        // TODO: rename creatorAddress to creator
-        data.creatorAddress = data.creator;
-
+        // TODO: remove when naming updated on the contract
+        data.hashDigest = data.ipfsHash;
         return data;
       })
       // Fetch IPFS data if available
@@ -49,7 +46,7 @@ export default class Operator extends Base {
         let proposal = [
           proposalAttr.contributorId,
           proposalAttr.amount,
-          ipfsHashAttr.ipfsHash,
+          ipfsHashAttr.hashDigest,
           ipfsHashAttr.hashFunction,
           ipfsHashAttr.hashSize,
         ];

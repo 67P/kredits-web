@@ -26,11 +26,8 @@ export default class Contributor extends Base {
 
     return this.functions.getContributorById(id)
       .then((data) => {
-        // TODO: remove as soon as the contract provides the id
-        data.id = id;
-        // TODO: rename address to account
-        data.address = data.account;
-
+        // TODO: remove when naming updated on the contract
+        data.hashDigest = data.ipfsHash;
         return data;
       })
       // Fetch IPFS data if available
@@ -48,7 +45,7 @@ export default class Contributor extends Base {
       .then((ipfsHashAttr) => {
         let contributor = [
           contributorAttr.address,
-          ipfsHashAttr.ipfsHash,
+          ipfsHashAttr.hashDigest,
           ipfsHashAttr.hashFunction,
           ipfsHashAttr.hashSize,
           contributorAttr.isCore,
