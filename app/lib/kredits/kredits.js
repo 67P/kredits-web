@@ -94,7 +94,8 @@ export default class Kredits {
     if (!address || !abis[contractName]) {
       throw new Error(`Address or ABI not found for ${contractName}`);
     }
-    let contract = new ethers.Contract(address, abis[contractName], this.signer);
+    let signerOrProvider = this.signer || this.provider;
+    let contract = new ethers.Contract(address, abis[contractName], signerOrProvider);
     this.contracts[name] = new contracts[contractName](contract);
 
     return this.contracts[name];
