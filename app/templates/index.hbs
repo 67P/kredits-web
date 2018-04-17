@@ -32,7 +32,7 @@
     <div class="content">
       {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
       {{proposal-list proposals=proposalsOpenSorted
-                      confirmAction="confirmProposal"
+                      confirmProposal=(action "confirmProposal")
                       contractInteractionEnabled=kredits.hasAccounts}}
 
       {{!-- TODO: We need a better naming --}}
@@ -51,7 +51,7 @@
   </header>
   <div class="content">
     {{proposal-list proposals=proposalsClosedSorted
-                    confirmAction="confirmProposal"}}
+                    confirmProposal=(action "confirmProposal")}}
 
     {{!-- TODO: We need a better naming --}}
     {{#if kredits.hasAccounts}}

@@ -25,10 +25,10 @@ export default class Contributor {
     let wiki   = accounts.find((a) => a.site === 'wiki.kosmos.org');
 
     if (github) {
-      ({ username: github_username, uid: github_uid} = github);
+      (({ username: github_username, uid: github_uid} = github));
     }
     if (wiki) {
-      ({ username: wiki_username } = wiki);
+      (({ username: wiki_username } = wiki));
     }
 
     return {
