@@ -1,16 +1,18 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('loading-spinner', 'Integration | Component | loading spinner', {
-  integration: true
-});
+module('Integration | Component | loading spinner', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
+  test('it renders', async function(assert) {
 
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{loading-spinner}}`);
+    await render(hbs`{{loading-spinner}}`);
 
-  assert.equal(this.$().text().trim(), 'Loading data from Ethereum...');
+    assert.equal(find('*').textContent.trim(), 'Loading data from Ethereum...');
+  });
 });

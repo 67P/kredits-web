@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
 
   tagName: 'table',
   classNames: 'contributor-list',
@@ -12,7 +12,7 @@ export default Ember.Component.extend({
       if (contributor.get('showMetadata')) {
         contributor.set('showMetadata', false);
       } else {
-        this.get('contributors').setEach('showMetadata', false);
+        this.contributors.setEach('showMetadata', false);
         contributor.set('showMetadata', true);
       }
     }
