@@ -10,9 +10,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-@import "bourbon";
+@import "bourbon/bourbon";
 @import "settings/neat";
-@import "neat";
+@import "neat/neat";
 @import "settings/breakpoints";
 @import "layout";
 @import "colors";

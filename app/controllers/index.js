@@ -1,6 +1,6 @@
-import Controller from 'ember-controller';
-import { alias, filter, filterBy, sort } from 'ember-computed';
-import injectService from 'ember-service/inject';
+import Controller from '@ember/controller';
+import { alias, filter, filterBy, sort } from '@ember/object/computed';
+import { inject as injectService } from '@ember/service';
 
 export default Controller.extend({
   kredits: injectService(),
@@ -21,15 +21,15 @@ export default Controller.extend({
 
   actions: {
     confirmProposal(proposalId) {
-      this.get('kredits').vote(proposalId).then(transaction => {
+      this.kredits.vote(proposalId).then(transaction => {
         window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
       });
     },
 
     save(contributor) {
-      return this.get('kredits').addContributor(contributor)
+      return this.kredits.addContributor(contributor)
         .then((contributor) => {
-          this.get('contributors').pushObject(contributor);
+          this.contributors.pushObject(contributor);
           return contributor;
         });
     }

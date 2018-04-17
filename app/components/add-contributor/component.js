@@ -1,7 +1,7 @@
-import Component from 'ember-component';
-import computed, { and } from 'ember-computed';
-import injectService from 'ember-service/inject';
-import isPresent from 'kredits-web/utils/cps/is-present';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { and, notEmpty } from '@ember/object/computed';
+import { inject as injectService } from '@ember/service';
 
 
 export default Component.extend({
@@ -26,13 +26,13 @@ export default Component.extend({
 
   isValidAccount: computed('kredits.ethProvider', 'account', function() {
     // TODO: add proper address validation
-    return this.get('account') !== '';
+    return this.account !== '';
   }),
-  isValidName: isPresent('name'),
-  isValidURL: isPresent('url'),
-  isValidGithubUID: isPresent('github_uid'),
-  isValidGithubUsername: isPresent('github_username'),
-  isValidWikiUsername: isPresent('wiki_username'),
+  isValidName: notEmpty('name'),
+  isValidURL: notEmpty('url'),
+  isValidGithubUID: notEmpty('github_uid'),
+  isValidGithubUsername: notEmpty('github_username'),
+  isValidWikiUsername: notEmpty('wiki_username'),
   isValid: and(
     'isValidAccount',
     'isValidName',
@@ -40,17 +40,17 @@ export default Component.extend({
   ),
 
   reset: function() {
-    this.setProperties(this.get('attributes'));
+    this.setProperties(this.attributes);
   },
 
   actions: {
     submit() {
-      if (!this.get('isValid')) {
+      if (!this.isValid) {
         alert('Invalid data. Please review and try again.');
         return;
       }
 
-      let attributes = Object.keys(this.get('attributes'));
+      let attributes = Object.keys(this.attributes);
       let contributor = this.getProperties(attributes);
       let saved = this.save(contributor);
 
