@@ -23,11 +23,6 @@
     "babel-preset-es2015": "^6.22.0",
     "babelify": "^7.3.0",
     "broccoli-asset-rev": "^2.4.5",
-    "broccoli-file-creator": "^1.1.1",
-    "broccoli-json-module": "^1.0.0",
-    "broccoli-merge-trees": "^3.0.0",
-    "bs58": "^4.0.1",
-    "buffer": "^5.1.0",
     "ember-ajax": "^3.0.0",
     "ember-awesome-macros": "0.41.0",
     "ember-browserify": "^1.1.13",
@@ -54,9 +49,8 @@
     "ember-truth-helpers": "github:jmurphyau/ember-truth-helpers#31a14373a31f1f82c77537720549b47a95c28e5f",
     "eslint-plugin-ember": "^5.0.0",
     "ethers": "^3.0.8",
-    "ipfs-api": "^19.0.0",
     "kosmos-schemas": "^1.1.2",
-    "kredits-contracts": "github:67P/truffle-kredits#master",
+    "kredits-contracts": "github:67P/truffle-kredits",
     "loader.js": "^4.2.3",
     "tv4": "^1.3.0"
   },
@@ -67,10 +61,5 @@
     "Garret Alfert <alfert@wevelop.de>",
     "Sebastian Kippe <sebastian@kip.pe>",
     "Michael Bumann <hello@michaelbumann.com>"
-  ],
-  "ember-addon": {
-    "paths": [
-      "lib/contracts"
-    ]
-  }
+  ]
 }

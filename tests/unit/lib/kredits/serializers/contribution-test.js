@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import schemas from 'npm:kosmos-schemas';
 import tv4 from 'npm:tv4';
-import ContributionSerializer from 'kredits-web/lib/kredits/serializers/contribution';
+import ContributionSerializer from 'npm:kredits-contracts/lib/serializers/contribution';
 
 module('Serializers contribution', function() {
   test('#serialize returns a valid JSON-LD representation', function(assert) {
