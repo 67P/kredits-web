@@ -67,10 +67,5 @@
     "Garret Alfert <alfert@wevelop.de>",
     "Sebastian Kippe <sebastian@kip.pe>",
     "Michael Bumann <hello@michaelbumann.com>"
-  ],
-  "ember-addon": {
-    "paths": [
-      "lib/contracts"
-    ]
-  }
+  ]
 }
