@@ -3,7 +3,7 @@ import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 import RSVP from 'rsvp';
-import Kredits from 'kredits-web/lib/kredits';
+import Kredits from 'npm:kredits-contracts';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
 import ethers from 'npm:ethers';
