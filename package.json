@@ -56,7 +56,7 @@
     "ethers": "^3.0.8",
     "ipfs-api": "^19.0.0",
     "kosmos-schemas": "^1.1.2",
-    "kredits-contracts": "github:67P/truffle-kredits#master",
+    "kredits-contracts": "github:67P/truffle-kredits#library",
     "loader.js": "^4.2.3",
     "tv4": "^1.3.0"
   },
