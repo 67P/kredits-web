@@ -24,10 +24,8 @@ export default Component.extend({
     this.reset();
   },
 
-  isValidAccount: computed('kredits.ethProvider', 'account', function() {
-    // TODO: add proper address validation
-    return this.account !== '';
-  }),
+  // TODO: add proper address validation
+  isValidAccount: notEmpty('account'),
   isValidName: notEmpty('name'),
   isValidURL: notEmpty('url'),
   isValidGithubUID: notEmpty('github_uid'),
