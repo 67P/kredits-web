@@ -19,13 +19,13 @@ export default Component.extend({
 
   contributors: [],
 
-  isValidRecipient: notEmpty('contributorId'),
+  isValidContributor: notEmpty('contributorId'),
   isValidAmount: computed('amount', function() {
     return parseInt(this.amount, 10) > 0;
   }),
   isValidDescription: notEmpty('description'),
   isValidUrl: notEmpty('url'),
-  isValid: and('isValidRecipient',
+  isValid: and('isValidContributor',
                'isValidAmount',
                'isValidDescription'),
 
