@@ -60,7 +60,10 @@ export default Service.extend({
         ethSigner = ethProvider.getSigner();
       }
 
-      return Kredits.setup(ethProvider, ethSigner, config.ipfs).then((kredits) => {
+      let kredits = new Kredits(ethProvider, ethSigner);
+      return kredits
+        .init()
+        .then((kredits) => {
           this.set('kredits', kredits);
 
           if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {

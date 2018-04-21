@@ -46,13 +46,6 @@ module.exports = function(environment) {
     }
   };
 
-  if (process.env.NETWORK_ID) {
-    ENV.contractMetadata['networkId'] = process.env.NETWORK_ID;
-  }
-  if (process.env.WEB3_PROVIDER_URL) {
-    ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
-  }
-
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
@@ -60,6 +53,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
     ENV.contractMetadata['networkId'] = '100';
+    ENV.web3ProviderUrl = 'http://localhost:7545';
 
     ENV.ipfs = {
       host: 'localhost',
@@ -82,6 +76,13 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     // here you can enable a production-specific feature
+  }
+
+  if (process.env.NETWORK_ID) {
+    ENV.contractMetadata['networkId'] = process.env.NETWORK_ID;
+  }
+  if (process.env.WEB3_PROVIDER_URL) {
+    ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
   }
 
   return ENV;
