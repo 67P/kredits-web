@@ -25,7 +25,7 @@ export default Service.extend({
 
   // this is called in the routes beforeModel().  So it is initialized before everything else
   // and we can rely on the ethProvider and the potential currentUserAccounts to be available
-  initEthProvider: function() {
+  getEthProvider: function() {
     return new RSVP.Promise((resolve) => {
       let ethProvider;
       let networkId;
@@ -53,7 +53,7 @@ export default Service.extend({
   },
 
   setup() {
-    return this.initEthProvider().then((ethProvider) => {
+    return this.getEthProvider().then((ethProvider) => {
       let ethSigner;
 
       if (ethProvider.getSigner) {
