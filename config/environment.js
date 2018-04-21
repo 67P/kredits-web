@@ -35,7 +35,7 @@ module.exports = function(environment) {
       ]
     },
 
-    contractMetadata: {},
+    contractMetadata: { networkId: '42' },
 
     web3ProviderUrl: 'https://parity.kosmos.org:8545',
 
@@ -46,30 +46,15 @@ module.exports = function(environment) {
     }
   };
 
-  ENV.contractMetadata['networkId'] = "42";
-
-  if (process.env.OPERATOR_CONTRACT_ADDR) {
-    ENV.contractMetadata['Operator'] = {
-      address: process.env.OPERATOR_CONTRACT_ADDR,
-      networkId: ENV.contractMetadata['networkId']
-    };
-  }
-  if (process.env.TOKEN_CONTRACT_ADDR) {
-    ENV.contractMetadata['Token'] = {
-      address: process.env.TOKEN_CONTRACT_ADDR,
-      networkId: ENV.contractMetadata['networkId']
-    };
-  }
-  if (process.env.WEB3_PROVIDER_URL) {
-    ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
-  }
-
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.contractMetadata['networkId'] = '100';
+    ENV.web3ProviderUrl = 'http://localhost:7545';
+
     ENV.ipfs = {
       host: 'localhost',
       port: '5001',
@@ -91,6 +76,13 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     // here you can enable a production-specific feature
+  }
+
+  if (process.env.NETWORK_ID) {
+    ENV.contractMetadata['networkId'] = process.env.NETWORK_ID;
+  }
+  if (process.env.WEB3_PROVIDER_URL) {
+    ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
   }
 
   return ENV;

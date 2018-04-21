@@ -42,6 +42,19 @@ module('Serializers contributor', function() {
     let expected = {
       name: 'Satoshi Nakamoto',
       kind: 'person',
+      accounts: [
+        {
+          "site": "github.com",
+          "uid": 123,
+          "url": "https://github.com/therealsatoshi",
+          "username": "therealsatoshi"
+        },
+        {
+          "site": "wiki.kosmos.org",
+          "url": "https://wiki.kosmos.org/User:Satoshi",
+          "username": "Satoshi"
+        }
+      ],
       github_uid: 123,
       github_username: 'therealsatoshi',
       wiki_username: 'Satoshi',

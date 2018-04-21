@@ -1,66 +1,72 @@
+import ethers from 'npm:ethers';
+import Kredits from 'npm:kredits-contracts';
+import RSVP from 'rsvp';
+
 import Service from '@ember/service';
 import { computed } from '@ember/object';
-import { alias } from '@ember/object/computed';
-import { isEmpty, isPresent } from '@ember/utils';
-import RSVP from 'rsvp';
-import Kredits from 'npm:kredits-contracts';
-import Contributor from 'kredits-web/models/contributor'
-import Proposal from 'kredits-web/models/proposal'
-import ethers from 'npm:ethers';
+import { alias, notEmpty } from '@ember/object/computed';
+import { isEmpty } from '@ember/utils';
 
 import config from 'kredits-web/config/environment';
+import Contributor from 'kredits-web/models/contributor'
+import Proposal from 'kredits-web/models/proposal'
+
 
 export default Service.extend({
 
-  ethProvider: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
-  currentUserIsContributor: computed('currentUser', function() {
-    return isPresent(this.currentUser);
-  }),
+  currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
-  hasAccounts: computed('currentUserAccounts', function() {
-    return !isEmpty(this.currentUserAccounts);
-  }),
+  hasAccounts: notEmpty('currentUserAccounts'),
   accountNeedsUnlock: computed('currentUserAccounts', function() {
     return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
   }),
 
-  // this is called called in the routes beforeModel().  So it is initialized before everything else
+  // this is called in the routes beforeModel().  So it is initialized before everything else
   // and we can rely on the ethProvider and the potential currentUserAccounts to be available
-  initEthProvider: function() {
+  getEthProvider: function() {
     return new RSVP.Promise((resolve) => {
       let ethProvider;
       let networkId;
       if (typeof window.web3 !== 'undefined') {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         networkId = parseInt(window.web3.version.network);
-        ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider, {chainId: networkId});
+        ethProvider = new ethers.providers.Web3Provider(
+          window.web3.currentProvider,
+          { chainId: networkId }
+        );
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
-          this.set('ethProvider', ethProvider);
           resolve(ethProvider);
         });
       } else {
         console.debug('[kredits] Creating new instance from npm module class');
-        let providerUrl = localStorage.getItem('config:web3ProviderUrl') || config.web3ProviderUrl;
         networkId = parseInt(config.contractMetadata.networkId);
-        ethProvider = new ethers.providers.JsonRpcProvider(providerUrl, {chainId: networkId});
-        this.set('ethProvider', ethProvider);
+        ethProvider = new ethers.providers.JsonRpcProvider(
+          config.web3ProviderUrl,
+          { chainId: networkId }
+        );
         resolve(ethProvider);
       }
-      window.ethProvider = ethProvider;
     });
   },
 
   setup() {
-    return this.initEthProvider().then((ethProvider) => {
-      let signer = ethProvider.getSigner();
-      return Kredits.setup(ethProvider, signer, config.ipfs).then((kredits) => {
+    return this.getEthProvider().then((ethProvider) => {
+      let ethSigner;
+
+      if (ethProvider.getSigner) {
+        ethSigner = ethProvider.getSigner();
+      }
+
+      let kredits = new Kredits(ethProvider, ethSigner);
+      return kredits
+        .init()
+        .then((kredits) => {
           this.set('kredits', kredits);
 
-          // TODO: Cleanup
-          if (this.currentUserAccounts.length > 0) {
+          if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
             this.getCurrentUser.then((contributorData) => {
               this.set('currentUser', contributorData);
             });
@@ -83,15 +89,6 @@ export default Service.extend({
                .then(() => this.getProposals())
                .then(proposals => this.proposals.pushObjects(proposals))
   },
-
-  // TODO: Only assign valid attributes
-  // buildModel(name, attributes) {
-  //   console.debug('[kredits] build', name, attributes);
-  //   let model = getOwner(this).lookup(`model:${name}`);
-  //
-  //   model.setProperties(attributes);
-  //   return model;
-  // },
 
   addContributor(attributes) {
     console.debug('[kredits] add contributor', attributes);
@@ -143,8 +140,7 @@ export default Service.extend({
       });
   },
 
-  // TODO: Cleanup
-  getCurrentUser: computed('ethProvider', function() {
+  getCurrentUser: computed('kredits.provider', function() {
     if (isEmpty(this.currentUserAccounts)) {
       return RSVP.resolve();
     }
@@ -188,8 +184,8 @@ export default Service.extend({
 
     this.kredits.Operator.getById(proposalId)
       .then((proposal) => {
-        proposal = this.buildModel('proposal', proposal);
-        this.proposals.pushObject(proposal);
+        proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
+        this.proposals.pushObject(Proposal.create(proposal));
       });
   },
 
