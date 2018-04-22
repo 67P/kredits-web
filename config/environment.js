@@ -35,7 +35,7 @@ module.exports = function(environment) {
       ]
     },
 
-    contractMetadata: { networkId: '42' },
+    contractMetadata: { networkId: '42', networkName: 'kovan' },
 
     web3ProviderUrl: 'https://parity.kosmos.org:8545',
 
@@ -80,6 +80,9 @@ module.exports = function(environment) {
 
   if (process.env.NETWORK_ID) {
     ENV.contractMetadata['networkId'] = process.env.NETWORK_ID;
+  }
+  if (process.env.NETWORK_NAME) {
+    ENV.contractMetadata['networkName'] = process.env.NETWORK_NAME;
   }
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;

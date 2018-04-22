@@ -29,6 +29,7 @@ export default Service.extend({
     return new RSVP.Promise((resolve) => {
       let ethProvider;
       let networkId;
+      let networkName;
       if (typeof window.web3 !== 'undefined') {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         networkId = parseInt(window.web3.version.network);
@@ -38,28 +39,21 @@ export default Service.extend({
         );
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
-          resolve(ethProvider);
+          resolve(ethProvider, ethProvider.getSigner());
         });
       } else {
         console.debug('[kredits] Creating new instance from npm module class');
         networkId = parseInt(config.contractMetadata.networkId);
-        ethProvider = new ethers.providers.JsonRpcProvider(
-          config.web3ProviderUrl,
-          { chainId: networkId }
-        );
-        resolve(ethProvider);
+        networkName = config.contractMetadata.networkName;
+        console.log(networkName);
+        ethProvider = new ethers.providers.InfuraProvider({ chainId: networkId, name: networkName });
+        resolve(ethProvider, null);
       }
     });
   },
 
   setup() {
-    return this.getEthProvider().then((ethProvider) => {
-      let ethSigner;
-
-      if (ethProvider.getSigner) {
-        ethSigner = ethProvider.getSigner();
-      }
-
+    return this.getEthProvider().then((ethProvider, ethSigner) => {
       let kredits = new Kredits(ethProvider, ethSigner);
       return kredits
         .init()
