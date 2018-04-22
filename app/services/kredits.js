@@ -38,28 +38,20 @@ export default Service.extend({
         );
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
-          resolve(ethProvider);
+          resolve(ethProvider, ethProvider.getSigner());
         });
       } else {
         console.debug('[kredits] Creating new instance from npm module class');
         networkId = parseInt(config.contractMetadata.networkId);
-        ethProvider = new ethers.providers.JsonRpcProvider(
-          config.web3ProviderUrl,
-          { chainId: networkId }
-        );
-        resolve(ethProvider);
+        console.log(networkId)
+        ethProvider = new ethers.providers.InfuraProvider({ chainId: networkId, name: 'kovan' });
+        resolve(ethProvider, null);
       }
     });
   },
 
   setup() {
-    return this.getEthProvider().then((ethProvider) => {
-      let ethSigner;
-
-      if (ethProvider.getSigner) {
-        ethSigner = ethProvider.getSigner();
-      }
-
+    return this.getEthProvider().then((ethProvider, ethSigner) => {
       let kredits = new Kredits(ethProvider, ethSigner);
       return kredits
         .init()
