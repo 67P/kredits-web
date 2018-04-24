@@ -2,7 +2,7 @@
   <section id="user-account">
     {{#if kredits.currentUser }}
       {{ kredits.currentUser.name }}
-      {{#if kredits.currentUserIsCore }}
+      {{#if kredits.currentUser.isCore }}
         (core)
       {{/if}}
       Account: {{kredits.currentUser.account}}
@@ -32,8 +32,7 @@
     <div class="content">
       {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
       {{proposal-list proposals=proposalsOpenSorted
-                      confirmProposal=(action "confirmProposal")
-                      contractInteractionEnabled=kredits.hasAccounts}}
+                      confirmProposals=(action 'confirmProposals')}}
 
       {{!-- TODO: We need a better naming --}}
       {{#if kredits.hasAccounts}}
@@ -50,8 +49,7 @@
     <h2>Closed Proposals</h2>
   </header>
   <div class="content">
-    {{proposal-list proposals=proposalsClosedSorted
-                    confirmProposal=(action "confirmProposal")}}
+    {{proposal-list proposals=proposalsClosedSorted}}
 
     {{!-- TODO: We need a better naming --}}
     {{#if kredits.hasAccounts}}
