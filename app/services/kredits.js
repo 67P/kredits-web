@@ -4,7 +4,7 @@ import RSVP from 'rsvp';
 
 import Service from '@ember/service';
 import { computed } from '@ember/object';
-import { alias, notEmpty } from '@ember/object/computed';
+import { notEmpty } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
 
 import config from 'kredits-web/config/environment';
@@ -16,8 +16,6 @@ export default Service.extend({
 
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
-  currentUserIsContributor: notEmpty('currentUser'),
-  currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
   accountNeedsUnlock: computed('currentUserAccounts', function() {
     return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
@@ -68,7 +66,7 @@ export default Service.extend({
 
           if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
             this.getCurrentUser.then((contributorData) => {
-              this.set('currentUser', contributorData);
+              this.set('currentUser', Contributor.create(contributorData));
             });
           }
           return kredits;
@@ -130,10 +128,11 @@ export default Service.extend({
       });
   },
 
-  vote(proposalId) {
-    console.debug('[kredits] vote for', proposalId);
+  batchVote(proposalIds) {
+    proposalIds = proposalIds.map((id) => parseInt(id))
+    console.debug('[kredits] vote for', proposalIds);
 
-    return this.kredits.Operator.functions.vote(proposalId)
+    return this.kredits.Operator.functions.batchVote(proposalIds)
       .then((data) => {
         console.debug('[kredits] vote response', data);
         return data;
