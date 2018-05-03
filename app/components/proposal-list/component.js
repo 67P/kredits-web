@@ -12,6 +12,13 @@ export default Component.extend({
   submitButtonDisabled: empty('selectedProposals'),
 
   actions: {
+    confirm() {
+      this.confirmProposals(this.selectedProposals)
+        .then(() => {
+          this.selectedProposals = [];
+        });
+    },
+
     toggleSelect(proposalId, selected) {
       if (selected) {
         this.selectedProposals.removeObject(proposalId);

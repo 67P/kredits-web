@@ -8,10 +8,7 @@
 
 {{#if confirmProposals}}
   <center>
-    <button
-      disabled={{submitButtonDisabled}}
-      {{action confirmProposals selectedProposals}}
-    >
+    <button disabled={{submitButtonDisabled}} {{action 'confirm'}}>
       Submit selected
     </button>
   </center>
