@@ -13,7 +13,7 @@
   "scripts": {
     "lint:js": "eslint ./*.js app config lib server tests",
     "start": "ember serve",
-    "kovan": "NETWORK_ID=42 ember serve",
+    "start:local": "NETWORK_ID=100 WEB3_PROVIDER_URL=http://localhost:7545 ember s",
     "test": "ember test",
     "build": "ember build",
     "build-prod": "ember build --environment production",
