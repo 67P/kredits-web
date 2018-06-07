@@ -60,7 +60,9 @@ export default Service.extend({
         ethSigner = ethProvider.getSigner();
       }
 
-      let kredits = new Kredits(ethProvider, ethSigner);
+      let kredits = new Kredits(ethProvider, ethSigner, {
+        ipfsConfig: config.ipfs
+      });
       return kredits
         .init()
         .then((kredits) => {
