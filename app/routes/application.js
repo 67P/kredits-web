@@ -8,8 +8,8 @@ export default Route.extend({
     const kredits = this.kredits;
 
     return kredits.setup().then(() => {
-      kredits.get('kredits').healthcheck().catch((error) => {
-        console.error('Kredits healthcheck failed!');
+      kredits.get('kredits').preflightChecks().catch((error) => {
+        console.error('Kredits preflight check failed!');
         console.error(error);
       });
       if (kredits.get('accountNeedsUnlock')) {
