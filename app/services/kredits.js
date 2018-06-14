@@ -38,36 +38,38 @@ export default Service.extend({
         );
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
-          resolve(ethProvider);
+          const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
+          resolve({
+            ethProvider,
+            ethSigner
+          });
         });
       } else {
         console.debug('[kredits] Creating new instance from npm module class');
         networkId = parseInt(config.contractMetadata.networkId);
+        console.debug(`[kredits] networkId=${networkId} providerURL: ${config.web3ProviderUrl}`);
         ethProvider = new ethers.providers.JsonRpcProvider(
           config.web3ProviderUrl,
           { chainId: networkId }
         );
-        resolve(ethProvider);
+        resolve({
+          ethProvider: ethProvider,
+          ethSigner: null
+        });
       }
     });
   },
 
   setup() {
-    return this.getEthProvider().then((ethProvider) => {
-      let ethSigner;
+    return this.getEthProvider().then((providerAndSigner) => {
 
-      if (ethProvider.getSigner) {
-        ethSigner = ethProvider.getSigner();
-      }
-
-      let kredits = new Kredits(ethProvider, ethSigner, {
+      let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
         ipfsConfig: config.ipfs
       });
       return kredits
         .init()
         .then((kredits) => {
           this.set('kredits', kredits);
-
           if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
             this.getCurrentUser.then((contributorData) => {
               this.set('currentUser', contributorData);
