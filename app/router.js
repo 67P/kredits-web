@@ -7,7 +7,6 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('spinner');
   this.route('proposals', function() {
     this.route('new');
   });
