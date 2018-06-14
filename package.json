@@ -13,7 +13,7 @@
   "scripts": {
     "lint:js": "eslint ./*.js app config lib server tests",
     "start": "ember serve",
-    "kovan": "NETWORK_ID=42 ember serve",
+    "start:local": "NETWORK_ID=100 WEB3_PROVIDER_URL=http://localhost:7545 ember s",
     "test": "ember test",
     "build": "ember build",
     "build-prod": "ember build --environment production",
@@ -51,7 +51,7 @@
     "eslint-plugin-ember": "^5.0.0",
     "ethers": "3.0.15",
     "kosmos-schemas": "^1.1.2",
-    "kredits-contracts": "github:67P/kredits-contracts",
+    "kredits-contracts": "^3.x",
     "loader.js": "^4.2.3",
     "tv4": "^1.3.0"
   },

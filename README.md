@@ -22,7 +22,8 @@ You will need the following things properly installed on your computer.
 
 ## Running / Development
 
-* `ember serve`
+
+* `ember serve` - by default kredits-web connects to the Ethreum Kovan network
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 * Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
 
@@ -89,8 +90,8 @@ Get your local Ethereum development node running.
 
 With IPFS and Ethereum/ganache running, you can now start this Ember app.
 
-  * `npm link kredits-contracts` - link the local `kredits-contracts` package (it will become `kredits-contracts` soon)
-  * `npm start`
+  * `npm link kredits-contracts` - link the local `kredits-contracts` package
+  * `npm run start:local` - NETWORK_ID=100 and WEB3_PROVIDER_URL=http://localhost:7545 must be set for local settings
 
 #### IPFS
 

@@ -37,7 +37,7 @@ module.exports = function(environment) {
 
     contractMetadata: { networkId: '42' },
 
-    web3ProviderUrl: 'https://parity.kosmos.org:8545',
+    web3ProviderUrl: 'https://kovan.infura.io/keUVk6OMaAvpmRF3m57n',
 
     ipfs: {
       host: 'ipfs.kosmos.org',
@@ -52,8 +52,8 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.contractMetadata['networkId'] = '100';
-    ENV.web3ProviderUrl = 'http://localhost:7545';
+    ENV.contractMetadata['networkId'] = '42';
+    ENV.web3ProviderUrl = 'https://kovan.infura.io/keUVk6OMaAvpmRF3m57n';
 
     ENV.ipfs = {
       host: 'localhost',
