@@ -1,12 +1,15 @@
 {{#each proposals as |proposal|}}
-  <li data-proposal-id={{proposal.id}} title="({{proposal.kind}}) {{proposal.description}}">
-    <span class="category {{proposal.kind}}">♥</span>
-    <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
-    for <span class="recipient">{{proposal.contributor.name}}</span>
-    <span class="votes">({{proposal.votesCount}}/{{proposal.votesNeeded}} votes)</span>
-
-    {{#unless proposal.isExecuted}}
-      <button {{action "confirm" proposal.id}}>+1</button>
-    {{/unless}}
-  </li>
+  {{proposal-list/item
+    proposal=proposal
+    selectedProposals=selectedProposals
+    toggleSelect=(action 'toggleSelect')
+  }}
 {{/each}}
+
+{{#if confirmProposals}}
+  <center>
+    <button disabled={{submitButtonDisabled}} {{action 'confirm'}}>
+      Submit selected
+    </button>
+  </center>
+{{/if}}

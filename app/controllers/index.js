@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { alias, filter, filterBy, sort } from '@ember/object/computed';
 import { inject as injectService } from '@ember/service';
+import RSVP from 'rsvp';
 
 export default Controller.extend({
   kredits: injectService(),
@@ -20,10 +21,17 @@ export default Controller.extend({
   proposalsOpenSorted: sort('proposalsOpen', 'proposalsSorting'),
 
   actions: {
-    confirmProposal(proposalId) {
-      this.kredits.vote(proposalId).then(transaction => {
-        window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
-      });
+    confirmProposals(proposalIds) {
+      if (this.kredits.currentUser.isCore) {
+        return this.kredits.batchVote(proposalIds)
+          .then((transaction) => {
+            window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
+            return transaction;
+          });
+      } else {
+        window.alert('Only members can vote on proposals. Please ask someone to set you up.');
+        return RSVP.reject();
+      }
     },
 
     save(contributor) {
