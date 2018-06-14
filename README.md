@@ -57,13 +57,13 @@ _(You need collaborator permissions on the 5apps Deploy project.)_
 ## Working with locally deployed contracts
 
 The smart contracts and their JavaScript wrapper library are developed in the
-[truffle-kredits](https://github.com/67P/truffle-kredits) repo/package.
+[kredits-contracts](https://github.com/67P/kredits-contracts) repo/package.
 
 You can run `kredits-web` on your machine, against a local, simulated Ethereum
 network, provided e.g. by [ganache](http://truffleframework.com/ganache/) or
 [ganache-cli](https://github.com/trufflesuite/ganache-cli).
 
-[truffle-kredits](https://github.com/67P/truffle-kredits) holds all the tools
+[kredits-contracts](https://github.com/67P/kredits-contracts) holds all the tools
 to start and set up such a simulated network, as well as to deploy smart
 contracts to it.
 
@@ -76,21 +76,21 @@ Run a local IPFS deamon in offline mode.
   * Make sure CORS headers are configured. See [IPFS](#ipfs) for more info.
   * `ipfs daemon --offline`
 
-#### 2. truffle-kredits
+#### 2. kredits-contracts
 
 Get your local Ethereum development node running.
 
-  * Clone [truffle-kredits](https://github.com/67P/truffle-kredits)
+  * Clone [kredits-contracts](https://github.com/67P/kredits-contracts)
   * `npm install`
   * `npm run ganache` - which is basically: `ganache-cli -p 7545 -i 100` (we use the non-default port for local networks and a fixed network id)
   * `npm run bootstrap` - bootstrap runs fresh migrations, adds some seed data and writes the address/abi information to JSON that will be used by kredits-web
-  * `npm link` - make the `truffle-kredits` module linkable as `kredits-contracts` on your machine
+  * `npm link` - make the `kredits-contracts` module linkable as `kredits-contracts` on your machine
 
 #### 3. kredits-web
 
 With IPFS and Ethereum/ganache running, you can now start this Ember app.
 
-  * `npm link kredits-contracts` - link the local `truffle-kredits` package (it will become `kredits-contracts` soon)
+  * `npm link kredits-contracts` - link the local `kredits-contracts` package
   * `npm run start:local` - NETWORK_ID=100 and WEB3_PROVIDER_URL=http://localhost:7545 must be set for local settings
 
 #### IPFS
