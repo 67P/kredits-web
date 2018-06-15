@@ -7,9 +7,8 @@
 {{/each}}
 
 {{#if confirmProposals}}
-  <center>
-    <button disabled={{submitButtonDisabled}} {{action 'confirm'}}>
-      Submit selected
-    </button>
-  </center>
+  <p class="actions">
+    <input type="submit" disabled={{submitButtonDisabled}}
+           value="Confirm selected" {{action 'confirm'}}>
+  </p>
 {{/if}}
