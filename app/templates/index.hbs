@@ -1,65 +1,71 @@
-<section id="contributors">
-  <header>
-    <h2>Kosmos Contributors</h2>
-  </header>
-  <div class="content">
-    {{contributor-list contributors=contributorsSorted}}
+<main id="index">
 
-    <p class="stats">
-      <span class="number">{{await kredits.totalSupply}}</span> kredits issued and distributed among
-      <span class="number">{{contributorsWithKredits.length}}</span> contributors.
-    </p>
-  </div>
-</section>
-
-{{#if proposalsOpen}}
-  <section id="proposals-open">
+  <section id="people">
     <header>
-      <h2>Open Proposals</h2>
+      <h2>Contributors</h2>
     </header>
     <div class="content">
-      {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
-      {{proposal-list proposals=proposalsOpenSorted
-                      confirmProposal=(action "confirmProposal")
-                      contractInteractionEnabled=kredits.hasAccounts}}
+      {{contributor-list contributors=contributorsSorted}}
 
-      {{!-- TODO: We need a better naming --}}
-      {{#if kredits.hasAccounts}}
-        <p class="actions">
-          {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-        </p>
+      <p class="stats">
+        <span class="number">{{await kredits.totalSupply}}</span> kredits issued and distributed among
+        <span class="number">{{contributorsWithKredits.length}}</span> contributors.
+      </p>
+    </div>
+  </section>
+
+  <div id="contributions">
+    {{#if proposalsOpen}}
+      <section id="proposals-open">
+        <header>
+          <h2>Unconfirmed Contributions</h2>
+        </header>
+        <div class="content">
+          {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
+          {{proposal-list proposals=proposalsOpenSorted
+                          confirmProposal=(action "confirmProposal")
+                          contractInteractionEnabled=kredits.hasAccounts}}
+
+          {{!-- TODO: We need a better naming --}}
+          {{#if kredits.hasAccounts}}
+            <p class="actions">
+              {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+            </p>
+          {{/if}}
+        </div>
+      </section>
+    {{/if}}
+
+    <section id="proposals-closed">
+      <header>
+        <h2>Confirmed Contributions</h2>
+      </header>
+      <div class="content">
+        {{proposal-list proposals=proposalsClosedSorted
+                        confirmProposal=(action "confirmProposal")}}
+
+        {{!-- TODO: We need a better naming --}}
+        {{#if kredits.hasAccounts}}
+          <p class="actions">
+            {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+          </p>
+        {{/if}}
+      </div>
+    </section>
+  </div>
+
+  <section id="add-contributor">
+    <header>
+      <h2>Add Contributor</h2>
+    </header>
+
+    <div class="content">
+      {{#if kredits.currentUser.isCore}}
+        {{add-contributor contributors=contributors save=(action 'save')}}
+      {{else}}
+        Only core team members can add new contributors. Please ask someone to set you up.
       {{/if}}
     </div>
   </section>
-{{/if}}
 
-<section id="proposals-closed">
-  <header>
-    <h2>Closed Proposals</h2>
-  </header>
-  <div class="content">
-    {{proposal-list proposals=proposalsClosedSorted
-                    confirmProposal=(action "confirmProposal")}}
-
-    {{!-- TODO: We need a better naming --}}
-    {{#if kredits.hasAccounts}}
-      <p class="actions">
-        {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-      </p>
-    {{/if}}
-  </div>
-</section>
-
-<section id="add-contributor">
-  <header>
-    <h2>Add Contributor</h2>
-  </header>
-
-  <div class="content">
-    {{#if kredits.currentUser.isCore}}
-      {{add-contributor contributors=contributors save=(action 'save')}}
-    {{else}}
-      Only core team members can add new contributors. Please ask someone to set you up.
-    {{/if}}
-  </div>
-</section>
+</main>
