@@ -1,3 +1,17 @@
-<main>
+<header id="topbar">
+  <h1>Kosmos Kredits</h1>
+
+  <section id="user-account">
+    {{#if kredits.hasAccounts }}
+      {{#if kredits.currentUser}}
+        {{kredits.currentUser.name}}
+        {{#if kredits.currentUserIsCore}}(core){{/if}}
+      {{/if}}
+    {{else}}
+      Anonymous
+    {{/if}}
+  </section>
+</header>
+<main id="content">
   {{outlet}}
 </main>
