@@ -4,9 +4,8 @@ ul.proposal-list {
   list-style: none;
 
   li {
-    // display: block;
-    padding: 0 1.2rem;
-    line-height: 4.2rem;
+    display: block;
+    padding: 1rem 1.2rem;
     background-color: rgba(255,255,255,0.1);
     font-size: 1.2rem;
     border-bottom: 1px solid rgba(255,255,255,0.2);
@@ -14,8 +13,25 @@ ul.proposal-list {
       border-top: 1px solid rgba(255,255,255,0.2);
     }
 
+    p {
+      margin: 0;
+      font-size: inherit;
+      line-height: 2rem;
+
+      &.meta {
+        margin-bottom: 0.5rem;
+      }
+      // &.description {
+      //   line-height: 2rem;
+      // }
+    }
+
     span {
       font-size: inherit;
+    }
+
+    .description {
+      line-height: 1.4em;
     }
 
     .category {
