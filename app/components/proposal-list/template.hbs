@@ -1,16 +1,21 @@
 {{#each proposals as |proposal|}}
-  <li data-proposal-id={{proposal.id}} title="{{proposal.description}}">
+  <li data-proposal-id={{proposal.id}} title="{{proposal.description}}"
+      class={{if proposal.isExecuted "confirmed" "unconfirmed"}}>
     <p class="meta">
       <span class="category {{proposal.kind}}">♥ ({{proposal.kind}})</span>
       <span class="recipient">{{proposal.contributor.name}}:</span>
+    </p>
+    <p class="kredits-amount">
       <span class="amount">{{proposal.amount}}</span><span class="symbol">₭S</span>
+    </p>
+    <p class="description">
+      <span class="description">{{proposal.description}}</span>
+    </p>
+    <p class="voting">
       {{#unless proposal.isExecuted}}
         <span class="votes">({{proposal.votesCount}}/{{proposal.votesNeeded}} votes)</span>
         <button {{action "confirm" proposal.id}}>+1</button>
       {{/unless}}
-    </p>
-    <p class="description">
-      <span class="description">{{proposal.description}}</span>
     </p>
   </li>
 {{/each}}

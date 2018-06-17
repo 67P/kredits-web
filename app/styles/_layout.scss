@@ -22,21 +22,23 @@ main {
       grid-row-gap: 2rem;
       grid-template-columns: 2fr 4fr;
       grid-template-areas:
-      "people contributions"
+        "people contributions";
     }
   }
 }
 
 main section {
-  margin-bottom: 8rem;
+  margin-bottom: 5rem;
+
   &:first-of-type {
     margin-top: 2rem;
   }
 
   @include media($mobile) {
     margin-bottom: 5rem;
-    &:first-of-type {
-      margin-top: 2rem;
+
+    &#proposals-open, &#proposals-closed {
+      margin-top: 0;
     }
   }
 

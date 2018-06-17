@@ -25,13 +25,6 @@
           {{proposal-list proposals=proposalsOpenSorted
                           confirmProposal=(action "confirmProposal")
                           contractInteractionEnabled=kredits.hasAccounts}}
-
-          {{!-- TODO: We need a better naming --}}
-          {{#if kredits.hasAccounts}}
-            <p class="actions">
-              {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-            </p>
-          {{/if}}
         </div>
       </section>
     {{/if}}
@@ -43,29 +36,31 @@
       <div class="content">
         {{proposal-list proposals=proposalsClosedSorted
                         confirmProposal=(action "confirmProposal")}}
-
-        {{!-- TODO: We need a better naming --}}
-        {{#if kredits.hasAccounts}}
-          <p class="actions">
-            {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
-          </p>
-        {{/if}}
       </div>
+
+      {{!-- TODO: We need a better naming --}}
+      {{#if kredits.hasAccounts}}
+        <p class="actions">
+          {{#link-to 'proposals.new'}}Create new proposal{{/link-to}}
+        </p>
+      {{/if}}
     </section>
   </div>
 
-  <section id="add-contributor">
-    <header>
-      <h2>Add Contributor</h2>
-    </header>
+  {{#if kredits.hasAccounts}}
+    <section id="add-contributor">
+      <header>
+        <h2>Add Contributor</h2>
+      </header>
 
-    <div class="content">
-      {{#if kredits.currentUser.isCore}}
-        {{add-contributor contributors=contributors save=(action 'save')}}
-      {{else}}
-        Only core team members can add new contributors. Please ask someone to set you up.
-      {{/if}}
-    </div>
-  </section>
+      <div class="content">
+        {{#if kredits.currentUser.isCore}}
+          {{add-contributor contributors=contributors save=(action 'save')}}
+        {{else}}
+          Only core team members can add new contributors. Please ask someone to set you up.
+        {{/if}}
+      </div>
+    </section>
+  {{/if}}
 
 </main>
