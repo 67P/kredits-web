@@ -1,31 +1,53 @@
-section {
-  @include outer-container;
-  margin-bottom: 8rem;
+#topbar {
+  height: 3rem;
+}
+
+main {
+  padding: 1rem;
+
+  &#index {
+    width: 100%;
+    display: grid;
+    grid-row-gap: 2rem;
+    grid-template-areas:
+      "people"
+      "contributions";
+  }
+}
+
+@media (min-width: 550px) {
+  main {
+    &#index {
+      grid-column-gap: 4rem;
+      grid-row-gap: 2rem;
+      grid-template-columns: 2fr 4fr;
+      grid-template-areas:
+        "people contributions";
+    }
+  }
+}
+
+main section {
+  margin-bottom: 5rem;
+
   &:first-of-type {
-    margin-top: 6rem;
+    margin-top: 2rem;
   }
 
   @include media($mobile) {
     margin-bottom: 5rem;
-    &:first-of-type {
-      margin-top: 2rem;
+
+    &#proposals-open, &#proposals-closed {
+      margin-top: 0;
     }
   }
 
   header {
-    @include span-columns(12);
     padding-bottom: 3rem;
     text-align: center;
-    // background-color: purple;
 
     @include media($mobile) {
-      @include span-columns(10);
-      @include shift(1);
       padding-bottom: 2rem;
-    }
-
-    div.content {
-      @include span-columns(12);
     }
   }
 }

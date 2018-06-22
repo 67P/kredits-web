@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 *:hover, *:active, *:focus {
@@ -24,7 +25,6 @@ body {
   background-repeat: none;
   background-attachment: fixed;
   font-family: $font-family-sans;
-  font-size: 14px;
   font-weight: 300;
   color: #fff;
 }
@@ -43,14 +43,11 @@ h1, h2, h3, h4, h5, input, button {
 
 section {
   h2 {
-    font-size: 2.8rem;
+    font-size: 1.4rem;
     color: $primaryColor;
-    @include media($mobile) {
-      font-size: 2rem;
-    }
   }
 
-  &#contributors {
+  &#people {
     .content {
       p.stats {
         padding-top: 3rem;
@@ -100,6 +97,15 @@ button, input[type=submit] {
   }
 }
 
+@media (min-width: 550px) {
+  section {
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}
+
+@import "components/topbar";
 @import "components/loading-spinner";
 @import "components/contributor-list";
 @import "components/add-contributor";

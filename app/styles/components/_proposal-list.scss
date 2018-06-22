@@ -4,14 +4,44 @@ ul.proposal-list {
   list-style: none;
 
   li {
-    // display: block;
-    padding: 0 1.2rem;
-    line-height: 4.2rem;
+    display: grid;
+    grid-template-columns: auto 5rem;
+    grid-row-gap: 0.5rem;
+    padding: 1rem 1.2rem;
     background-color: rgba(255,255,255,0.1);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     border-bottom: 1px solid rgba(255,255,255,0.2);
+
     &:first-of-type {
       border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    p {
+      align-self: center;
+      margin: 0;
+      font-size: inherit;
+      line-height: 2rem;
+
+      &.kredits-amount, &.voting {
+        text-align: right;
+      }
+
+      &.description {
+        grid-column-start: span 2;
+      }
+
+      &.voting {
+        grid-column-start: span 2;
+      }
+    }
+
+    span {
+      font-size: inherit;
+    }
+
+    .description {
+      line-height: 1.4em;
+      font-size: 1rem;
     }
 
     .category {
@@ -23,30 +53,68 @@ ul.proposal-list {
       &.docs      { color: $green; }
       &.ops       { color: $purple; }
     }
+
     .amount {
       font-weight: 500;
     }
+
     .symbol {
       font-size: 1rem;
       font-weight: 500;
       padding-left: 0.2rem;
     }
+
     .recipient {
       font-weight: 500;
     }
+
     .votes {
       font-size: 1rem;
       color: $primaryColor;
-      padding-left: 0.5rem;
+      margin-right: 0.5rem;
     }
 
     button {
-      float: right;
-      margin-top: 1.1rem;
       height: 2rem;
       line-height: 2rem;
       padding: 0 0.6rem;
     }
   }
 
+}
+
+@media (min-width: 550px) {
+  ul.proposal-list {
+    li {
+      grid-template-columns: auto 10rem;
+      grid-row-gap: 0.5rem;
+
+      p {
+        &.kredits-amount, &.voting {
+          text-align: right;
+        }
+      }
+
+      &.unconfirmed {
+        p {
+          &.kredits-amount, &.voting {
+            text-align: right;
+          }
+
+          &.description {
+            grid-column-start: span 1;
+          }
+
+          &.voting {
+            grid-column-start: span 1;
+          }
+        }
+      }
+
+
+      .description {
+        font-size: inherit;
+      }
+    }
+  }
 }
