@@ -10,7 +10,7 @@ main {
     display: grid;
     grid-row-gap: 2rem;
     grid-template-areas:
-      "people"
+      "stats"
       "contributions";
   }
 }
@@ -22,7 +22,7 @@ main {
       grid-row-gap: 2rem;
       grid-template-columns: 2fr 4fr;
       grid-template-areas:
-        "people contributions";
+        "stats contributions";
     }
   }
 }

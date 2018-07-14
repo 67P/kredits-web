@@ -1,18 +1,29 @@
 <main id="index">
 
-  <section id="people">
-    <header>
-      <h2>Contributors</h2>
-    </header>
-    <div class="content">
-      {{contributor-list contributors=contributorsSorted}}
+  <div id="stats">
+    <section id="people">
+      <header>
+        <h2>Contributors</h2>
+      </header>
+      <div class="content">
+        {{contributor-list contributors=contributorsSorted}}
 
-      <p class="stats">
-        <span class="number">{{await kredits.totalSupply}}</span> kredits issued and distributed among
-        <span class="number">{{contributorsWithKredits.length}}</span> contributors.
-      </p>
-    </div>
-  </section>
+        <p class="stats">
+          <span class="number">{{await kredits.totalSupply}}</span> kredits issued and distributed among
+          <span class="number">{{contributorsWithKredits.length}}</span> contributors.
+        </p>
+      </div>
+    </section>
+
+    <section id="contributions-by-type">
+      <header>
+        <h2>Contributions by type</h2>
+      </header>
+      <div class="content">
+        {{chart-contributions-by-type contributions=proposalsClosed}}
+      </div>
+    </section>
+  </div>
 
   <div id="contributions">
     {{#if proposalsOpen}}
