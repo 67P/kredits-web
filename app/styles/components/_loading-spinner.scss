@@ -11,7 +11,7 @@
   margin-top: 12rem;
   text-align: center;
   font-size: 1.4rem;
-  color: $primaryColor;
+  color: $primary-color;
 
   @include media($mobile) {
     margin-top: 6rem;
@@ -23,7 +23,7 @@
     margin-bottom: 2rem;
 
     #path-comet {
-      fill: $primaryColor;
+      fill: $primary-color;
       opacity: 0.1;
 
       animation-name: pulse;

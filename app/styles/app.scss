@@ -21,12 +21,10 @@
 $font-family-sans: 'Open Sans', sans-serif;
 
 body {
-  background-image: url('/img/bg.jpg');
-  background-repeat: none;
-  background-attachment: fixed;
+  @include body-background;
   font-family: $font-family-sans;
   font-weight: 300;
-  color: #fff;
+  color: $body-text-color;
 }
 
 @media screen and (min-width: 900px) {
@@ -44,7 +42,7 @@ h1, h2, h3, h4, h5, input, button {
 section {
   h2 {
     font-size: 1.4rem;
-    color: $primaryColor;
+    color: $primary-color;
   }
 
   &#people {
@@ -68,14 +66,14 @@ section {
     .actions {
       padding-top: 3rem;
       font-size: 1rem;
-      color: $primaryColor;
+      color: $primary-color;
       text-align: center;
       @include media($mobile) {
         padding-top: 2rem;
       }
 
       a {
-        color: $primaryColor;
+        color: $primary-color;
       }
     }
   }
@@ -85,7 +83,7 @@ button, input[type=submit] {
   display: inline-block;
   border: 1px solid rgba(22, 21, 40, 1);
   background-color: rgba(22, 21, 40, 0.6);
-  color: $primaryColor;
+  color: $primary-color;
   border-radius: 3px;
   font-weight: 500;
   text-transform: uppercase;
