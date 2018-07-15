@@ -6,21 +6,24 @@ import hbs from 'htmlbars-inline-precompile';
 module('Integration | Component | chart-contributions-by-type', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+  let proposals = [
+    { kind: 'dev', amount: 500 },
+    { kind: 'dev', amount: 1500 },
+    { kind: 'ops', amount: 1500 },
+    { kind: 'design', amount: 5000 },
+    { kind: 'ops', amount: 1500 },
+    { kind: 'dev', amount: 5000 },
+    { kind: 'community', amount: 5000 },
+    { kind: 'docs', amount: 500 },
+    { kind: 'docs', amount: 500 },
+    { kind: 'docs', amount: 500 },
+  ];
 
-    await render(hbs`{{chart-contributions-by-type}}`);
+  test('it renders', async function(assert) {
+    this.set('proposals', proposals);
+
+    await render(hbs`{{chart-contributions-by-type contributions=proposals}}`);
 
     assert.equal(this.element.textContent.trim(), '');
-
-    // Template block usage:
-    await render(hbs`
-      {{#chart-contributions-by-type}}
-        template block text
-      {{/chart-contributions-by-type}}
-    `);
-
-    assert.equal(this.element.textContent.trim(), 'template block text');
   });
 });
