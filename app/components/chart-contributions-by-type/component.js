@@ -18,11 +18,7 @@ export default Component.extend({
                       .map(c => {
                         return { kind: c.kind, amount: c.amount }
                       }).reduce(function (kinds, c) {
-                        if (c.kind in kinds) {
-                          kinds[c.kind] = kinds[c.kind] + c.amount
-                        } else {
-                          kinds[c.kind] = c.amount;
-                        }
+                        kinds[c.kind] = (kinds[c.kind] || 0) + c.amount;
                         return kinds;
                       }, {});
 
