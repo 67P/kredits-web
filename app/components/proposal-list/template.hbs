@@ -1,6 +1,5 @@
 {{#each proposals as |proposal|}}
-  <li data-proposal-id={{proposal.id}} title="{{proposal.description}}"
-      class={{if proposal.isExecuted "confirmed" "unconfirmed"}}>
+  <li data-proposal-id={{proposal.id}} class={{if proposal.isExecuted "confirmed" "unconfirmed"}}>
     <p class="meta">
       <span class="category {{proposal.kind}}">♥ ({{proposal.kind}})</span>
       <span class="recipient">{{proposal.contributor.name}}:</span>
