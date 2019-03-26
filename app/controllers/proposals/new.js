@@ -1,9 +1,9 @@
 import Controller from '@ember/controller';
 import { alias, filterBy } from '@ember/object/computed';
-import { inject as injectService } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
-  kredits: injectService(),
+  kredits: service(),
 
   contributors: alias('kredits.contributors'),
   minedContributors: filterBy('contributors', 'id'),

@@ -3,6 +3,7 @@ import { alias } from '@ember/object/computed';
 import bignumber from 'kredits-web/utils/cps/bignumber';
 
 export default EmberObject.extend({
+
   // Contract
   id: bignumber('idRaw', 'toString'),
   creatorAccount: null,
@@ -19,7 +20,13 @@ export default EmberObject.extend({
   // IPFS
   kind: null,
   description: null,
-  details: {},
+  details: null,
   url: null,
   ipfsData: '',
+
+  init () {
+    this._super(...arguments);
+    this.set('details', {});
+  }
+
 });

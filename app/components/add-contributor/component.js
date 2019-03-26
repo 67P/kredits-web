@@ -1,27 +1,12 @@
 import Component from '@ember/component';
 import { and, notEmpty } from '@ember/object/computed';
-import { inject as injectService } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 
 export default Component.extend({
-  kredits: injectService(),
+  kredits: service(),
 
-  // Default attributes used by reset
-  attributes: {
-    account: null,
-    name: null,
-    kind: 'person',
-    url: null,
-    github_username: null,
-    github_uid: null,
-    wiki_username: null,
-    isCore: false,
-  },
-
-  didInsertElement() {
-    this._super(...arguments);
-    this.reset();
-  },
+  attributes: null,
 
   // TODO: add proper address validation
   isValidAccount: notEmpty('account'),
@@ -35,6 +20,27 @@ export default Component.extend({
     'isValidName',
     'isValidGithubUID'
   ),
+
+  init () {
+    this._super(...arguments);
+
+    // Default attributes used by reset
+    this.set('attributes', {
+      account: null,
+      name: null,
+      kind: 'person',
+      url: null,
+      github_username: null,
+      github_uid: null,
+      wiki_username: null,
+      isCore: false
+    });
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    this.reset();
+  },
 
   reset: function() {
     this.setProperties(this.attributes);
@@ -61,4 +67,5 @@ export default Component.extend({
       });
     }
   }
+
 });

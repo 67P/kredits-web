@@ -12,6 +12,11 @@ let categoryColors = {
 export default Component.extend({
 
   contributions: null,
+  chartOptions: Object.freeze({
+    legend: {
+      display: false
+    }
+  }),
 
   chartData: computed('contributions', function() {
     let kredits = this.contributions
@@ -52,12 +57,6 @@ export default Component.extend({
         'Documentation'
       ],
     }
-  }),
-
-  chartOptions: {
-    legend: {
-      display: false
-    }
-  }
+  })
 
 });
