@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | add proposal', function(hooks) {
@@ -13,6 +13,6 @@ module('Integration | Component | add proposal', function(hooks) {
 
     await render(hbs`{{add-proposal}}`);
 
-    assert.equal(find('.actions a').textContent.trim(), 'Back');
+    assert.dom('.actions a').hasText('Back');
   });
 });

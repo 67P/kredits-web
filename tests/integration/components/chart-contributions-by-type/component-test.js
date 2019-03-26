@@ -24,6 +24,6 @@ module('Integration | Component | chart-contributions-by-type', function(hooks) 
 
     await render(hbs`{{chart-contributions-by-type contributions=proposals}}`);
 
-    assert.equal(this.element.textContent.trim(), '');
+    assert.dom(this.element).hasText('');
   });
 });

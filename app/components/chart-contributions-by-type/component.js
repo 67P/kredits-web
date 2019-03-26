@@ -14,7 +14,7 @@ export default Component.extend({
   contributions: null,
 
   chartData: computed('contributions', function() {
-    let kredits = this.get('contributions')
+    let kredits = this.contributions
                       .map(c => {
                         return { kind: c.kind, amount: c.amount }
                       }).reduce(function (kinds, c) {
