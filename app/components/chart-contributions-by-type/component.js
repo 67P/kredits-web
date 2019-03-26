@@ -12,6 +12,17 @@ let categoryColors = {
 export default Component.extend({
 
   contributions: null,
+  chartOptions: null,
+
+  init () {
+    this._super(...arguments);
+
+    this.set('chartOptions', {
+      legend: {
+        display: false
+      }
+    });
+  },
 
   chartData: computed('contributions', function() {
     let kredits = this.contributions
@@ -52,12 +63,6 @@ export default Component.extend({
         'Documentation'
       ],
     }
-  }),
-
-  chartOptions: {
-    legend: {
-      display: false
-    }
-  }
+  })
 
 });

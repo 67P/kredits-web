@@ -1,21 +1,21 @@
 import Controller from '@ember/controller';
 import { alias, filter, filterBy, sort } from '@ember/object/computed';
-import { inject as injectService } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
-  kredits: injectService(),
+  kredits: service(),
 
   contributors: alias('kredits.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
     return contributor.get('balance') !== 0;
   }),
-  contributorsSorting: ['balance:desc'],
+  contributorsSorting: Object.freeze(['balance:desc']),
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
 
   proposals: alias('kredits.proposals'),
   proposalsOpen: filterBy('proposals', 'isExecuted', false),
   proposalsClosed: filterBy('proposals', 'isExecuted', true),
-  proposalsSorting: ['id:desc'],
+  proposalsSorting: Object.freeze(['id:desc']),
   proposalsClosedSorted: sort('proposalsClosed', 'proposalsSorting'),
   proposalsOpenSorted: sort('proposalsOpen', 'proposalsSorting'),
 

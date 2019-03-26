@@ -1,8 +1,8 @@
-import { inject as injectService } from '@ember/service';
+import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 
 export default Route.extend({
-  kredits: injectService(),
+  kredits: service(),
 
   beforeModel(transition) {
     const kredits = this.kredits;
