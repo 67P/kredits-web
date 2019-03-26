@@ -20,25 +20,25 @@
     {{input type="text"
             placeholder="100"
             value=amount
-            class=(if isValidAmount 'valid' '')}}
+            class=(if isValidAmount "valid" "")}}
   </p>
   <p>
     {{input type="text"
             placeholder="Description"
             value=description
-            class=(if isValidDescription 'valid' '')}}
+            class=(if isValidDescription "valid" "")}}
   </p>
   <p>
     {{input type="text"
             placeholder="URL (optional)"
             value=url
-            class=(if isValidUrl 'valid' '')}}
+            class=(if isValidUrl "valid" "")}}
   </p>
   <p class="actions">
     {{input type="submit"
             disabled=(is-pending inProgress)
-            value=(if (is-pending inProgress) 'Processing' 'Save')}}
-    {{#link-to 'index'}}Back{{/link-to}}
+            value=(if (is-pending inProgress) "Processing" "Save")}}
+    {{#link-to "index"}}Back{{/link-to}}
   </p>
 </form>
 
