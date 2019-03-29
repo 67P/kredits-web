@@ -52,7 +52,6 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.contractMetadata['networkId'] = '42';
     ENV.web3ProviderUrl = 'https://kovan.infura.io/keUVk6OMaAvpmRF3m57n';
 
     ENV.ipfs = {
@@ -78,9 +77,6 @@ module.exports = function(environment) {
     // here you can enable a production-specific feature
   }
 
-  if (process.env.NETWORK_ID) {
-    ENV.contractMetadata['networkId'] = process.env.NETWORK_ID;
-  }
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
   }
