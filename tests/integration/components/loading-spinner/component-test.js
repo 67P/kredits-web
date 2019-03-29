@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | loading spinner', function(hooks) {
@@ -13,6 +13,6 @@ module('Integration | Component | loading spinner', function(hooks) {
 
     await render(hbs`{{loading-spinner}}`);
 
-    assert.equal(find('*').textContent.trim(), 'Loading data from Ethereum...');
+    assert.dom('*').hasText('Loading data from Ethereum...');
   });
 });

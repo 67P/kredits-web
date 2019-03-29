@@ -3,21 +3,9 @@ import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
 
 export default Component.extend({
-  // Default attributes used by reset
-  attributes: {
-    contributorId: null,
-    kind: 'community',
-    amount: null,
-    description: null,
-    url: null,
-  },
 
-  didInsertElement() {
-    this._super(...arguments);
-    this.reset();
-  },
-
-  contributors: [],
+  attributes: null,
+  contributors: null,
 
   isValidContributor: notEmpty('contributorId'),
   isValidAmount: computed('amount', function() {
@@ -28,6 +16,26 @@ export default Component.extend({
   isValid: and('isValidContributor',
                'isValidAmount',
                'isValidDescription'),
+
+  init () {
+    this._super(...arguments);
+
+    // Default attributes used by reset
+    this.set('attributes', {
+      contributorId: null,
+      kind: 'community',
+      amount: null,
+      description: null,
+      url: null,
+    });
+
+    this.set('contributors', []);
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    this.reset();
+  },
 
   reset: function() {
     this.setProperties(this.attributes);
@@ -54,4 +62,5 @@ export default Component.extend({
       });
     }
   }
+
 });

@@ -16,12 +16,20 @@ export default Service.extend({
 
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
+  contributors: null,
+  proposals: null,
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
   accountNeedsUnlock: computed('currentUserAccounts', function() {
     return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
   }),
+
+  init () {
+    this._super(...arguments);
+    this.set('contributors', []);
+    this.set('proposals', []);
+  },
 
   // this is called in the routes beforeModel().  So it is initialized before everything else
   // and we can rely on the ethProvider and the potential currentUserAccounts to be available
@@ -83,9 +91,6 @@ export default Service.extend({
   totalSupply: computed(function() {
     return this.kredits.Token.functions.totalSupply();
   }),
-
-  contributors: [],
-  proposals: [],
 
   loadContributorsAndProposals() {
     return this.getContributors()
