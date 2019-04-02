@@ -35,8 +35,6 @@ module.exports = function(environment) {
       ]
     },
 
-    contractMetadata: { networkId: '42' },
-
     web3ProviderUrl: 'https://kovan.infura.io/keUVk6OMaAvpmRF3m57n',
 
     ipfs: {
@@ -79,6 +77,12 @@ module.exports = function(environment) {
 
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
+  }
+  if (process.env.KREDITS_KERNEL_ADDRESS) {
+    ENV.kreditsKernelAddress = process.env.KREDITS_KERNEL_ADDRESS;
+  }
+  if (process.env.KREDITS_APM_DOMAIN) {
+    ENV.kreditsApmDomain = process.env.KREDITS_APM_DOMAIN;
   }
 
   return ENV;

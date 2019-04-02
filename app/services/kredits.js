@@ -11,7 +11,6 @@ import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
 
-
 export default Service.extend({
 
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -36,7 +35,6 @@ export default Service.extend({
   getEthProvider: function() {
     return new RSVP.Promise((resolve) => {
       let ethProvider;
-      let networkId;
       if (typeof window.web3 !== 'undefined') {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider);
@@ -50,8 +48,7 @@ export default Service.extend({
         });
       } else {
         console.debug('[kredits] Creating new instance from npm module class');
-        networkId = parseInt(config.contractMetadata.networkId);
-        console.debug(`[kredits] networkId=${networkId} providerURL: ${config.web3ProviderUrl}`);
+        console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
         ethProvider = new ethers.providers.JsonRpcProvider(config.web3ProviderUrl);
         resolve({
           ethProvider: ethProvider,
@@ -65,6 +62,8 @@ export default Service.extend({
     return this.getEthProvider().then((providerAndSigner) => {
 
       let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
+        addresses: { Kernel: config.kreditsKernelAddress },
+        apm: config.kreditsApmDomain,
         ipfsConfig: config.ipfs
       });
       return kredits
