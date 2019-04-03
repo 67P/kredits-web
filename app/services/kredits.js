@@ -11,7 +11,6 @@ import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
 
-
 export default Service.extend({
 
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -36,14 +35,9 @@ export default Service.extend({
   getEthProvider: function() {
     return new RSVP.Promise((resolve) => {
       let ethProvider;
-      let networkId;
       if (typeof window.web3 !== 'undefined') {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
-        networkId = parseInt(window.web3.version.network);
-        ethProvider = new ethers.providers.Web3Provider(
-          window.web3.currentProvider,
-          { chainId: networkId }
-        );
+        ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider);
         ethProvider.listAccounts().then((accounts) => {
           this.set('currentUserAccounts', accounts);
           const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
@@ -54,12 +48,8 @@ export default Service.extend({
         });
       } else {
         console.debug('[kredits] Creating new instance from npm module class');
-        networkId = parseInt(config.contractMetadata.networkId);
-        console.debug(`[kredits] networkId=${networkId} providerURL: ${config.web3ProviderUrl}`);
-        ethProvider = new ethers.providers.JsonRpcProvider(
-          config.web3ProviderUrl,
-          { chainId: networkId }
-        );
+        console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
+        ethProvider = new ethers.providers.JsonRpcProvider(config.web3ProviderUrl);
         resolve({
           ethProvider: ethProvider,
           ethSigner: null
@@ -72,6 +62,8 @@ export default Service.extend({
     return this.getEthProvider().then((providerAndSigner) => {
 
       let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
+        addresses: { Kernel: config.kreditsKernelAddress },
+        apm: config.kreditsApmDomain,
         ipfsConfig: config.ipfs
       });
       return kredits
@@ -121,7 +113,7 @@ export default Service.extend({
   addProposal(attributes) {
     console.debug('[kredits] add proposal', attributes);
 
-    return this.kredits.Operator.addProposal(attributes)
+    return this.kredits.Proposal.addProposal(attributes)
       .then((data) => {
         console.debug('[kredits] add proposal response', data);
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
@@ -130,7 +122,7 @@ export default Service.extend({
   },
 
   getProposals() {
-    return this.kredits.Operator.all()
+    return this.kredits.Proposal.all()
       .then((proposals) => {
         return proposals.map((proposal) => {
           proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
@@ -142,7 +134,7 @@ export default Service.extend({
   vote(proposalId) {
     console.debug('[kredits] vote for', proposalId);
 
-    return this.kredits.Operator.functions.vote(proposalId)
+    return this.kredits.Proposal.functions.vote(proposalId)
       .then((data) => {
         console.debug('[kredits] vote response', data);
         return data;
@@ -172,8 +164,8 @@ export default Service.extend({
 
   // Contract events
   addContractEventHandlers() {
-    // Operator events
-    this.kredits.Operator
+    // Proposal events
+    this.kredits.Proposal
       .on('ProposalCreated', this.handleProposalCreated.bind(this))
       .on('ProposalVoted', this.handleProposalVoted.bind(this))
       .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
@@ -191,7 +183,7 @@ export default Service.extend({
       return;
     }
 
-    this.kredits.Operator.getById(proposalId)
+    this.kredits.Proposal.getById(proposalId)
       .then((proposal) => {
         proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
         this.proposals.pushObject(Proposal.create(proposal));
