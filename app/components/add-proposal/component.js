@@ -28,8 +28,6 @@ export default Component.extend({
       description: null,
       url: null,
     });
-
-    this.set('contributors', []);
   },
 
   didInsertElement() {
