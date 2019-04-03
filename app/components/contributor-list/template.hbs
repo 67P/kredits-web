@@ -1,6 +1,6 @@
 <tbody>
   {{#each contributors as |contributor|}}
-    <tr role="button" class={{if contributor.isCurrentUser "current-user"}} {{action "toggleContributorInfo" contributor}}>
+    <tr role="button" class={{if (is-current-user contributor) "current-user"}} {{action "toggleContributorInfo" contributor}}>
       <td class="person">
         <img class="avatar" src={{contributor.avatarURL}} alt="">
         {{contributor.name}}
@@ -10,7 +10,7 @@
         <span class="symbol">₭S</span>
       </td>
     </tr>
-    <tr class="metadata {{if contributor.isCurrentUser "current-user"}} {{if contributor.showMetadata "visible"}}">
+    <tr class="metadata {{if (is-current-user contributor) "current-user"}} {{if contributor.showMetadata "visible"}}">
       <td colspan="2">
         <ul>
           <li><a href="https://testnet.etherscan.io/address/{{contributor.account}}">Inspect Ethereum transactions</a></li>

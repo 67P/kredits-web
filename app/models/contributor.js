@@ -19,9 +19,6 @@ export default EmberObject.extend({
   wiki_username: null,
   ipfsData: '',
 
-  // Deprecated
-  isCurrentUser: false,
-
   avatarURL: computed('github_uid', function() {
     let github_uid = this.github_uid;
     if (github_uid) {
