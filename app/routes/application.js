@@ -8,6 +8,10 @@ export default Route.extend({
     const kredits = this.kredits;
 
     return kredits.setup().then(() => {
+      kredits.get('kredits').preflightChecks().catch((error) => {
+        console.error('Kredits preflight check failed!');
+        console.error(error);
+      });
       if (kredits.get('accountNeedsUnlock')) {
         if (confirm('It looks like you have an Ethereum wallet available. Please unlock your account.')) {
           transition.retry();
