@@ -5,7 +5,7 @@ import { and, notEmpty } from '@ember/object/computed';
 export default Component.extend({
 
   attributes: null,
-  contributors: null,
+  contributors: Object.freeze([]),
 
   isValidContributor: notEmpty('contributorId'),
   isValidAmount: computed('amount', function() {
@@ -28,8 +28,6 @@ export default Component.extend({
       description: null,
       url: null,
     });
-
-    this.set('contributors', []);
   },
 
   didInsertElement() {
