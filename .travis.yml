@@ -1,10 +1,10 @@
 ---
 language: node_js
 node_js:
-  - "6"
+  - "lts/*"
 
 sudo: false
-dist: trusty
+dist: precise
 
 addons:
   chrome: stable
