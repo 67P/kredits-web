@@ -33,20 +33,10 @@ export default Service.extend({
   // this is called in the routes beforeModel().  So it is initialized before everything else
   // and we can rely on the ethProvider and the potential currentUserAccounts to be available
   getEthProvider: function() {
-    return new RSVP.Promise((resolve) => {
-      let ethProvider;
-      if (typeof window.web3 !== 'undefined') {
-        console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
-        ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider);
-        ethProvider.listAccounts().then((accounts) => {
-          this.set('currentUserAccounts', accounts);
-          const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
-          resolve({
-            ethProvider,
-            ethSigner
-          });
-        });
-      } else {
+    let ethProvider;
+
+    return new RSVP.Promise(async (resolve) => {
+      function instantiateWithoutAccount () {
         console.debug('[kredits] Creating new instance from npm module class');
         console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
         ethProvider = new ethers.providers.JsonRpcProvider(config.web3ProviderUrl);
@@ -54,6 +44,39 @@ export default Service.extend({
           ethProvider: ethProvider,
           ethSigner: null
         });
+      }
+
+      function instantiateWithAccount (web3, context) {
+        console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
+        ethProvider = new ethers.providers.Web3Provider(web3.currentProvider);
+        ethProvider.listAccounts().then(accounts => {
+          context.set('currentUserAccounts', accounts);
+          const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
+          resolve({
+            ethProvider,
+            ethSigner
+          });
+        });
+      }
+
+      if (window.ethereum) {
+        window.web3 = new window.Web3(window.ethereum);
+        try {
+          // Request account access if needed
+          await window.ethereum.enable();
+          // Acccounts now exposed
+          instantiateWithAccount(window.web3, this);
+        } catch (error) {
+          instantiateWithoutAccount();
+        }
+      }
+      // Legacy dapp browsers...
+      else if (window.web3) {
+        instantiateWithAccount(window.web3, this);
+      }
+      // Non-dapp browsers...
+      else {
+        instantiateWithoutAccount();
       }
     });
   },
