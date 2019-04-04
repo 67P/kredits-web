@@ -5,7 +5,7 @@ import RSVP from 'rsvp';
 import Service from '@ember/service';
 import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
-import { isEmpty } from '@ember/utils';
+import { isEmpty, isPresent } from '@ember/utils';
 
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
@@ -35,7 +35,20 @@ export default Service.extend({
   getEthProvider: function() {
     return new RSVP.Promise((resolve) => {
       let ethProvider;
-      if (typeof window.web3 !== 'undefined') {
+      if (isPresent(window.ethereum)) {
+        window.web3 = new window.Web3(window.ethereum);
+        window.ethereum.enable().then(() => {
+          ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider);
+          ethProvider.listAccounts().then((accounts) => {
+            this.set('currentUserAccounts', accounts);
+            const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
+            resolve({
+              ethProvider,
+              ethSigner
+            });
+          });
+        });
+      } else if (isPresent(window.web3)) {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         ethProvider = new ethers.providers.Web3Provider(window.web3.currentProvider);
         ethProvider.listAccounts().then((accounts) => {
