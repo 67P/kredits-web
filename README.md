@@ -61,8 +61,7 @@ The smart contracts and their JavaScript wrapper library are developed in the
 [kredits-contracts](https://github.com/67P/kredits-contracts) repo/package.
 
 You can run `kredits-web` on your machine, against a local, simulated Ethereum
-network, provided e.g. by [ganache](http://truffleframework.com/ganache/) or
-[ganache-cli](https://github.com/trufflesuite/ganache-cli).
+network, provided e.g. by [ganache](http://truffleframework.com/ganache/).
 
 [kredits-contracts](https://github.com/67P/kredits-contracts) holds all the tools
 to start and set up such a simulated network, as well as to deploy smart
@@ -86,7 +85,7 @@ for details.
   * `npm install`
   * `npm run devchain` - runs a local development chain
   * `npm run bootstrap` - bootstrap runs deploys all the contracts 
-  * `npm link` - make the `kredits-contracts` module linkable as `kredits-contracts` on your machine (currently broken :()
+  * `npm link` - make the `kredits-contracts` module linkable as `kredits-contracts` on your machine (currently broken :( )
 
 #### 3. kredits-web
 
@@ -98,7 +97,7 @@ With IPFS and Ethereum/ganache running, you can now start this Ember app.
 If you restart the devchain your network ID changes. So kredits-contracts does not find the correct DAO Kernel address. 
 If that is the case the DAO address must be provided as `KREDITS_KERNEL_ADDRESS` environment variable.
 
-    * `KREDITS_KERNEL_ADDRESS=<0xYOURADDRESS> npm run start:local` - find your address with the `npm run dao:address` command in the kredits-contracts repo.
+  * `KREDITS_KERNEL_ADDRESS=<0xYOURADDRESS> npm run start:local` - find your address with the `npm run dao:address` command in the kredits-contracts repo.
 
 #### IPFS
 
