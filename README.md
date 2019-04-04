@@ -79,20 +79,26 @@ Run a local IPFS deamon in offline mode.
 
 #### 2. kredits-contracts
 
-Get your local Ethereum development node running.
+Get your local Ethereum development node running. (See [kredits-contracts README](https://github.com/67P/kredits-contracts) 
+for details.
 
   * Clone [kredits-contracts](https://github.com/67P/kredits-contracts)
   * `npm install`
-  * `npm run ganache` - which is basically: `ganache-cli -p 7545 -i 100` (we use the non-default port for local networks and a fixed network id)
-  * `npm run bootstrap` - bootstrap runs fresh migrations, adds some seed data and writes the address/abi information to JSON that will be used by kredits-web
-  * `npm link` - make the `kredits-contracts` module linkable as `kredits-contracts` on your machine
+  * `npm run devchain` - runs a local development chain
+  * `npm run bootstrap` - bootstrap runs deploys all the contracts 
+  * `npm link` - make the `kredits-contracts` module linkable as `kredits-contracts` on your machine (currently broken :()
 
 #### 3. kredits-web
 
 With IPFS and Ethereum/ganache running, you can now start this Ember app.
 
   * `npm link kredits-contracts` - link the local `kredits-contracts` package
-  * `npm run start:local` - NETWORK_ID=100 and WEB3_PROVIDER_URL=http://localhost:7545 must be set for local settings
+  * `npm run start:local` - WEB3_PROVIDER_URL=http://localhost:7545 must be set for local settings
+
+If you restart the devchain your network ID changes. So kredits-contracts does not find the correct DAO Kernel address. 
+If that is the case the DAO address must be provided as `KREDITS_KERNEL_ADDRESS` environment variable.
+
+    * `KREDITS_KERNEL_ADDRESS=<0xYOURADDRESS> npm run start:local` - find your address with the `npm run dao:address` command in the kredits-contracts repo.
 
 #### IPFS
 
