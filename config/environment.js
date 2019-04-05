@@ -35,7 +35,7 @@ module.exports = function(environment) {
       ]
     },
 
-    web3ProviderUrl: 'https://kovan.infura.io/keUVk6OMaAvpmRF3m57n',
+    web3ProviderUrl: 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9',
 
     ipfs: {
       host: 'ipfs.kosmos.org',
@@ -50,7 +50,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.web3ProviderUrl = 'https://kovan.infura.io/keUVk6OMaAvpmRF3m57n';
+    ENV.web3ProviderUrl = 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9';
 
     ENV.ipfs = {
       host: 'localhost',
