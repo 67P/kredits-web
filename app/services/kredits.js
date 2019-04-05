@@ -171,7 +171,6 @@ export default Service.extend({
     return this.kredits.Contributor
       .functions.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
       .then((id) => {
-        id = id.toNumber();
         // check if the user is a contributor or not
         if (id === 0) {
           return RSVP.resolve();
@@ -234,7 +233,7 @@ export default Service.extend({
 
     this.contributors
         .findBy('id', contributorId.toString())
-        .incrementProperty('balance', amount.toNumber());
+        .incrementProperty('balance', amount);
   },
 
   handleTransfer(from, to, value) {
