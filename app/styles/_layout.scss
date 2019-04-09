@@ -36,10 +36,6 @@ main section {
 
   @include media-max(small) {
     margin-bottom: 5rem;
-
-    &#proposals-open, &#proposals-closed {
-      margin-top: 0;
-    }
   }
 
   header {
