@@ -13,8 +13,8 @@
   "scripts": {
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
-    "start": "ember serve",
     "test": "ember test",
+    "start": "KREDITS_APM_DOMAIN=open.aragonpm.eth ember serve",
     "start:local": "WEB3_PROVIDER_URL=http://localhost:7545 ember s",
     "build": "ember build",
     "build-prod": "ember build --environment production",
