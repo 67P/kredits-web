@@ -10,13 +10,16 @@ import { isEmpty } from '@ember/utils';
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
+import Contribution from 'kredits-web/models/contribution'
 
 export default Service.extend({
 
+  currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
   contributors: null,
   proposals: null,
+  contributions: null,
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
@@ -28,6 +31,7 @@ export default Service.extend({
     this._super(...arguments);
     this.set('contributors', []);
     this.set('proposals', []);
+    this.set('contributions', []);
   },
 
   // this is called in the routes beforeModel().  So it is initialized before everything else
@@ -83,7 +87,6 @@ export default Service.extend({
 
   setup() {
     return this.getEthProvider().then((providerAndSigner) => {
-
       let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
         addresses: { Kernel: config.kreditsKernelAddress },
         apm: config.kreditsApmDomain,
@@ -91,13 +94,16 @@ export default Service.extend({
       });
       return kredits
         .init()
-        .then((kredits) => {
+        .then(async (kredits) => {
           this.set('kredits', kredits);
+          this.set('currentBlock', await kredits.provider.getBlockNumber());
+
           if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
             this.getCurrentUser.then((contributorData) => {
               this.set('currentUser', contributorData);
             });
           }
+
           return kredits;
         });
     });
@@ -107,11 +113,11 @@ export default Service.extend({
     return this.kredits.Token.functions.totalSupply();
   }),
 
-  loadContributorsAndProposals() {
+  loadInitialData() {
     return this.getContributors()
                .then(contributors => this.contributors.pushObjects(contributors))
-               .then(() => this.getProposals())
-               .then(proposals => this.proposals.pushObjects(proposals))
+               .then(() => this.getContributions())
+               .then(contributions => this.contributions.pushObjects(contributions))
   },
 
   addContributor(attributes) {
@@ -154,6 +160,16 @@ export default Service.extend({
       });
   },
 
+  getContributions() {
+    return this.kredits.Contribution.all()
+      .then(contributions => {
+        return contributions.map(contribution => {
+          contribution.contributor = this.contributors.findBy('id', contribution.contributorId.toString());
+          return Contribution.create(contribution);
+        });
+      });
+  },
+
   vote(proposalId) {
     console.debug('[kredits] vote for', proposalId);
 
@@ -182,6 +198,10 @@ export default Service.extend({
 
   findProposalById(proposalId) {
     return this.proposals.findBy('id', proposalId.toString());
+  },
+
+  findContributionById(contributionId) {
+    return this.contributions.findBy('id', contributionId.toString());
   },
 
   // Contract events

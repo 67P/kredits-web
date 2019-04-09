@@ -23,7 +23,7 @@ export default Route.extend({
   },
 
   afterModel() {
-    return this.kredits.loadContributorsAndProposals()
+    return this.kredits.loadInitialData()
       .then(() => {
         this.kredits.addContractEventHandlers();
       });

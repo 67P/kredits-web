@@ -20,33 +20,33 @@
         <h2>Contributions by type</h2>
       </header>
       <div class="content">
-        {{chart-contributions-by-type contributions=proposals}}
+        {{chart-contributions-by-type contributions=contributions}}
       </div>
     </section>
   </div>
 
   <div id="contributions">
-    {{#if proposalsOpen}}
-      <section id="proposals-open">
+    {{#if contributionsUnconfirmed}}
+      <section id="contributions-unconfirmed">
         <header>
           <h2>Unconfirmed Contributions</h2>
         </header>
         <div class="content">
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
-          {{proposal-list proposals=proposalsOpenSorted
-                          confirmProposal=(action "confirmProposal")
-                          contractInteractionEnabled=kredits.hasAccounts}}
+          {{contribution-list contributions=contributionsUnconfirmedSorted
+                              vetoContribution=(action "vetoContribution")
+                              contractInteractionEnabled=kredits.hasAccounts}}
         </div>
       </section>
     {{/if}}
 
-    <section id="proposals-closed">
+    <section id="contributions-confirmed">
       <header>
         <h2>Confirmed Contributions</h2>
       </header>
       <div class="content">
-        {{proposal-list proposals=proposalsClosedSorted
-                        confirmProposal=(action "confirmProposal")}}
+        {{contribution-list contributions=contributionsConfirmedSorted
+                            vetoContribution=(action "vetoContribution")}}
       </div>
 
       {{!-- TODO: We need a better naming --}}
