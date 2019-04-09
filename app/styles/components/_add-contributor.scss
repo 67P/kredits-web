@@ -26,14 +26,14 @@ section#add-contributor, section#add-proposal {
       &:focus, &.valid {
         background-color: rgba(22, 21, 40, 0.6);
       }
-      @include placeholder {
+      &::placeholder {
         color: rgba(238, 238, 238, 0.5);
       }
     }
 
     select {
-      -webkit-appearance: none;
       -moz-appearance: none;
+      -webkit-appearance: none;
       appearance: none;
       border-radius: 0;
       background-color: rgba(22, 21, 40, 0.6);

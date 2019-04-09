@@ -34,7 +34,7 @@ main section {
     margin-top: 2rem;
   }
 
-  @include media($mobile) {
+  @include media-max(small) {
     margin-bottom: 5rem;
 
     &#proposals-open, &#proposals-closed {
@@ -46,7 +46,7 @@ main section {
     padding-bottom: 3rem;
     text-align: center;
 
-    @include media($mobile) {
+    @include media-max(small) {
       padding-bottom: 2rem;
     }
   }

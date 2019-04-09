@@ -9,12 +9,6 @@ $primary-color: $blue;
 
 $body-text-color: #fff;
 
-@mixin body-background {
-  background-image: linear-gradient(to bottom, rgba(22, 21, 40, .4), rgba(0, 0, 0, .75)), url('/img/bg.jpg');
-  background-repeat: none;
-  background-attachment: fixed;
-}
-
 #topbar {
   background-color: rgba(255, 0, 255, .2);
 }

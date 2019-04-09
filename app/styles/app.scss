@@ -11,19 +11,18 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-@import "bourbon/bourbon";
-@import "settings/neat";
-@import "neat/neat";
-@import "settings/breakpoints";
+@import "mediaqueries";
 @import "layout";
 @import "colors";
 
 $font-family-sans: 'Open Sans', sans-serif;
 
 body {
-  @include body-background;
   font-family: $font-family-sans;
   font-weight: 300;
+  background-image: linear-gradient(to bottom, rgba(22, 21, 40, .4), rgba(0, 0, 0, .75)), url('/img/bg.jpg');
+  background-repeat: none;
+  background-attachment: fixed;
   color: $body-text-color;
 }
 
@@ -55,7 +54,7 @@ section {
         span.number {
           font-weight: 600;
         }
-        @include media($mobile) {
+        @include media-max(small) {
           padding-top: 2rem;
         }
       }
@@ -68,7 +67,7 @@ section {
       margin-left: auto;
       margin-right: auto;
 
-      @include media($mobile) {
+      @include media-max(small) {
         width: 75%;
       }
     }
@@ -80,7 +79,7 @@ section {
       font-size: 1rem;
       color: $primary-color;
       text-align: center;
-      @include media($mobile) {
+      @include media-max(small) {
         padding-top: 2rem;
       }
 
