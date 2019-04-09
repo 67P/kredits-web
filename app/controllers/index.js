@@ -19,12 +19,12 @@ export default Controller.extend({
 
   contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions.filter(contribution => {
-      return contribution.confirmedAt < this.currentBlock;
+      return contribution.confirmedAt > this.currentBlock;
     });
   }),
   contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions.filter(contribution => {
-      return contribution.confirmedAt >= this.currentBlock;
+      return contribution.confirmedAt <= this.currentBlock;
     });
   }),
 
