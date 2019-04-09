@@ -50,9 +50,9 @@ export default Service.extend({
         });
       }
 
-      function instantiateWithAccount (web3, context) {
+      function instantiateWithAccount (web3Provider, context) {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
-        ethProvider = new ethers.providers.Web3Provider(web3.currentProvider);
+        ethProvider = new ethers.providers.Web3Provider(web3Provider);
         ethProvider.listAccounts().then(accounts => {
           context.set('currentUserAccounts', accounts);
           const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
@@ -64,19 +64,18 @@ export default Service.extend({
       }
 
       if (window.ethereum) {
-        window.web3 = new window.Web3(window.ethereum);
         try {
           // Request account access if needed
           await window.ethereum.enable();
           // Acccounts now exposed
-          instantiateWithAccount(window.web3, this);
+          instantiateWithAccount(window.ethereum, this);
         } catch (error) {
           instantiateWithoutAccount();
         }
       }
       // Legacy dapp browsers...
       else if (window.web3) {
-        instantiateWithAccount(window.web3, this);
+        instantiateWithAccount(window.web3.currentProvider, this);
       }
       // Non-dapp browsers...
       else {
