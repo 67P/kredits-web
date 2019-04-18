@@ -73,6 +73,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     // here you can enable a production-specific feature
+    ENV.kreditsApmDomain = process.env.KREDITS_APM_DOMAIN || 'open.aragonpm.eth';
   }
 
   if (process.env.WEB3_PROVIDER_URL) {
