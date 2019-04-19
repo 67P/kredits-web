@@ -7,6 +7,8 @@ import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
 
+import formatKredits from 'kredits-web/utils/format-kredits';
+
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
@@ -109,7 +111,9 @@ export default Service.extend({
   },
 
   totalSupply: computed(function() {
-    return this.kredits.Token.functions.totalSupply();
+    return this.kredits.Token.functions.totalSupply().then(total => {
+      return formatKredits(total);
+    })
   }),
 
   loadInitialData() {
