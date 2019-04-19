@@ -62,11 +62,6 @@
     "tv4": "^1.3.0"
   },
   "engines": {
-    "node": "6.* || 8.* || >= 10.*"
-  },
-  "contributors": [
-    "Garret Alfert <alfert@wevelop.de>",
-    "Sebastian Kippe <sebastian@kip.pe>",
-    "Michael Bumann <hello@michaelbumann.com>"
-  ]
+    "node": "8.* || >= 10.*"
+  }
 }
