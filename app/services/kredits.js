@@ -112,7 +112,7 @@ export default Service.extend({
 
   totalSupply: computed(function() {
     return this.kredits.Token.functions.totalSupply().then(total => {
-      return Promise.resolve(formatKredits(total));
+      return formatKredits(total);
     })
   }),
 

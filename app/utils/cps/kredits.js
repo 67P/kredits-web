@@ -1,14 +1,6 @@
 import { computed } from '@ember/object';
 import ethers from 'npm:ethers';
-//import formatKredits from 'kredits-web/utils/format-kredits.js';
-
-function formatKredits(value, options) {
-  let etherValue = ethers.utils.formatEther(value);
-  if (!options.decimals) {
-    etherValue = parseInt(etherValue).toString();
-  }
-  return etherValue;
-}
+import formatKredits from 'kredits-web/utils/format-kredits';
 
 export default function(dependentKey, options = {}) {
   return computed(dependentKey, {
