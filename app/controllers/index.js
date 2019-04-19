@@ -9,7 +9,7 @@ export default Controller.extend({
 
   contributors: alias('kredits.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
-    return contributor.get('balance') !== 0;
+    return contributor.get('balanceRaw').gt(0);
   }),
   contributorsSorting: Object.freeze(['balance:desc']),
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
