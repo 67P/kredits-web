@@ -118,9 +118,7 @@ export default Service.extend({
 
   totalKreditsEarned: computed(function() {
     return this.kredits.Contribution.functions.totalKreditsEarned(true)
-      .then(total => {
-        return total.toNumber();
-      });
+      .then(total => total.toNumber());
   }),
 
 
