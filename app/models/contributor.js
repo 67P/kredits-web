@@ -8,6 +8,8 @@ export default EmberObject.extend({
   id: bignumber('idRaw', 'toString'),
   account: null,
   balance: kreditsValue('balanceRaw'),
+  totalKreditsEarned: bignumber('totalKreditsEarnedRaw', 'toNumber'),
+  contributionsCount: bignumber('contributionsCountRaw', 'toNumber'),
   isCore: false,
   ipfsHash: null,
 

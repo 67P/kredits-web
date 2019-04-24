@@ -8,10 +8,10 @@ module('Unit | Controller | index', function(hooks) {
 
   let addFixtures = function(controller) {
     [
-      { github_username: "neo", github_uid: "318", balance: 10000 },
-      { github_username: "morpheus", github_uid: "843", balance: 15000 },
-      { github_username: "trinity", github_uid: "123", balance: 5000 },
-      { github_username: "mouse", github_uid: "696", balance: 0 }
+      { github_username: "neo", github_uid: "318", totalKreditsEarned: 10000 },
+      { github_username: "morpheus", github_uid: "843", totalKreditsEarned: 15000 },
+      { github_username: "trinity", github_uid: "123", totalKreditsEarned: 5000 },
+      { github_username: "mouse", github_uid: "696", totalKreditsEarned: 0 }
     ].forEach(fixture => {
       controller.get('kredits.contributors').push(Contributor.create(fixture));
     });
