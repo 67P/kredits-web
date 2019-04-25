@@ -2,6 +2,7 @@ import Controller from '@ember/controller';
 import { alias, filter, sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
+import { isPresent } from '@ember/utils';
 
 export default Controller.extend({
   kredits: service(),
@@ -9,7 +10,8 @@ export default Controller.extend({
 
   contributors: alias('kredits.contributors'),
   contributorsWithKredits: filter('contributors', function(contributor) {
-    return contributor.get('totalKreditsEarnedRaw').gt(0);
+    return isPresent(contributor.totalKreditsEarnedRaw) &&
+           contributor.totalKreditsEarnedRaw.gt(0);
   }),
   contributorsSorting: Object.freeze(['totalKreditsEarned:desc']),
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
@@ -47,7 +49,7 @@ export default Controller.extend({
 
     save (contributor) {
       return this.kredits.addContributor(contributor)
-        .then((contributor) => {
+        .then(contributor => {
           this.contributors.pushObject(contributor);
           return contributor;
         });
