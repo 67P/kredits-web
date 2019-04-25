@@ -2,17 +2,17 @@
   <li data-contribution-id={{contribution.id}} class={{if contribution.confirmed "confirmed" "unconfirmed"}}>
     <p class="meta">
       <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
-      <span class="category {{contribution.kind}}"><!--♥-->({{contribution.kind}})</span>
-      <span class="title">{{contribution.description}}</span>
+      <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
+      <span class="title">
+        {{#if contribution.url}}
+          <a href={{contribution.url}} target="_blank" rel="noopener">{{contribution.description}}</a>
+        {{else}}
+          {{contribution.description}}
+        {{/if}}
+      </span>
     </p>
     <p class="kredits-amount">
       <span class="amount">{{contribution.amount}}</span><span class="symbol">₭S</span>
     </p>
-    <!--
-    <p class="description">
-    </p>
-    <p class="voting">
-    </p>
-    -->
   </li>
 {{/each}}

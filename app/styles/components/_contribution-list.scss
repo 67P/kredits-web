@@ -45,6 +45,17 @@ ul.contribution-list {
 
     span {
       font-size: inherit;
+
+      &.title {
+        a {
+          font-size: inherit;
+          text-decoration: none;
+          color: $body-text-color;
+        }
+        a:hover, a:active {
+          color: $primary-color;
+        }
+      }
     }
 
     .description {
