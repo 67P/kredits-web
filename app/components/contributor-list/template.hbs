@@ -2,8 +2,7 @@
   {{#each contributors as |contributor|}}
     <tr role="button" class={{if (is-current-user contributor) "current-user"}} {{action "toggleContributorInfo" contributor}}>
       <td class="person">
-        <img class="avatar" src={{contributor.avatarURL}} alt="">
-        {{contributor.name}}
+        {{user-avatar contributor=contributor}} {{contributor.name}}
       </td>
       <td class="kredits">
         <span class="amount">{{contributor.totalKreditsEarned}}</span>
