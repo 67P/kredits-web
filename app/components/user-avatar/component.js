@@ -5,6 +5,7 @@ export default Component.extend({
   contributor: null,
   tagName: 'img',
   classNames: ['avatar'],
-  attributeBindings: ['src'],
-  src: alias('contributor.avatarURL')
+  attributeBindings: ['src', 'title'],
+  src: alias('contributor.avatarURL'),
+  title: alias('contributor.name')
 });
