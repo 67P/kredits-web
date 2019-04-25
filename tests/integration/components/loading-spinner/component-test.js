@@ -13,6 +13,6 @@ module('Integration | Component | loading spinner', function(hooks) {
 
     await render(hbs`{{loading-spinner}}`);
 
-    assert.dom('*').hasText('Loading data from Ethereum...');
+    assert.dom('*').hasText('Loading data...');
   });
 });
