@@ -2,39 +2,18 @@ import ethers from 'npm:ethers';
 import Kredits from 'npm:kredits-contracts';
 import RSVP from 'rsvp';
 
-import { A } from '@ember/array';
 import Service from '@ember/service';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
-import { isEmpty, isPresent } from '@ember/utils';
+import { isEmpty } from '@ember/utils';
 
+import groupBy from 'kredits-web/utils/group-by';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
 import Contribution from 'kredits-web/models/contribution'
-
-function groupBy (collection, property) {
-  let groups = A();
-  let items = collection;
-
-  if (items) {
-    items.forEach(function(item) {
-      let value = get(item, property);
-      let group = groups.findBy('value', value);
-
-      if (isPresent(group)) {
-        get(group, 'items').push(item);
-      } else {
-        group = { property: property, value: value, items: [item] };
-        groups.push(group);
-      }
-    });
-  }
-
-  return groups;
-}
 
 export default Service.extend({
 
