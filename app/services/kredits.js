@@ -50,8 +50,9 @@ export default Service.extend({
     this.set('contributions', []);
   },
 
-  // this is called in the routes beforeModel().  So it is initialized before everything else
-  // and we can rely on the ethProvider and the potential currentUserAccounts to be available
+  // This is called in the application route's beforeModel(). So it is
+  // initialized before everything else, and we can rely on the ethProvider and
+  // the potential currentUserAccounts to be available
   getEthProvider: function() {
     let ethProvider;
 
