@@ -2,10 +2,11 @@ import ethers from 'npm:ethers';
 import Kredits from 'npm:kredits-contracts';
 import RSVP from 'rsvp';
 
+import { A } from '@ember/array';
 import Service from '@ember/service';
-import { computed } from '@ember/object';
+import { computed, get } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
-import { isEmpty } from '@ember/utils';
+import { isEmpty, isPresent } from '@ember/utils';
 
 import formatKredits from 'kredits-web/utils/format-kredits';
 
@@ -13,6 +14,27 @@ import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
 import Proposal from 'kredits-web/models/proposal'
 import Contribution from 'kredits-web/models/contribution'
+
+function groupBy (collection, property) {
+  let groups = A();
+  let items = collection;
+
+  if (items) {
+    items.forEach(function(item) {
+      let value = get(item, property);
+      let group = groups.findBy('value', value);
+
+      if (isPresent(group)) {
+        get(group, 'items').push(item);
+      } else {
+        group = { property: property, value: value, items: [item] };
+        groups.push(group);
+      }
+    });
+  }
+
+  return groups;
+}
 
 export default Service.extend({
 
@@ -41,6 +63,21 @@ export default Service.extend({
     return this.contributions.filter(contribution => {
       return contribution.confirmedAt <= this.currentBlock;
     });
+  }),
+
+  kreditsByContributor: computed('contributionsUnconfirmed.[]', 'contributors', function() {
+    const contributionsGrouped = groupBy(this.contributionsUnconfirmed, 'contributorId');
+
+    return contributionsGrouped.map(c => {
+      const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
+      const contributor = this.contributors.findBy('id', c.value.toString());
+      return {
+        contributor: contributor,
+        amountUnconfirmed: amountUnconfirmed,
+        amountConfirmed: contributor.totalKreditsEarned,
+        amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
+      }
+    })
   }),
 
   init () {
