@@ -20,13 +20,27 @@ export default Service.extend({
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
   contributors: null,
-  proposals: null,
   contributions: null,
+  proposals: null,
+
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
+
   accountNeedsUnlock: computed('currentUserAccounts', function() {
     return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
+  }),
+
+  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions.filter(contribution => {
+      return contribution.confirmedAt > this.currentBlock;
+    });
+  }),
+
+  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions.filter(contribution => {
+      return contribution.confirmedAt <= this.currentBlock;
+    });
   }),
 
   init () {

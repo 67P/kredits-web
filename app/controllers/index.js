@@ -1,7 +1,6 @@
 import Controller from '@ember/controller';
 import { alias, filter, sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
 
 export default Controller.extend({
   kredits: service(),
@@ -15,21 +14,12 @@ export default Controller.extend({
   contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
 
   contributions: alias('kredits.contributions'),
-  contributionsSorting: Object.freeze(['id:desc']),
-
-  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt > this.currentBlock;
-    });
-  }),
-  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt <= this.currentBlock;
-    });
-  }),
+  contributionsUnconfirmed: alias('kredits.contributionsUnconfirmed'),
+  contributionsConfirmed: alias('kredits.contributionsConfirmed'),
 
   contributionsUnconfirmedSorted: sort('contributionsUnconfirmed', 'contributionsSorting'),
   contributionsConfirmedSorted: sort('contributionsConfirmed', 'contributionsSorting'),
+  contributionsSorting: Object.freeze(['id:desc']),
 
   actions: {
 
