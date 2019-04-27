@@ -1,25 +1,29 @@
 import Controller from '@ember/controller';
-import { alias, filter, sort } from '@ember/object/computed';
+import { computed } from '@ember/object';
+import { alias, not, sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   kredits: service(),
   currentBlock: alias('kredits.currentBlock'),
 
-  contributors: alias('kredits.contributors'),
-  contributorsWithKredits: filter('contributors', function(contributor) {
-    return contributor.get('totalKreditsEarnedRaw').gt(0);
-  }),
-  contributorsSorting: Object.freeze(['totalKreditsEarned:desc']),
-  contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
-
   contributions: alias('kredits.contributions'),
-  contributionsUnconfirmed: alias('kredits.contributionsUnconfirmed'),
   contributionsConfirmed: alias('kredits.contributionsConfirmed'),
+  contributionsUnconfirmed: alias('kredits.contributionsUnconfirmed'),
 
+  contributionsSorting: Object.freeze(['id:desc']),
   contributionsUnconfirmedSorted: sort('contributionsUnconfirmed', 'contributionsSorting'),
   contributionsConfirmedSorted: sort('contributionsConfirmed', 'contributionsSorting'),
-  contributionsSorting: Object.freeze(['id:desc']),
+
+  kreditsByContributor: alias('kredits.kreditsByContributor'),
+
+  kreditsToplistSorting: computed('showUnconfirmedKredits', function(){
+    return this.showUnconfirmedKredits ? ['amountTotal:desc'] : ['amountConfirmed:desc'];
+  }),
+  kreditsToplist: sort('kreditsByContributor', 'kreditsToplistSorting'),
+
+  showUnconfirmedKredits: true,
+  hideUnconfirmedKredits: not('showUnconfirmedKredits'),
 
   actions: {
 

@@ -6,11 +6,16 @@
         <h2>Contributors</h2>
       </header>
       <div class="content">
-        {{contributor-list contributors=contributorsSorted}}
+        {{contributor-list contributorList=kreditsToplist
+                           showUnconfirmedKredits=showUnconfirmedKredits}}
 
         <p class="stats">
-          <span class="number">{{await kredits.totalKreditsEarned}}</span> kredits issued and distributed among
+          <span class="number">{{await kredits.totalKreditsEarned}}</span> kredits confirmed and issued to
           <span class="number">{{contributorsWithKredits.length}}</span> contributors.
+        </p>
+        <p class="stats">
+          {{input type="checkbox" id="hide-unnconfirmed-kredits" checked=showUnconfirmedKredits}}
+          <label for="hide-unnconfirmed-kredits">Show unconfirmed kredits in toplist</label>
         </p>
       </div>
     </section>
