@@ -1,6 +1,6 @@
 <tbody>
   {{#each contributorList as |c|}}
-    <tr role="button" class={{if (is-current-user c.contributor) "current-user"}} {{action "toggleContributorInfo" c.contributor}}>
+    <tr role="button" class={{if (is-current-user c.contributor) "current-user"}} {{action "toggleContributorInfo" c}}>
       <td class="person">
         {{user-avatar contributor=c.contributor}} {{c.contributor.name}}
       </td>
@@ -18,12 +18,16 @@
     <tr class="metadata {{if (is-current-user c.contributor) "current-user"}} {{if c.showMetadata "visible"}}">
       <td colspan="2">
         <ul>
-          <li><a href="https://testnet.etherscan.io/address/{{c.contributor.account}}">Inspect Ethereum transactions</a></li>
+          <li>
+            <a href="https://testnet.etherscan.io/address/{{c.contributor.account}}" target="_blank" rel="noopener">Inspect Ethereum transactions</a>
+          </li>
           {{#if c.contributor.ipfsHash}}
-            <li><a href="https://ipfs.io/ipfs/{{c.contributor.ipfsHash}}">Inspect IPFS profile</a></li>
+            <li>
+              <a href="https://ipfs.io/ipfs/{{c.contributor.ipfsHash}}" target="_blank" rel="noopener">Inspect IPFS profile</a>
+            </li>
           {{/if}}
         </ul>
-        {{#if c.contributor.showMetadata}}
+        {{#if c.showMetadata}}
           <pre>{{c.contributor.ipfsData}}</pre>
         {{/if}}
       </td>

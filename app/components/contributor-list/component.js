@@ -9,10 +9,10 @@ export default Component.extend({
   actions: {
 
     toggleContributorInfo(contributor) {
-      if (contributor.get('showMetadata')) {
+      if (contributor.showMetadata) {
         contributor.set('showMetadata', false);
       } else {
-        this.contributors.setEach('showMetadata', false);
+        this.contributorList.setEach('showMetadata', false);
         contributor.set('showMetadata', true);
       }
     }

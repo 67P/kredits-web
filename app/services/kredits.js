@@ -3,6 +3,7 @@ import Kredits from 'npm:kredits-contracts';
 import RSVP from 'rsvp';
 
 import Service from '@ember/service';
+import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
@@ -50,12 +51,12 @@ export default Service.extend({
     return contributionsGrouped.map(c => {
       const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
       const contributor = this.contributors.findBy('id', c.value.toString());
-      return {
+      return EmberObject.create({
         contributor: contributor,
         amountUnconfirmed: amountUnconfirmed,
         amountConfirmed: contributor.totalKreditsEarned,
         amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
-      }
+      })
     })
   }),
 
