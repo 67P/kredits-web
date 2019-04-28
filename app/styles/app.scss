@@ -54,9 +54,6 @@ section {
         span.number {
           font-weight: 600;
         }
-        @include media-max(small) {
-          padding-top: 2rem;
-        }
       }
     }
   }
