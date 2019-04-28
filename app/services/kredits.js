@@ -193,7 +193,7 @@ export default Service.extend({
   veto(contributionId) {
     console.debug('[kredits] veto against', contributionId);
 
-    return this.kredits.Contribution.functions.veto(contributionId)
+    return this.kredits.Contribution.functions.veto(contributionId, { gasLimit: 300000 })
       .then(data => {
         console.debug('[kredits] veto response', data);
         return data;
