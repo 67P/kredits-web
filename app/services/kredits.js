@@ -220,21 +220,28 @@ export default Service.extend({
     return this.proposals.findBy('id', proposalId.toString());
   },
 
-  findContributionById(contributionId) {
-    return this.contributions.findBy('id', contributionId.toString());
-  },
-
   // Contract events
   addContractEventHandlers() {
-    // Proposal events
+    this.kredits.Contribution
+      .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
+
     this.kredits.Proposal
       .on('ProposalCreated', this.handleProposalCreated.bind(this))
       .on('ProposalVoted', this.handleProposalVoted.bind(this))
       .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
 
-    // Token events
     this.kredits.Token
       .on('Transfer', this.handleTransfer.bind(this));
+  },
+
+  handleContributionVetoed(contributionId) {
+    console.debug('[kredits] ContributionVetoed event received for ', contributionId);
+    const contribution = this.contributions.findBy('id', contributionId);
+    console.debug('[kredits] contribution', contribution);
+
+    if (contribution) {
+      contribution.set('vetoed', true);
+    }
   },
 
   handleProposalCreated(proposalId) {

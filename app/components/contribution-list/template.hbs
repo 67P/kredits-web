@@ -1,5 +1,5 @@
 {{#each contributions as |contribution|}}
-  <li data-contribution-id={{contribution.id}} class={{contribution-status contribution}}>
+  <li data-contribution-id={{contribution.id}} class="{{contribution-status contribution}} {{if contribution.vetoed "vetoed"}}">
     <p class="meta">
       <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
       <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
