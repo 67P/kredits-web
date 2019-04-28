@@ -52,9 +52,10 @@ export default Service.extend({
         });
       }
 
-      function instantiateWithAccount (web3Provider, context) {
+      async function instantiateWithAccount (web3Provider, context) {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         ethProvider = new ethers.providers.Web3Provider(web3Provider);
+        // const network = await ethProvider.getNetwork();
         ethProvider.listAccounts().then(accounts => {
           context.set('currentUserAccounts', accounts);
           const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
@@ -183,8 +184,18 @@ export default Service.extend({
     console.debug('[kredits] vote for', proposalId);
 
     return this.kredits.Proposal.functions.vote(proposalId)
-      .then((data) => {
+      .then(data => {
         console.debug('[kredits] vote response', data);
+        return data;
+      });
+  },
+
+  veto(contributionId) {
+    console.debug('[kredits] veto against', contributionId);
+
+    return this.kredits.Contribution.functions.veto(contributionId)
+      .then(data => {
+        console.debug('[kredits] veto response', data);
         return data;
       });
   },

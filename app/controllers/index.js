@@ -33,10 +33,10 @@ export default Controller.extend({
 
   actions: {
 
-    vetoContribution (/* contributionId */) {
-      // this.kredits.vote(proposalId).then(transaction => {
-      //   window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
-      // });
+    vetoContribution (contributionId) {
+      this.kredits.veto(contributionId).then(transaction => {
+        window.confirm('Veto submitted to Ethereum blockhain: '+transaction.hash);
+      });
     },
 
     confirmProposal (proposalId) {

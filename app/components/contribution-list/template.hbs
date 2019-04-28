@@ -1,5 +1,5 @@
 {{#each contributions as |contribution|}}
-  <li data-contribution-id={{contribution.id}} class={{if contribution.confirmed "confirmed" "unconfirmed"}}>
+  <li data-contribution-id={{contribution.id}} class={{contribution-status contribution}}>
     <p class="meta">
       <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
       <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
@@ -14,5 +14,12 @@
     <p class="kredits-amount">
       <span class="amount">{{contribution.amount}}</span><span class="symbol">₭S</span>
     </p>
+    {{#unless contribution.vetoed}}
+      {{#unless (is-confirmed-contribution contribution)}}
+        <p class="voting">
+          <button {{action "veto" contribution.id}} class="small danger">veto</button>
+        </p>
+      {{/unless}}
+    {{/unless}}
   </li>
 {{/each}}
