@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { and, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
-
 export default Component.extend({
   kredits: service(),
 
@@ -14,6 +13,7 @@ export default Component.extend({
   isValidURL: notEmpty('url'),
   isValidGithubUID: notEmpty('github_uid'),
   isValidGithubUsername: notEmpty('github_username'),
+  isValidGiteaUsername: notEmpty('gitea_username'),
   isValidWikiUsername: notEmpty('wiki_username'),
   isValid: and(
     'isValidAccount',
@@ -21,10 +21,11 @@ export default Component.extend({
     'isValidGithubUID'
   ),
 
+  inProgress: false,
+
   init () {
     this._super(...arguments);
 
-    // Default attributes used by reset
     this.set('attributes', {
       account: null,
       name: null,
@@ -32,8 +33,8 @@ export default Component.extend({
       url: null,
       github_username: null,
       github_uid: null,
-      wiki_username: null,
-      isCore: false
+      gitea_username: null,
+      wiki_username: null
     });
   },
 
@@ -53,17 +54,19 @@ export default Component.extend({
         return;
       }
 
-      let attributes = Object.keys(this.attributes);
-      let contributor = this.getProperties(attributes);
-      let saved = this.save(contributor);
+      const attributes = Object.keys(this.attributes);
+      const contributor = this.getProperties(attributes);
 
-      // The promise handles inProgress
-      this.set('inProgress', saved);
+      this.set('inProgress', true);
 
-      saved.then(() => {
+      this.save(contributor).then(() => {
         this.reset();
         window.scroll(0,0);
-        window.alert('Contributor added.');
+      }).catch(err => {
+        console.log(err);
+        window.alert('Something went wrong. Please check the browser console.');
+      }).finally(() => {
+        this.set('inProgress', false);
       });
     }
   }

@@ -130,10 +130,15 @@ export default Service.extend({
   },
 
   addContributor(attributes) {
+    if (attributes.github_uid) {
+      const uidInt = parseInt(attributes.github_uid);
+      attributes.github_uid = uidInt;
+    }
+
     console.debug('[kredits] add contributor', attributes);
 
-    return this.kredits.Contributor.add(attributes)
-      .then((data) => {
+    return this.kredits.Contributor.add(attributes, { gasLimit: 350000 })
+      .then(data => {
         console.debug('[kredits] add contributor response', data);
         return Contributor.create(attributes);
       });

@@ -12,7 +12,7 @@
     <tr class="metadata {{if (is-current-user contributor) "current-user"}} {{if contributor.showMetadata "visible"}}">
       <td colspan="2">
         <ul>
-          <li><a href="https://testnet.etherscan.io/address/{{contributor.account}}">Inspect Ethereum transactions</a></li>
+          <li><a href="https://rinkeby.etherscan.io/address/{{contributor.account}}">Inspect Ethereum transactions</a></li>
           {{#if contributor.ipfsHash}}
             <li><a href="https://ipfs.io/ipfs/{{contributor.ipfsHash}}">Inspect IPFS profile</a></li>
           {{/if}}
