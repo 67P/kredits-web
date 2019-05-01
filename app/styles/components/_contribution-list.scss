@@ -13,7 +13,7 @@ ul.contribution-list {
 
   li {
     display: grid;
-    grid-template-columns: auto 5rem;
+    grid-template-columns: auto 5rem 5rem;
     grid-row-gap: 0.5rem;
     padding: 1rem 1.2rem;
     background-color: rgba(255,255,255,0.1);
@@ -24,6 +24,16 @@ ul.contribution-list {
       border-top: 1px solid rgba(255,255,255,0.2);
     }
 
+    &.confirmed {
+      grid-template-columns: auto 5rem;
+    }
+
+    &.vetoed {
+      grid-template-columns: auto 5rem;
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
     p {
       align-self: center;
       margin: 0;
@@ -32,14 +42,6 @@ ul.contribution-list {
 
       &.kredits-amount, &.voting {
         text-align: right;
-      }
-
-      &.description {
-        grid-column-start: span 2;
-      }
-
-      &.voting {
-        grid-column-start: span 2;
       }
     }
 
@@ -91,12 +93,6 @@ ul.contribution-list {
       font-size: 1rem;
       color: $primary-color;
       margin-right: 0.5rem;
-    }
-
-    button {
-      height: 2rem;
-      line-height: 2rem;
-      padding: 0 0.6rem;
     }
   }
 

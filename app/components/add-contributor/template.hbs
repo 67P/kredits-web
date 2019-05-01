@@ -1,14 +1,5 @@
 <form {{action "submit" on="submit"}}>
   <p>
-    {{input name="is-core"
-            type="checkbox"
-            id="is-core"
-            checked=isCore}}
-    <label for="is-core" class="checkbox">
-      Core team member (can add contributors)
-    </label>
-  </p>
-  <p>
     {{input name="account"
             type="text"
             placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
@@ -50,6 +41,13 @@
             class=(if isValidGithubUsername "valid" "")}}
   </p>
   <p>
+    {{input name="gitea_username"
+            type="text"
+            placeholder="Gitea username"
+            value=gitea_username
+            class=(if isValidGiteaUsername "valid" "")}}
+  </p>
+  <p>
     {{input name="wiki_username"
             type="text"
             placeholder="Wiki Username"
@@ -58,7 +56,7 @@
   </p>
   <p class="actions">
     {{input type="submit"
-            disabled=(is-pending inProgress)
-            value=(if (is-pending inProgress) "Processing" "Save")}}
+            disabled=inProgress
+            value=(if inProgress "Processing" "Save")}}
   </p>
 </form>
