@@ -52,9 +52,10 @@ export default Service.extend({
         });
       }
 
-      function instantiateWithAccount (web3Provider, context) {
+      async function instantiateWithAccount (web3Provider, context) {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         ethProvider = new ethers.providers.Web3Provider(web3Provider);
+        // const network = await ethProvider.getNetwork();
         ethProvider.listAccounts().then(accounts => {
           context.set('currentUserAccounts', accounts);
           const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
@@ -188,8 +189,18 @@ export default Service.extend({
     console.debug('[kredits] vote for', proposalId);
 
     return this.kredits.Proposal.functions.vote(proposalId)
-      .then((data) => {
+      .then(data => {
         console.debug('[kredits] vote response', data);
+        return data;
+      });
+  },
+
+  veto(contributionId) {
+    console.debug('[kredits] veto against', contributionId);
+
+    return this.kredits.Contribution.functions.veto(contributionId, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] veto response', data);
         return data;
       });
   },
@@ -214,21 +225,28 @@ export default Service.extend({
     return this.proposals.findBy('id', proposalId.toString());
   },
 
-  findContributionById(contributionId) {
-    return this.contributions.findBy('id', contributionId.toString());
-  },
-
   // Contract events
   addContractEventHandlers() {
-    // Proposal events
+    this.kredits.Contribution
+      .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
+
     this.kredits.Proposal
       .on('ProposalCreated', this.handleProposalCreated.bind(this))
       .on('ProposalVoted', this.handleProposalVoted.bind(this))
       .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
 
-    // Token events
     this.kredits.Token
       .on('Transfer', this.handleTransfer.bind(this));
+  },
+
+  handleContributionVetoed(contributionId) {
+    console.debug('[kredits] ContributionVetoed event received for ', contributionId);
+    const contribution = this.contributions.findBy('id', contributionId);
+    console.debug('[kredits] contribution', contribution);
+
+    if (contribution) {
+      contribution.set('vetoed', true);
+    }
   },
 
   handleProposalCreated(proposalId) {

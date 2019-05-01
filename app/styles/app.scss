@@ -90,22 +90,6 @@ section {
   }
 }
 
-button, input[type=submit] {
-  display: inline-block;
-  border: 1px solid rgba(22, 21, 40, 1);
-  background-color: rgba(22, 21, 40, 0.6);
-  color: $primary-color;
-  border-radius: 3px;
-  font-weight: 500;
-  text-transform: uppercase;
-  cursor: pointer;
-  letter-spacing: 0.1em;
-
-  &:hover {
-    background-color: rgba(22, 21, 40, 0.8);
-  }
-}
-
 @media (min-width: 550px) {
   section {
     h2 {
@@ -114,6 +98,7 @@ button, input[type=submit] {
   }
 }
 
+@import "buttons";
 @import "components/topbar";
 @import "components/loading-spinner";
 @import "components/contributor-list";

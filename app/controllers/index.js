@@ -35,15 +35,15 @@ export default Controller.extend({
 
   actions: {
 
-    vetoContribution (/* contributionId */) {
-      // this.kredits.vote(proposalId).then(transaction => {
-      //   window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
-      // });
+    vetoContribution (contributionId) {
+      this.kredits.veto(contributionId).then(transaction => {
+        console.debug('[controllers:index] Veto submitted to Ethereum blockhain: '+transaction.hash);
+      });
     },
 
     confirmProposal (proposalId) {
       this.kredits.vote(proposalId).then(transaction => {
-        window.confirm('Vote submitted to Ethereum blockhain: '+transaction.hash);
+        console.debug('[controllers:index] Vote submitted to Ethereum blockhain: '+transaction.hash);
       });
     },
 
