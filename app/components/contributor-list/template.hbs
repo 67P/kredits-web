@@ -1,24 +1,34 @@
 <tbody>
-  {{#each contributors as |contributor|}}
-    <tr role="button" class={{if (is-current-user contributor) "current-user"}} {{action "toggleContributorInfo" contributor}}>
+  {{#each contributorList as |c|}}
+    <tr role="button" class={{if (is-current-user c.contributor) "current-user"}} {{action "toggleContributorInfo" c}}>
       <td class="person">
-        {{user-avatar contributor=contributor}} {{contributor.name}}
+        {{user-avatar contributor=c.contributor}} {{c.contributor.name}}
       </td>
       <td class="kredits">
-        <span class="amount">{{contributor.totalKreditsEarned}}</span>
+        <span class="amount">
+          {{#if showUnconfirmedKredits}}
+            {{c.amountTotal}}
+          {{else}}
+            {{c.amountConfirmed}}
+          {{/if}}
+        </span>
         <span class="symbol">₭S</span>
       </td>
     </tr>
-    <tr class="metadata {{if (is-current-user contributor) "current-user"}} {{if contributor.showMetadata "visible"}}">
+    <tr class="metadata {{if (is-current-user c.contributor) "current-user"}} {{if c.showMetadata "visible"}}">
       <td colspan="2">
         <ul>
-          <li><a href="https://rinkeby.etherscan.io/address/{{contributor.account}}">Inspect Ethereum transactions</a></li>
-          {{#if contributor.ipfsHash}}
-            <li><a href="https://ipfs.io/ipfs/{{contributor.ipfsHash}}">Inspect IPFS profile</a></li>
+          <li>
+            <a href="https://rinkeby.etherscan.io/address/{{c.contributor.account}}" target="_blank" rel="noopener">Inspect Ethereum transactions</a>
+          </li>
+          {{#if c.contributor.ipfsHash}}
+            <li>
+              <a href="https://ipfs.io/ipfs/{{c.contributor.ipfsHash}}" target="_blank" rel="noopener">Inspect IPFS profile</a>
+            </li>
           {{/if}}
         </ul>
-        {{#if contributor.showMetadata}}
-          <pre>{{contributor.ipfsData}}</pre>
+        {{#if c.showMetadata}}
+          <pre>{{c.contributor.ipfsData}}</pre>
         {{/if}}
       </td>
     </tr>

@@ -3,10 +3,12 @@ import Kredits from 'npm:kredits-contracts';
 import RSVP from 'rsvp';
 
 import Service from '@ember/service';
+import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty } from '@ember/utils';
 
+import groupBy from 'kredits-web/utils/group-by';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
@@ -20,13 +22,42 @@ export default Service.extend({
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
   currentUser: null,
   contributors: null,
-  proposals: null,
   contributions: null,
+  proposals: null,
+
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
+
   accountNeedsUnlock: computed('currentUserAccounts', function() {
     return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
+  }),
+
+  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions.filter(contribution => {
+      return contribution.confirmedAt > this.currentBlock;
+    });
+  }),
+
+  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions.filter(contribution => {
+      return contribution.confirmedAt <= this.currentBlock;
+    });
+  }),
+
+  kreditsByContributor: computed('contributionsUnconfirmed.[]', 'contributors', function() {
+    const contributionsGrouped = groupBy(this.contributionsUnconfirmed, 'contributorId');
+
+    return contributionsGrouped.map(c => {
+      const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
+      const contributor = this.contributors.findBy('id', c.value.toString());
+      return EmberObject.create({
+        contributor: contributor,
+        amountUnconfirmed: amountUnconfirmed,
+        amountConfirmed: contributor.totalKreditsEarned,
+        amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
+      })
+    })
   }),
 
   init () {
@@ -36,8 +67,9 @@ export default Service.extend({
     this.set('contributions', []);
   },
 
-  // this is called in the routes beforeModel().  So it is initialized before everything else
-  // and we can rely on the ethProvider and the potential currentUserAccounts to be available
+  // This is called in the application route's beforeModel(). So it is
+  // initialized before everything else, and we can rely on the ethProvider and
+  // the potential currentUserAccounts to be available
   getEthProvider: function() {
     let ethProvider;
 

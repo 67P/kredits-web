@@ -47,15 +47,12 @@ section {
   &#people {
     .content {
       p.stats {
-        padding-top: 3rem;
+        margin-bottom: 1rem;
         font-size: 1rem;
         color: white;
         text-align: center;
         span.number {
           font-weight: 600;
-        }
-        @include media-max(small) {
-          padding-top: 2rem;
         }
       }
     }

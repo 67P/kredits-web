@@ -1,37 +1,29 @@
 import Controller from '@ember/controller';
-import { alias, filter, sort } from '@ember/object/computed';
-import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
-import { isPresent } from '@ember/utils';
+import { alias, not, sort } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   kredits: service(),
   currentBlock: alias('kredits.currentBlock'),
 
-  contributors: alias('kredits.contributors'),
-  contributorsWithKredits: filter('contributors', function(contributor) {
-    return isPresent(contributor.totalKreditsEarnedRaw) &&
-           contributor.totalKreditsEarnedRaw.gt(0);
-  }),
-  contributorsSorting: Object.freeze(['totalKreditsEarned:desc']),
-  contributorsSorted: sort('contributorsWithKredits', 'contributorsSorting'),
-
   contributions: alias('kredits.contributions'),
+  contributionsConfirmed: alias('kredits.contributionsConfirmed'),
+  contributionsUnconfirmed: alias('kredits.contributionsUnconfirmed'),
+
   contributionsSorting: Object.freeze(['id:desc']),
-
-  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt > this.currentBlock;
-    });
-  }),
-  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt <= this.currentBlock;
-    });
-  }),
-
   contributionsUnconfirmedSorted: sort('contributionsUnconfirmed', 'contributionsSorting'),
   contributionsConfirmedSorted: sort('contributionsConfirmed', 'contributionsSorting'),
+
+  kreditsByContributor: alias('kredits.kreditsByContributor'),
+
+  kreditsToplistSorting: computed('showUnconfirmedKredits', function(){
+    return this.showUnconfirmedKredits ? ['amountTotal:desc'] : ['amountConfirmed:desc'];
+  }),
+  kreditsToplist: sort('kreditsByContributor', 'kreditsToplistSorting'),
+
+  showUnconfirmedKredits: true,
+  hideUnconfirmedKredits: not('showUnconfirmedKredits'),
 
   actions: {
 
