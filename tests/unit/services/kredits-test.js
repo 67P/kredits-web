@@ -34,17 +34,17 @@ module('Unit | Service | kredits', function(hooks) {
 
     console.log(kreditsByContributor);
 
-    // assert.equal(kreditsByContributor.length, 3, 'includes all contributors with confirmed kredits');
+    assert.equal(kreditsByContributor.length, 3, 'includes all contributors with confirmed kredits');
 
     const c1 = kreditsByContributor.find(k => k.contributor.id == 1);
     assert.equal(c1.amountConfirmed, 11500, 'correct amount confirmed');
     assert.equal(c1.amountUnconfirmed, 1500, 'correct amount unconfirmed');
     assert.equal(c1.amountTotal, 13000, 'correct amount total');
 
-    // const c2 = kreditsByContributor.find(k => k.contributor.id == 2);
-    // assert.equal(c1.amountConfirmed, 5500, 'correct amount confirmed');
-    // assert.equal(c1.amountUnconfirmed, 1500, 'correct amount unconfirmed');
-    // assert.equal(c1.amountTotal, 7000, 'correct amount total');
+    const c2 = kreditsByContributor.find(k => k.contributor.id == 2);
+    assert.equal(c2.amountConfirmed, 3000, 'correct amount confirmed');
+    assert.equal(c2.amountUnconfirmed, 0, 'correct amount unconfirmed');
+    assert.equal(c2.amountTotal, 3000, 'correct amount total');
 
     const c3 = kreditsByContributor.find(k => k.contributor.id == 3);
     assert.equal(c3.amountConfirmed, 0, 'correct amount confirmed');
