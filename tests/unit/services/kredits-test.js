@@ -32,8 +32,6 @@ module('Unit | Service | kredits', function(hooks) {
 
     const kreditsByContributor = service.kreditsByContributor;
 
-    console.log(kreditsByContributor);
-
     assert.equal(kreditsByContributor.length, 3, 'includes all contributors with confirmed kredits');
 
     const c1 = kreditsByContributor.find(k => k.contributor.id == 1);

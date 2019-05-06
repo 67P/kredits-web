@@ -46,18 +46,33 @@ export default Service.extend({
   }),
 
   kreditsByContributor: computed('contributionsUnconfirmed.[]', 'contributors', function() {
-    const contributionsGrouped = groupBy(this.contributionsUnconfirmed, 'contributorId');
+    const contributionsUnconfirmed = this.contributionsUnconfirmed;
+    const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
+    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
+    const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
 
-    return contributionsGrouped.map(c => {
+    const kreditsByContributor = contributionsGrouped.map(c => {
       const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
       const contributor = this.contributors.findBy('id', c.value.toString());
+
       return EmberObject.create({
         contributor: contributor,
         amountUnconfirmed: amountUnconfirmed,
         amountConfirmed: contributor.totalKreditsEarned,
         amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
       })
+    });
+
+    contributorsWithOnlyConfirmed.forEach(c => {
+      kreditsByContributor.push(EmberObject.create({
+        contributor: c,
+        amountUnconfirmed: 0,
+        amountConfirmed: c.totalKreditsEarned,
+        amountTotal: c.totalKreditsEarned
+      }));
     })
+
+    return kreditsByContributor;
   }),
 
   init () {
