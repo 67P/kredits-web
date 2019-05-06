@@ -46,7 +46,7 @@ module('Unit | Service | kredits', function(hooks) {
 
     const c3 = kreditsByContributor.find(k => k.contributor.id == 3);
     assert.equal(c3.amountConfirmed, 0, 'correct amount confirmed');
-    assert.equal(c3.amountUnconfirmed, 6500, 'correct amount unconfirmed');
-    assert.equal(c3.amountTotal, 6500, 'correct amount total');
+    assert.equal(c3.amountUnconfirmed, 5000, 'correct amount unconfirmed');
+    assert.equal(c3.amountTotal, 5000, 'correct amount total');
   });
 });
