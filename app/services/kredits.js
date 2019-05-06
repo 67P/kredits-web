@@ -46,7 +46,7 @@ export default Service.extend({
   }),
 
   kreditsByContributor: computed('contributionsUnconfirmed.[]', 'contributors', function() {
-    const contributionsUnconfirmed = this.contributionsUnconfirmed;
+    const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
     const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
     const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
     const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
