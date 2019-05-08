@@ -45,7 +45,7 @@ export default Service.extend({
     });
   }),
 
-  kreditsByContributor: computed('contributionsUnconfirmed.[]', 'contributors', function() {
+   kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors', function() {
     const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
     const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
     const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
