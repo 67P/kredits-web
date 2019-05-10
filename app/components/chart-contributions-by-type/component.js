@@ -20,9 +20,11 @@ export default Component.extend({
 
   chartData: computed('contributions', function() {
     let kredits = this.contributions
+                      .filterBy('vetoed', false)
                       .map(c => {
                         return { kind: c.kind, amount: c.amount }
-                      }).reduce(function (kinds, c) {
+                      })
+                      .reduce(function (kinds, c) {
                         if (c.kind in kinds) {
                           kinds[c.kind] = kinds[c.kind] + c.amount
                         } else {
