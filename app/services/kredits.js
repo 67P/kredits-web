@@ -40,9 +40,11 @@ export default Service.extend({
   }),
 
   contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt <= this.currentBlock;
-    });
+    return this.contributions
+               .filterBy('vetoed', false)
+               .filter(contribution => {
+                 return contribution.confirmedAt <= this.currentBlock;
+               });
   }),
 
    kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors', function() {
