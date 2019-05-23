@@ -206,7 +206,7 @@ export default Service.extend({
   addContribution(attributes) {
     console.debug('[kredits] add contribution', attributes);
 
-    return this.kredits.Contribution.addContribution(attributes)
+    return this.kredits.Contribution.addContribution(attributes, { gasLimit: 300000 })
       .then(data => {
         console.debug('[kredits] add contribution response', data);
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
