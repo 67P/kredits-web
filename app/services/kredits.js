@@ -210,7 +210,11 @@ export default Service.extend({
       .then(data => {
         console.debug('[kredits] add contribution response', data);
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
-        return Contribution.create(attributes);
+        const contribution = Contribution.create(attributes);
+        // TODO receive from wrapper
+        contribution.set('confirmedAtBlock', data.blockNumber + 40320);
+        this.contributions.pushObject(contribution);
+        return contribution;
       });
   },
 
