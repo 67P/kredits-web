@@ -8,7 +8,9 @@ export default Controller.extend({
 
   contributors: alias('kredits.contributors'),
   minedContributors: filterBy('contributors', 'id'),
-  sortedContributors: sort('minedContributors', Object.freeze(['name:asc'])),
+
+  contributorsSorting: Object.freeze(['name:asc']),
+  sortedContributors: sort('minedContributors', 'contributorsSorting'),
 
   actions: {
 
