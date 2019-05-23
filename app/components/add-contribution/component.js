@@ -55,13 +55,12 @@ export default Component.extend({
       this.set('inProgress', true);
 
       this.save(attributes)
-        .then(contribution => {
-          console.debug('contribution', contribution);
+        .then((/*contribution*/) => {
           this.reset();
           window.scroll(0,0);
         }, err => {
           console.warn(err);
-          window.alert('Fail');
+          window.alert('Something went wrong. Check the browser console for details.');
         })
         .finally(() => this.set('inProgress', false));
 
