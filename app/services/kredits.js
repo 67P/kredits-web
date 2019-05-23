@@ -190,7 +190,9 @@ export default Service.extend({
     return this.kredits.Contributor.add(attributes, { gasLimit: 350000 })
       .then(data => {
         console.debug('[kredits] add contributor response', data);
-        return Contributor.create(attributes);
+        const contributor = Contributor.create(attributes);
+        this.contributors.pushObject(contributor);
+        return contributor;
       });
   },
 

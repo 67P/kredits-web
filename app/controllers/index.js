@@ -37,14 +37,6 @@ export default Controller.extend({
       this.kredits.vote(proposalId).then(transaction => {
         console.debug('[controllers:index] Vote submitted to Ethereum blockhain: '+transaction.hash);
       });
-    },
-
-    save (contributor) {
-      return this.kredits.addContributor(contributor)
-        .then(contributor => {
-          this.contributors.pushObject(contributor);
-          return contributor;
-        });
     }
 
   }

@@ -13,6 +13,9 @@ Router.map(function() {
   this.route('contributions', function() {
     this.route('new');
   });
+  this.route('contributors', function() {
+    this.route('new');
+  });
 });
 
 export default Router;

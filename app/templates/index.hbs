@@ -2,8 +2,13 @@
 
   <div id="stats">
     <section id="people">
-      <header>
+      <header class="with-nav">
         <h2>Contributors</h2>
+        {{#if kredits.hasAccounts}}
+          <nav>
+            {{link-to "add" "contributors.new" title="Add contributor profile" class="button small green"}}
+          </nav>
+        {{/if}}
       </header>
       <div class="content">
         {{contributor-list contributorList=kreditsToplist
@@ -60,21 +65,5 @@
       </div>
     </section>
   </div>
-
-  {{#if kredits.hasAccounts}}
-    <section id="add-contributor">
-      <header>
-        <h2>Add Contributor</h2>
-      </header>
-
-      <div class="content">
-        {{#if kredits.currentUser.isCore}}
-          {{add-contributor contributors=contributors save=(action "save")}}
-        {{else}}
-          Only core team members can add new contributors. Please ask someone to set you up.
-        {{/if}}
-      </div>
-    </section>
-  {{/if}}
 
 </main>
