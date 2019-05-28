@@ -60,7 +60,6 @@ export default Component.extend({
 
       this.save(contributor).then(() => {
         this.reset();
-        window.scroll(0,0);
       }).catch(err => {
         console.warn(err);
         window.alert('Something went wrong. Please check the browser console.');

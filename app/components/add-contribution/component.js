@@ -57,7 +57,6 @@ export default Component.extend({
       this.save(attributes)
         .then((/*contribution*/) => {
           this.reset();
-          window.scroll(0,0);
         }, err => {
           console.warn(err);
           window.alert('Something went wrong. Check the browser console for details.');
