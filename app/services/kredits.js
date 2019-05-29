@@ -190,13 +190,24 @@ export default Service.extend({
     return this.kredits.Contributor.add(attributes, { gasLimit: 350000 })
       .then(data => {
         console.debug('[kredits] add contributor response', data);
-        const contributor = Contributor.create(attributes);
-        this.contributors.pushObject(contributor);
-        return contributor;
       });
   },
 
-  getContributors() {
+  updateContributor (id, attributes) {
+    if (attributes.github_uid) {
+      const uidInt = parseInt(attributes.github_uid);
+      attributes.github_uid = uidInt;
+    }
+
+    console.debug('[kredits] update contributor', attributes);
+
+    return this.kredits.Contributor.updateProfile(id, attributes, { gasLimit: 350000 })
+      .then(data => {
+        console.debug('[kredits] updateProfile response', data);
+      });
+  },
+
+  getContributors () {
     return this.kredits.Contributor.all()
       .then((contributors) => {
         return contributors.map((contributor) => {
@@ -293,6 +304,11 @@ export default Service.extend({
 
   // Contract events
   addContractEventHandlers () {
+    this.kredits.Contributor
+      .on('ContributorProfileUpdated', this.handleContributorChange.bind(this))
+      .on('ContributorAccountUpdated', this.handleContributorChange.bind(this))
+      .on('ContributorAdded', this.handleContributorChange.bind(this))
+
     this.kredits.Contribution
       .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
 
@@ -305,7 +321,23 @@ export default Service.extend({
       .on('Transfer', this.handleTransfer.bind(this));
   },
 
-  handleContributionVetoed(contributionId) {
+  async handleContributorChange (contributorId, ...args) {
+    console.debug('[kredits] Contributor add/update event received for ID', contributorId);
+    console.debug('[kredits] Event data:', args);
+    const contributorData = await this.kredits.Contributor.getById(contributorId);
+    const newContributor = Contributor.create(contributorData);
+
+    const oldContributor = this.contributors.findBy('id', contributorId.toString());
+    if (oldContributor) {
+      console.debug('[kredits] old contributor', oldContributor);
+      this.contributors.removeObject(oldContributor);
+    }
+
+    console.debug('[kredits] new contributor', newContributor);
+    this.contributors.pushObject(newContributor);
+  },
+
+  handleContributionVetoed (contributionId) {
     console.debug('[kredits] ContributionVetoed event received for ', contributionId);
     const contribution = this.contributions.findBy('id', contributionId);
     console.debug('[kredits] contribution', contribution);

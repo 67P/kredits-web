@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { and, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import { isPresent } from '@ember/utils';
 
 export default Component.extend({
 
@@ -26,6 +27,12 @@ export default Component.extend({
 
   init () {
     this._super(...arguments);
+    this.setDefaultAttributes();
+    this.reset();
+  },
+
+  setDefaultAttributes () {
+    if (isPresent(this.attributes)) { return; }
 
     this.set('attributes', {
       account: null,
@@ -37,8 +44,6 @@ export default Component.extend({
       gitea_username: null,
       wiki_username: null
     });
-
-    this.reset();
   },
 
   reset: function() {
