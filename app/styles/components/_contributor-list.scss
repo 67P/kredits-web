@@ -16,7 +16,11 @@ table.contributor-list {
 
     &.metadata {
       height: 0;
-      transition: all 0.2s ease-out;
+      visibility: hidden;
+
+      &:not(.visible) {
+        border-bottom: none;
+      }
 
       td {
         padding: 0 1.2rem;
@@ -34,7 +38,6 @@ table.contributor-list {
         display: block;
         overflow: hidden;
         height: 0;
-        transition: all 0.2s ease-out;
 
         li {
           display: inline;
@@ -46,6 +49,7 @@ table.contributor-list {
 
       &.visible {
         height: auto;
+        visibility: visible;
         ul {
           height: auto;
         }
@@ -54,11 +58,11 @@ table.contributor-list {
 
     td {
       padding: 0 1.2rem;
-      line-height: 4.2rem;
+      line-height: 3.6rem;
 
       &.person {
         text-align: left;
-        font-size: 1.4rem;
+        font-size: 1.2rem;
 
         img.avatar {
           margin-right: 0.2rem;
@@ -68,10 +72,11 @@ table.contributor-list {
       &.kredits {
         text-align: right;
         .amount {
-          font-size: 1.4rem;
+          font-size: 1.2rem;
+          font-weight: 500;
         }
         .symbol {
-          font-size: 1rem;
+          font-size: 0.8rem;
           padding-left: 0.2rem;
         }
       }

@@ -190,7 +190,9 @@ export default Service.extend({
     return this.kredits.Contributor.add(attributes, { gasLimit: 350000 })
       .then(data => {
         console.debug('[kredits] add contributor response', data);
-        return Contributor.create(attributes);
+        const contributor = Contributor.create(attributes);
+        this.contributors.pushObject(contributor);
+        return contributor;
       });
   },
 
@@ -200,6 +202,21 @@ export default Service.extend({
         return contributors.map((contributor) => {
           return Contributor.create(contributor);
         });
+      });
+  },
+
+  addContribution(attributes) {
+    console.debug('[kredits] add contribution', attributes);
+
+    return this.kredits.Contribution.addContribution(attributes, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] add contribution response', data);
+        attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
+        const contribution = Contribution.create(attributes);
+        // TODO receive from wrapper
+        contribution.set('confirmedAtBlock', data.blockNumber + 40320);
+        this.contributions.pushObject(contribution);
+        return contribution;
       });
   },
 

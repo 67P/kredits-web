@@ -3,6 +3,7 @@ import { and, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
+
   kredits: service(),
 
   attributes: null,
@@ -36,10 +37,7 @@ export default Component.extend({
       gitea_username: null,
       wiki_username: null
     });
-  },
 
-  didInsertElement() {
-    this._super(...arguments);
     this.reset();
   },
 
@@ -48,7 +46,8 @@ export default Component.extend({
   },
 
   actions: {
-    submit() {
+
+    submit () {
       if (!this.isValid) {
         alert('Invalid data. Please review and try again.');
         return;
@@ -61,14 +60,14 @@ export default Component.extend({
 
       this.save(contributor).then(() => {
         this.reset();
-        window.scroll(0,0);
       }).catch(err => {
-        console.log(err);
+        console.warn(err);
         window.alert('Something went wrong. Please check the browser console.');
       }).finally(() => {
         this.set('inProgress', false);
       });
     }
+
   }
 
 });

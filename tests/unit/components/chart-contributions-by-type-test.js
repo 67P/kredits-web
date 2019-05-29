@@ -14,6 +14,7 @@ module('Unit | Component | chart-contributions-by-type', function(hooks) {
     { kind: 'community' , amount: 5000 , vetoed: false },
     { kind: 'docs'      , amount: 500  , vetoed: true },
     { kind: 'docs'      , amount: 500  , vetoed: false },
+    { kind: 'special'   , amount: 9999 , vetoed: false },
     { kind: 'docs'      , amount: 500  , vetoed: false }
   ];
 

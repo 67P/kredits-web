@@ -1,4 +1,4 @@
-button, input[type=submit] {
+button, input[type=submit], .button {
   display: inline-block;
   padding: 0.6rem 2rem;
   background-color: rgba(22, 21, 40, 0.6);
@@ -6,6 +6,7 @@ button, input[type=submit] {
   border-radius: 3px;
   color: $primary-color;
   font-weight: 500;
+  text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
   letter-spacing: 0.1em;
@@ -22,9 +23,20 @@ button, input[type=submit] {
   &.danger {
     color: $red;
     background-color: rgba(40, 21, 21, 0.6);
+    border-color: rgba(40, 21, 21, 1);
 
     &:hover {
       background-color: rgba(40, 21, 21, 0.8);
+    }
+  }
+
+  &.green {
+    color: $green;
+    background-color: rgba(21, 40, 21, 0.6);
+    border-color: rgba(21, 40, 21, 1);
+
+    &:hover {
+      background-color: rgba(21, 40, 21, 0.8);
     }
   }
 }

@@ -1,0 +1,58 @@
+<form {{action "submit" on="submit"}}>
+  <p>
+    <select required onchange={{action (mut contributorId) value="target.value"}}>
+      <option value="" selected disabled hidden>Contributor</option>
+      {{#each contributors as |contributor|}}
+        <option value={{contributor.id}} selected={{eq contributorId contributor.id}}>{{contributor.github_username}}</option>
+      {{/each}}
+    </select>
+  </p>
+  <p>
+    <select required onchange={{action (mut kind) value="target.value"}}>
+      <option value="" selected disabled hidden>Kind</option>
+      <option value="community" selected={{eq kind "community"}}>Community</option>
+      <option value="design" selected={{eq kind "design"}}>Design</option>
+      <option value="dev" selected={{eq kind "dev"}}>Development</option>
+      <option value="docs" selected={{eq kind "docs"}}>Documentation</option>
+      <option value="ops" selected={{eq kind "ops"}}>IT Operations</option>
+      <option value="special" selected={{eq kind "ops"}}>Special</option>
+    </select>
+  </p>
+  <p>
+    {{ember-flatpickr
+      allowInput=false
+      altFormat="F j, Y"
+      altInput=true
+      altInputClass="date-alt"
+      date=date
+      dateFormat="Y-m-d"
+      defaultDate=defaultDate
+      maxDate=defaultDate
+      onChange=(action (mut date))
+    }}
+  </p>
+  <p>
+    {{input type="text"
+            placeholder="500"
+            value=amount
+            class=(if isValidAmount "valid" "")}}
+  </p>
+  <p>
+    {{input type="text"
+            placeholder="Description"
+            value=description
+            class=(if isValidDescription "valid" "")}}
+  </p>
+  <p>
+    {{input type="text"
+            placeholder="URL (optional)"
+            value=url
+            class=(if isValidUrl "valid" "")}}
+  </p>
+  <p class="actions">
+    {{input type="submit"
+            disabled=inProgress
+            value=(if inProgress "Processing" "Save")}}
+  </p>
+</form>
+

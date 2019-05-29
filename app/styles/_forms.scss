@@ -1,12 +1,14 @@
-section#add-contributor, section#add-proposal {
+section#add-contributor,
+section#add-contribution,
+section#add-proposal {
 
   form {
 
     p {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
 
       &.actions {
-        padding-top: 1rem;
+        padding-top: 1.5rem;
         text-align: center;
         a {
           color: $primary-color;

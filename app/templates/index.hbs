@@ -2,8 +2,13 @@
 
   <div id="stats">
     <section id="people">
-      <header>
+      <header class="with-nav">
         <h2>Contributors</h2>
+        {{#if kredits.hasAccounts}}
+          <nav>
+            {{link-to "add" "contributors.new" title="Add contributor profile" class="button small green"}}
+          </nav>
+        {{/if}}
       </header>
       <div class="content">
         {{contributor-list contributorList=kreditsToplist
@@ -33,8 +38,13 @@
   <div id="contributions">
     {{#if contributionsUnconfirmed}}
       <section id="contributions-unconfirmed">
-        <header>
+        <header class="with-nav">
           <h2>Latest Contributions</h2>
+          {{#if kredits.hasAccounts}}
+            <nav>
+              {{link-to "add" "contributions.new" title="Submit a contribution" class="button small green"}}
+            </nav>
+          {{/if}}
         </header>
         <div class="content">
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
@@ -53,30 +63,7 @@
         {{contribution-list contributions=contributionsConfirmedSorted
                             vetoContribution=(action "vetoContribution")}}
       </div>
-
-      {{!-- TODO: We need a better naming --}}
-      {{#if kredits.hasAccounts}}
-        <p class="actions">
-          {{#link-to "proposals.new"}}Create new proposal{{/link-to}}
-        </p>
-      {{/if}}
     </section>
   </div>
-
-  {{#if kredits.hasAccounts}}
-    <section id="add-contributor">
-      <header>
-        <h2>Add Contributor</h2>
-      </header>
-
-      <div class="content">
-        {{#if kredits.currentUser.isCore}}
-          {{add-contributor contributors=contributors save=(action "save")}}
-        {{else}}
-          Only core team members can add new contributors. Please ask someone to set you up.
-        {{/if}}
-      </div>
-    </section>
-  {{/if}}
 
 </main>
