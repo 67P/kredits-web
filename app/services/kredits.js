@@ -47,7 +47,7 @@ export default Service.extend({
                });
   }),
 
-   kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors', function() {
+  kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
     const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
     const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
     const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
@@ -87,7 +87,7 @@ export default Service.extend({
   // This is called in the application route's beforeModel(). So it is
   // initialized before everything else, and we can rely on the ethProvider and
   // the potential currentUserAccounts to be available
-  getEthProvider: function() {
+  getEthProvider () {
     let ethProvider;
 
     return new RSVP.Promise(async (resolve) => {
@@ -136,7 +136,7 @@ export default Service.extend({
     });
   },
 
-  setup() {
+  setup () {
     return this.getEthProvider().then((providerAndSigner) => {
       let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
         addresses: { Kernel: config.kreditsKernelAddress },
@@ -172,14 +172,14 @@ export default Service.extend({
   }),
 
 
-  loadInitialData() {
+  loadInitialData () {
     return this.getContributors()
                .then(contributors => this.contributors.pushObjects(contributors))
                .then(() => this.getContributions())
                .then(contributions => this.contributions.pushObjects(contributions))
   },
 
-  addContributor(attributes) {
+  addContributor (attributes) {
     if (attributes.github_uid) {
       const uidInt = parseInt(attributes.github_uid);
       attributes.github_uid = uidInt;
@@ -205,7 +205,7 @@ export default Service.extend({
       });
   },
 
-  addContribution(attributes) {
+  addContribution (attributes) {
     console.debug('[kredits] add contribution', attributes);
 
     return this.kredits.Contribution.addContribution(attributes, { gasLimit: 300000 })
@@ -220,7 +220,7 @@ export default Service.extend({
       });
   },
 
-  addProposal(attributes) {
+  addProposal (attributes) {
     console.debug('[kredits] add proposal', attributes);
 
     return this.kredits.Proposal.addProposal(attributes)
@@ -231,7 +231,7 @@ export default Service.extend({
       });
   },
 
-  getProposals() {
+  getProposals () {
     return this.kredits.Proposal.all()
       .then((proposals) => {
         return proposals.map((proposal) => {
@@ -241,7 +241,7 @@ export default Service.extend({
       });
   },
 
-  getContributions() {
+  getContributions () {
     return this.kredits.Contribution.all({page: {size: 200}})
       .then(contributions => {
         return contributions.map(contribution => {
@@ -251,7 +251,7 @@ export default Service.extend({
       });
   },
 
-  vote(proposalId) {
+  vote (proposalId) {
     console.debug('[kredits] vote for', proposalId);
 
     return this.kredits.Proposal.functions.vote(proposalId)
@@ -261,7 +261,7 @@ export default Service.extend({
       });
   },
 
-  veto(contributionId) {
+  veto (contributionId) {
     console.debug('[kredits] veto against', contributionId);
 
     return this.kredits.Contribution.functions.veto(contributionId, { gasLimit: 300000 })
@@ -292,7 +292,7 @@ export default Service.extend({
   },
 
   // Contract events
-  addContractEventHandlers() {
+  addContractEventHandlers () {
     this.kredits.Contribution
       .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
 
@@ -315,7 +315,7 @@ export default Service.extend({
     }
   },
 
-  handleProposalCreated(proposalId) {
+  handleProposalCreated (proposalId) {
     let proposal = this.findProposalById(proposalId);
 
     if (proposal) {
@@ -331,7 +331,7 @@ export default Service.extend({
   },
 
   // TODO: We may want to reload that proposal to show the voter as voted
-  handleProposalVoted(proposalId, voterId, totalVotes) {
+  handleProposalVoted (proposalId, voterId, totalVotes) {
     let proposal = this.findProposalById(proposalId);
 
     if (proposal) {
@@ -339,7 +339,7 @@ export default Service.extend({
     }
   },
 
-  handleProposalExecuted(proposalId, contributorId, amount) {
+  handleProposalExecuted (proposalId, contributorId, amount) {
     let proposal = this.findProposalById(proposalId);
 
     if (proposal.get('isExecuted')) {
@@ -354,7 +354,7 @@ export default Service.extend({
         .incrementProperty('balance', amount);
   },
 
-  handleTransfer(from, to, value) {
+  handleTransfer (from, to, value) {
     value = value.toNumber();
 
     this.contributors
