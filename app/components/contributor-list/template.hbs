@@ -26,6 +26,9 @@
               <a href="https://ipfs.io/ipfs/{{c.contributor.ipfsHash}}" target="_blank" rel="noopener">Inspect IPFS profile</a>
             </li>
           {{/if}}
+          <li>
+            {{link-to "Edit profile" "contributors.edit" c.contributor.id}}
+          </li>
         </ul>
         {{#if c.showMetadata}}
           <pre>{{c.contributor.ipfsData}}</pre>

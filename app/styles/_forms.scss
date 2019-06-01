@@ -17,6 +17,12 @@ section#add-proposal {
       }
     }
 
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+
     input[type=text], select {
       width: 100%;
       padding: 1rem;
@@ -25,8 +31,13 @@ section#add-proposal {
       background-color: rgba(22, 21, 40, 0.3);
       color: #fff;
       font-size: 1.2rem;
+      transition: border-color 0.1s linear;
+
       &:focus, &.valid {
         background-color: rgba(22, 21, 40, 0.6);
+      }
+      &:focus {
+        border-color: $blue;
       }
       &::placeholder {
         color: rgba(238, 238, 238, 0.5);

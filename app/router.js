@@ -15,6 +15,7 @@ Router.map(function() {
   });
   this.route('contributors', function() {
     this.route('new');
+    this.route('edit', { path: ':id/edit' });
   });
 });
 
