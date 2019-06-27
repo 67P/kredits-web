@@ -11,7 +11,7 @@ export default Controller.extend({
   contributionsConfirmed: alias('kredits.contributionsConfirmed'),
   contributionsUnconfirmed: alias('kredits.contributionsUnconfirmed'),
 
-  contributionsSorting: Object.freeze(['id:desc']),
+  contributionsSorting: Object.freeze(['date:desc', 'time:desc', 'id:desc']),
   contributionsUnconfirmedSorted: sort('contributionsUnconfirmed', 'contributionsSorting'),
   contributionsConfirmedSorted: sort('contributionsConfirmed', 'contributionsSorting'),
 
