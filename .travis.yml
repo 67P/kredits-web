@@ -6,6 +6,11 @@ node_js:
 sudo: false
 dist: xenial
 
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
 addons:
   chrome: stable
 
