@@ -11,8 +11,16 @@ button, input[type=submit], .button {
   cursor: pointer;
   letter-spacing: 0.1em;
 
+  &+button, &+input[type=submit], &+.button {
+    margin-left: 0.5rem;
+  }
+
   &:hover {
     background-color: rgba(22, 21, 40, 0.8);
+  }
+
+  &:active, &.active {
+    border-color: $primary-color;
   }
 
   &.small {
@@ -28,6 +36,9 @@ button, input[type=submit], .button {
     &:hover {
       background-color: rgba(40, 21, 21, 0.8);
     }
+    &:active, &.active {
+      border-color: $red;
+    }
   }
 
   &.green {
@@ -37,6 +48,9 @@ button, input[type=submit], .button {
 
     &:hover {
       background-color: rgba(21, 40, 21, 0.8);
+    }
+    &:active, &.active {
+      border-color: $green;
     }
   }
 }
