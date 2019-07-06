@@ -1,17 +1,31 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { click, fillIn, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import contributors from '../../../fixtures/contributors';
+import contributions from '../../../fixtures/contributions';
 
 module('Integration | Component | contribution-list', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+  test('it renders all contributions', async function(assert) {
+    this.set('fixtures', contributions);
+    await render(hbs`{{contribution-list contributions=fixtures}}`);
 
-    await render(hbs`{{contribution-list}}`);
+    assert.equal(this.element.querySelectorAll('li').length, 9);
+  });
 
-    assert.equal(this.element.textContent.trim(), '');
+  test('it renders filtered contributions', async function(assert) {
+    let service = this.owner.lookup('service:kredits');
+    service.set('contributors', contributors);
+
+    this.set('fixtures', contributions);
+    await render(hbs`{{contribution-list contributions=fixtures showQuickFilter=true}}`);
+
+    await fillIn('.filter-contributor select', '1');
+    assert.equal(this.element.querySelectorAll('li').length, 5, 'select contributor');
+
+    await click('.filter-contribution-size input');
+    assert.equal(this.element.querySelectorAll('li').length, 4, 'hide small contributions');
   });
 });
