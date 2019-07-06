@@ -9,6 +9,11 @@ export default Component.extend({
   tagName: 'div',
   classNames: ['contributions'],
 
+  showQuickFilter: false,
+  hideSmallContributions: false,
+  contributorId: null,
+  contributionKind: null,
+
   kredits: service(),
 
   contributorsSorting: Object.freeze(['name:asc']),
@@ -23,11 +28,11 @@ export default Component.extend({
     });
   }),
 
-  showQuickFilter: false,
-  hideSmallContributions: false,
-  contributorId: null,
+  contributionKinds: computed('contributions.[]', function() {
+    return this.contributions.mapBy('kind').uniq();
+  }),
 
-  contributionsFiltered: computed('contributions.[]', 'hideSmallContributions', 'contributorId', function() {
+  contributionsFiltered: computed('contributions.[]', 'hideSmallContributions', 'contributorId', 'contributionKind', function() {
     return this.contributions.filter(c => {
       let included = true;
 
@@ -35,7 +40,10 @@ export default Component.extend({
           c.amount <= 500) { included = false; }
 
       if (isPresent(this.contributorId) &&
-          (c.contributorId.toString() !== this.contributorId.toString())) { included = false; }
+          c.contributorId.toString() !== this.contributorId.toString()) { included = false; }
+
+      if (isPresent(this.contributionKind) &&
+          c.kind !== this.contributionKind) { included = false; }
 
       return included;
     });

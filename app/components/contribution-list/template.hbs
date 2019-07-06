@@ -11,6 +11,16 @@
         </select>
       </label>
 
+      <label class="filter-contribution-kind">
+        Kind:
+        <select onchange={{action (mut contributionKind) value="target.value"}}>
+          <option value="" selected>all</option>
+          {{#each contributionKinds as |kind|}}
+            <option value={{kind}} selected={{eq contributionKind kind}}>{{capitalize-string kind}}</option>
+          {{/each}}
+        </select>
+      </label>
+
       <label class="filter-contribution-size">
         {{input type="checkbox" checked=hideSmallContributions}}
         Hide small contributions

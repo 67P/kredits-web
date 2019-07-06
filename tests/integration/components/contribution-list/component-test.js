@@ -27,5 +27,8 @@ module('Integration | Component | contribution-list', function(hooks) {
 
     await click('.filter-contribution-size input');
     assert.equal(this.element.querySelectorAll('li').length, 4, 'hide small contributions');
+
+    await fillIn('.filter-contribution-kind select', 'dev');
+    assert.equal(this.element.querySelectorAll('li').length, 1, 'select kind');
   });
 });
