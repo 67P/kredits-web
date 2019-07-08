@@ -25,6 +25,9 @@ export default Controller.extend({
   showUnconfirmedKredits: true,
   hideUnconfirmedKredits: not('showUnconfirmedKredits'),
 
+  showQuickFilterUnconfirmed: false,
+  showQuickFilterConfirmed: false,
+
   actions: {
 
     vetoContribution (contributionId) {
@@ -37,6 +40,14 @@ export default Controller.extend({
       this.kredits.vote(proposalId).then(transaction => {
         console.debug('[controllers:index] Vote submitted to Ethereum blockhain: '+transaction.hash);
       });
+    },
+
+    toggleQuickFilterUnconfirmed () {
+      this.toggleProperty('showQuickFilterUnconfirmed');
+    },
+
+    toggleQuickFilterConfirmed () {
+      this.toggleProperty('showQuickFilterConfirmed');
     }
 
   }

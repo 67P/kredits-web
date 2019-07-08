@@ -1,25 +1,58 @@
-{{#each contributions as |contribution|}}
-  <li data-contribution-id={{contribution.id}} class="{{contribution-status contribution}} {{if contribution.vetoed "vetoed"}}">
-    <p class="meta">
-      <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
-      <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
-      <span class="title">
-        {{#if contribution.url}}
-          <a href={{contribution.url}} target="_blank" rel="noopener">{{contribution.description}}</a>
-        {{else}}
-          {{contribution.description}}
-        {{/if}}
-      </span>
+{{#if showQuickFilter}}
+  <div class="quick-filter">
+    <p>
+      <label class="filter-contributor">
+        Contributor:
+        <select onchange={{action (mut contributorId) value="target.value"}}>
+          <option value="" selected>all</option>
+          {{#each contributorsActive as |contributor|}}
+            <option value={{contributor.id}} selected={{eq contributorId contributor.id}}>{{contributor.name}}</option>
+          {{/each}}
+        </select>
+      </label>
+
+      <label class="filter-contribution-kind">
+        Kind:
+        <select onchange={{action (mut contributionKind) value="target.value"}}>
+          <option value="" selected>all</option>
+          {{#each contributionKinds as |kind|}}
+            <option value={{kind}} selected={{eq contributionKind kind}}>{{capitalize-string kind}}</option>
+          {{/each}}
+        </select>
+      </label>
+
+      <label class="filter-contribution-size">
+        {{input type="checkbox" checked=hideSmallContributions}}
+        Hide small contributions
+      </label>
     </p>
-    <p class="kredits-amount">
-      <span class="amount">{{contribution.amount}}</span><span class="symbol">₭S</span>
-    </p>
-    {{#unless contribution.vetoed}}
-      {{#unless (is-confirmed-contribution contribution)}}
-        <p class="voting">
-          <button {{action "veto" contribution.id}} class="small danger">veto</button>
-        </p>
+  </div>
+{{/if}}
+
+<ul class="contribution-list">
+  {{#each contributionsFiltered as |contribution|}}
+    <li data-contribution-id={{contribution.id}} class="{{contribution-status contribution}} {{if contribution.vetoed "vetoed"}}">
+      <p class="meta">
+        <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
+        <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
+        <span class="title">
+          {{#if contribution.url}}
+            <a href={{contribution.url}} target="_blank" rel="noopener">{{contribution.description}}</a>
+          {{else}}
+            {{contribution.description}}
+          {{/if}}
+        </span>
+      </p>
+      <p class="kredits-amount">
+        <span class="amount">{{contribution.amount}}</span><span class="symbol">₭S</span>
+      </p>
+      {{#unless contribution.vetoed}}
+        {{#unless (is-confirmed-contribution contribution)}}
+          <p class="voting">
+            <button {{action "veto" contribution.id}} class="small danger">veto</button>
+          </p>
+        {{/unless}}
       {{/unless}}
-    {{/unless}}
-  </li>
-{{/each}}
+    </li>
+  {{/each}}
+</ul>

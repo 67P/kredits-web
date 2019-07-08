@@ -42,6 +42,7 @@
           <h2>Latest Contributions</h2>
           {{#if kredits.hasAccounts}}
             <nav>
+              <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
               {{link-to "add" "contributions.new" title="Submit a contribution" class="button small green"}}
             </nav>
           {{/if}}
@@ -50,18 +51,23 @@
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
           {{contribution-list contributions=contributionsUnconfirmedSorted
                               vetoContribution=(action "vetoContribution")
-                              contractInteractionEnabled=kredits.hasAccounts}}
+                              contractInteractionEnabled=kredits.hasAccounts
+                              showQuickFilter=showQuickFilterUnconfirmed}}
         </div>
       </section>
     {{/if}}
 
     <section id="contributions-confirmed">
-      <header>
+      <header class="with-nav">
         <h2>Confirmed Contributions</h2>
+        <nav>
+          <button {{action "toggleQuickFilterConfirmed"}} class="small {{if showQuickFilterConfirmed "active"}}">filter</button>
+        </nav>
       </header>
       <div class="content">
         {{contribution-list contributions=contributionsConfirmedSorted
-                            vetoContribution=(action "vetoContribution")}}
+                            vetoContribution=(action "vetoContribution")
+                            showQuickFilter=showQuickFilterConfirmed}}
       </div>
     </section>
   </div>
