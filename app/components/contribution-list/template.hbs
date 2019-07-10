@@ -37,7 +37,7 @@
         <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
         <span class="title">
           {{#if contribution.url}}
-            <a href={{contribution.url}} target="_blank" rel="noopener">{{contribution.description}}</a>
+            <a href={{contribution.url}} target="_blank" rel="noopener" title={{contribution.description}}>{{contribution.description}}</a>
           {{else}}
             {{contribution.description}}
           {{/if}}
