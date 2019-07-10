@@ -57,6 +57,9 @@ ul.contribution-list {
       margin: 0;
       font-size: inherit;
       line-height: 2rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       &.kredits-amount, &.voting {
         text-align: right;
