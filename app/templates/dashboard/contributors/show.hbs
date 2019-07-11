@@ -7,9 +7,21 @@
     <h2>{{model.name}}</h2>
     <p class="role">{{roleName}}</p>
 
-    {{#if model.url}}
-      <a href={{model.url}} target="_blank" rel="noopener">Web</a>
-    {{/if}}
+    <ul class="external-accounts">
+      {{#each model.accounts as |account|}}
+        <li>
+          {{external-account-link account=account}}
+        </li>
+      {{/each}}
+      {{#if model.url}}
+        <li>
+          <a href={{model.url}} target="_blank" rel="noopener" title="Website">
+            <span class="site">Web</span>
+            {{icon-web-globe}}
+          </a>
+        </li>
+      {{/if}}
+    </ul>
   </div>
 
   <div class="actions">

@@ -26,6 +26,22 @@ section#contributor-profile {
       text-align: center;
       margin-bottom: 0.6rem;
     }
+
+    p.role {
+      margin-bottom: 2rem;
+    }
+
+    ul.external-accounts {
+      list-style: none;
+
+      li {
+        display: inline-block;
+
+        &+li {
+          margin-left: 0.6rem;
+        }
+      }
+    }
   }
 
   .actions {
