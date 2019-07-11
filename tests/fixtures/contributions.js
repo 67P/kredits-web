@@ -1,4 +1,5 @@
 import Model from 'kredits-web/models/contribution';
+import contributors from '../../tests/fixtures/contributors';
 
 const items = [];
 
@@ -14,6 +15,9 @@ const data = [
   { id: 9, contributorId: 3, confirmedAtBlock: 2000, claimed: false, vetoed: true, amount: 1500, kind: 'docs' },
 ];
 
-data.forEach(attrs => items.push(Model.create(attrs)));
+data.forEach(attrs => {
+  attrs.contributor = contributors.findBy('id', attrs.contributorId.toString());
+  items.push(Model.create(attrs))
+});
 
 export default items;

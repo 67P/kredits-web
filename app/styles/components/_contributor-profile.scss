@@ -1,0 +1,36 @@
+section#contributor-profile {
+  text-align: center;
+
+  header {
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+
+    img {
+      margin: 0 auto;
+      border: 3px solid rgba(255,255,255,0.2);
+    }
+  }
+
+  .content {
+    z-index: 1;
+    width: 100%;
+    margin: -7.2rem 0 1.5rem;
+    padding: 6rem 1.2rem 2rem;
+
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    background-color: rgba(255,255,255,0.1);
+
+    h2 {
+      text-align: center;
+      margin-bottom: 0.6rem;
+    }
+  }
+
+  .actions {
+    .button {
+      margin-bottom: 0.6rem;
+    }
+  }
+}

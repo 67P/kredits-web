@@ -1,6 +1,9 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
+
+  router: service(),
 
   tagName: 'table',
   classNames: 'contributor-list',
@@ -8,13 +11,8 @@ export default Component.extend({
 
   actions: {
 
-    toggleContributorInfo(contributor) {
-      if (contributor.showMetadata) {
-        contributor.set('showMetadata', false);
-      } else {
-        this.contributorList.setEach('showMetadata', false);
-        contributor.set('showMetadata', true);
-      }
+    openContributorDetails(contributor) {
+      this.router.transitionTo('dashboard.contributors.show', contributor);
     }
 
   }

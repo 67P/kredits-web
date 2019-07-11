@@ -97,9 +97,11 @@ section {
 
 @import "buttons";
 @import "forms";
-@import "components/topbar";
-@import "components/loading-spinner";
-@import "components/contributor-list";
-@import "components/proposal-list";
+
 @import "components/contribution-list";
+@import "components/contributor-list";
+@import "components/contributor-profile";
+@import "components/loading-spinner";
+@import "components/proposal-list";
+@import "components/topbar";
 @import "components/user-avatar";

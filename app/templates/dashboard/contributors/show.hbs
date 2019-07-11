@@ -1,0 +1,24 @@
+<section id="contributor-profile">
+  <header>
+    {{user-avatar contributor=model size="medium"}}
+  </header>
+
+  <div class="content">
+    <h2>{{model.name}}</h2>
+    <p class="role">{{roleName}}</p>
+
+    {{#if model.url}}
+      <a href={{model.url}} target="_blank" rel="noopener">Web</a>
+    {{/if}}
+  </div>
+
+  <div class="actions">
+    <p>
+      <a href="https://rinkeby.etherscan.io/address/{{model.account}}" class="button small" target="_blank" rel="noopener">Inspect Ethereum transactions</a>
+      {{#if model.ipfsHash}}
+        <a href="https://ipfs.io/ipfs/{{model.ipfsHash}}" class="button small" target="_blank" rel="noopener">Inspect IPFS profile</a>
+      {{/if}}
+      {{link-to "Edit profile" "contributors.edit" model class="button small"}}
+    </p>
+  </div>
+</section>
