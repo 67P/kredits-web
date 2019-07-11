@@ -5,6 +5,9 @@ import { inject as service } from '@ember/service';
 
 export default Controller.extend({
   kredits: service(),
+
+  showDetailsPane: false,
+
   currentBlock: alias('kredits.currentBlock'),
 
   contributions: alias('kredits.contributions'),

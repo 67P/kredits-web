@@ -7,8 +7,18 @@ export default Route.extend({
   kredits: service(),
   contributors: alias('kredits.contributors'),
 
-  model(params) {
+  model (params) {
     return this.contributors.findBy('id', params.id);
+  },
+
+  activate () {
+    this.controllerFor('dashboard')
+        .set('showDetailsPane', true);
+  },
+
+  deactivate () {
+    this.controllerFor('dashboard')
+        .set('showDetailsPane', false);
   }
 
 });
