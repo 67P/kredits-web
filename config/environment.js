@@ -56,7 +56,8 @@ module.exports = function(environment) {
     ENV.ipfs = {
       host: 'localhost',
       port: '5001',
-      protocol: 'http'
+      protocol: 'http',
+      gatewayUrl: 'http://localhost:8080/ipfs'
     };
   }
 
