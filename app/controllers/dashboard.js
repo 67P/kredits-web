@@ -7,6 +7,7 @@ export default Controller.extend({
   kredits: service(),
 
   showDetailsPane: false,
+  selectedContributorId: null,
 
   currentBlock: alias('kredits.currentBlock'),
 

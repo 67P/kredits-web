@@ -11,14 +11,22 @@ export default Route.extend({
     return this.contributors.findBy('id', params.id);
   },
 
-  activate () {
+  setupController (controller, model) {
+    this._super(controller, model);
+
     this.controllerFor('dashboard')
-        .set('showDetailsPane', true);
+        .setProperties({
+          showDetailsPane: true,
+          selectedContributorId: model.id
+        });
   },
 
   deactivate () {
     this.controllerFor('dashboard')
-        .set('showDetailsPane', false);
+        .setProperties({
+          showDetailsPane: false,
+          selectedContributorId: null
+        });
   }
 
 });
