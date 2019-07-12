@@ -14,46 +14,6 @@ table.contributor-list {
       background-color: rgba(255,255,255,0.2);
     }
 
-    &.metadata {
-      height: 0;
-      visibility: hidden;
-
-      &:not(.visible) {
-        border-bottom: none;
-      }
-
-      td {
-        padding: 0 1.2rem;
-      }
-
-      a {
-        color: $primary-color;
-        &:hover, &:active {
-          color: #fff;
-        }
-      }
-
-      ul {
-        list-style: none;
-        display: block;
-        overflow: hidden;
-        height: 0;
-
-        li {
-          display: inline;
-          &+li {
-            margin-left: 1rem;
-          }
-        }
-      }
-
-      &.visible {
-        height: auto;
-        visibility: visible;
-        ul {
-          height: auto;
-        }
-      }
     }
 
     td {
