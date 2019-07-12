@@ -9,13 +9,13 @@ module('Integration | Component | contributor list', function(hooks) {
 
   const toplist = [
     {
-      contributor: Contributor.create({ id: 1, name: 'Bumi' }),
+      contributor: Contributor.create({ id: 1, name: 'Bumi', github_uid: 318 }),
       amountConfirmed: 5500,
       amountUnconfirmed: 1000,
       amountTotal: 6500
     },
     {
-      contributor: Contributor.create({ id: 2, name: 'Râu Cao' }),
+      contributor: Contributor.create({ id: 2, name: 'Râu Cao', github_uid: 842 }),
       amountConfirmed: 1500,
       amountUnconfirmed: 2000,
       amountTotal: 3500
@@ -28,8 +28,8 @@ module('Integration | Component | contributor list', function(hooks) {
 
     assert.dom('tr:nth-child(1) td.person').hasText('Bumi');
     assert.dom('tr:nth-child(1) span.amount').hasText('6500');
-    assert.dom('tr:nth-child(3) td.person').hasText('Râu Cao');
-    assert.dom('tr:nth-child(3) span.amount').hasText('3500');
+    assert.dom('tr:nth-child(2) td.person').hasText('Râu Cao');
+    assert.dom('tr:nth-child(2) span.amount').hasText('3500');
   });
 
   test('it renders confirmed kredits earned', async function(assert) {
@@ -38,7 +38,7 @@ module('Integration | Component | contributor list', function(hooks) {
 
     assert.dom('tr:nth-child(1) td.person').hasText('Bumi');
     assert.dom('tr:nth-child(1) span.amount').hasText('5500');
-    assert.dom('tr:nth-child(3) td.person').hasText('Râu Cao');
-    assert.dom('tr:nth-child(3) span.amount').hasText('1500');
+    assert.dom('tr:nth-child(2) td.person').hasText('Râu Cao');
+    assert.dom('tr:nth-child(2) span.amount').hasText('1500');
   });
 });

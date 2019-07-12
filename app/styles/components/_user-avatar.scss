@@ -4,4 +4,18 @@ img.avatar {
   vertical-align: middle;
   margin-right: 0.2rem;
   border-radius: 1rem;
+
+  &.medium {
+    margin: 0;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 5rem;
+  }
+
+  &.large {
+    margin: 0;
+    width: 256px;
+    height: 256px;
+    border-radius: 128px;
+  }
 }

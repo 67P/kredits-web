@@ -1,4 +1,3 @@
-import { computed } from '@ember/object';
 import EmberObject from '@ember/object';
 import bignumber from 'kredits-web/utils/cps/bignumber';
 import kreditsValue from 'kredits-web/utils/cps/kredits';
@@ -20,12 +19,6 @@ export default EmberObject.extend({
   github_username: null,
   github_uid: null,
   wiki_username: null,
-  ipfsData: '',
+  ipfsData: ''
 
-  avatarURL: computed('github_uid', function() {
-    let github_uid = this.github_uid;
-    if (github_uid) {
-      return `https://avatars2.githubusercontent.com/u/${github_uid}?v=3&s=128`;
-    }
-  }),
 });

@@ -5,7 +5,7 @@ main {
     padding: 1rem;
   }
 
-  &#index {
+  &#dashboard {
     width: 100%;
     display: grid;
     grid-row-gap: 2rem;
@@ -32,12 +32,19 @@ main {
 
 @media (min-width: 550px) {
   main {
-    &#index {
+    &#dashboard {
       grid-column-gap: 4rem;
       grid-row-gap: 2rem;
       grid-template-columns: 2fr 4fr;
       grid-template-areas:
         "stats contributions";
+
+      &.with-details {
+        grid-column-gap: 3rem;
+        grid-template-columns: 2fr 4fr 2fr;
+        grid-template-areas:
+          "stats contributions details";
+      }
     }
   }
 }

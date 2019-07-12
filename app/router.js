@@ -7,6 +7,11 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
+  this.route('dashboard', function() {
+    this.route('contributors', function() {
+      this.route('show', { path: ':id' });
+    });
+  });
   this.route('proposals', function() {
     this.route('new');
   });
