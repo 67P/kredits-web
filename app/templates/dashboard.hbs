@@ -12,7 +12,8 @@
       </header>
       <div class="content">
         {{contributor-list contributorList=kreditsToplist
-                           showUnconfirmedKredits=showUnconfirmedKredits}}
+                           showUnconfirmedKredits=showUnconfirmedKredits
+                           selectedContributorId=selectedContributorId}}
 
         <p class="stats">
           <span class="number">{{await kredits.totalKreditsEarned}}</span> kredits confirmed and issued to

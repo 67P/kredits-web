@@ -1,6 +1,8 @@
 <tbody>
   {{#each contributorList as |c|}}
-    <tr role="button" class={{if (is-current-user c.contributor) "current-user"}} {{action "openContributorDetails" c.contributor}}>
+    <tr role="button"
+        class="{{if (is-current-user c.contributor) "current-user"}} {{if (eq c.contributor.id selectedContributorId) "selected"}}"
+        {{action "openContributorDetails" c.contributor}}>
       <td class="person">
         {{user-avatar contributor=c.contributor}} {{c.contributor.name}}
       </td>
