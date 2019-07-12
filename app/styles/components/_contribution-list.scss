@@ -37,6 +37,7 @@ ul.contribution-list {
     background-color: rgba(255,255,255,0.1);
     font-size: 1.2rem;
     border-bottom: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
 
     &:first-of-type {
       border-top: 1px solid rgba(255,255,255,0.2);
@@ -50,6 +51,10 @@ ul.contribution-list {
       grid-template-columns: auto 5rem;
       text-decoration: line-through;
       opacity: 0.6;
+    }
+
+    &.selected {
+      background-color: rgba(255,255,255,0.2);
     }
 
     p {

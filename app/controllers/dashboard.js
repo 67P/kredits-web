@@ -8,6 +8,7 @@ export default Controller.extend({
 
   showDetailsPane: false,
   selectedContributorId: null,
+  selectedContributionId: null,
 
   currentBlock: alias('kredits.currentBlock'),
 
