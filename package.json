@@ -62,6 +62,7 @@
     "kosmos-schemas": "^2.0.0",
     "kredits-contracts": "^5.4.0",
     "loader.js": "^4.7.0",
+    "ndjson": "^1.5.0",
     "qunit-dom": "^0.8.0",
     "transform-loader": "^0.2.4",
     "tv4": "^1.3.0"
