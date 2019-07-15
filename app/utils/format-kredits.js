@@ -1,4 +1,4 @@
-import ethers from 'npm:ethers';
+import ethers from 'ethers';
 
 export default function(value, options = {}) {
   let etherValue = ethers.utils.formatEther(value);

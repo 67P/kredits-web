@@ -1,5 +1,5 @@
 import { computed } from '@ember/object';
-import ethers from 'npm:ethers';
+import ethers from 'ethers';
 
 export default function(dependentKey, converterMethod) {
   return computed(dependentKey, {

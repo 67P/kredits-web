@@ -1,5 +1,5 @@
 import { computed } from '@ember/object';
-import ethers from 'npm:ethers';
+import ethers from 'ethers';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 export default function(dependentKey, options = {}) {

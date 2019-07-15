@@ -1,5 +1,5 @@
-import ethers from 'npm:ethers';
-import Kredits from 'npm:kredits-contracts';
+import ethers from 'ethers';
+import Kredits from 'kredits-contracts';
 import RSVP from 'rsvp';
 
 import Service from '@ember/service';
