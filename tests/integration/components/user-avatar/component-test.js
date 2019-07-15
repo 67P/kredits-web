@@ -11,7 +11,7 @@ module('Integration | Component | user-avatar', function(hooks) {
     this.set('bumi', contributors.findBy('id', '1'));
     await render(hbs`{{user-avatar contributor=bumi}}`);
 
-    assert.equal(this.element.textContent.trim(), '');
+    assert.dom(this.element).hasText('');
   });
 
   test('default image source URL', async function(assert) {
