@@ -11,6 +11,10 @@ Router.map(function() {
     this.route('contributors', function() {
       this.route('show', { path: ':id' });
     });
+
+    this.route('contributions', function() {
+      this.route('show', { path: ':id' });
+    });
   });
   this.route('proposals', function() {
     this.route('new');

@@ -6,8 +6,12 @@ import { inject as service } from '@ember/service';
 
 export default Component.extend({
 
+  router: service(),
+
   tagName: 'div',
   classNames: ['contributions'],
+
+  selectedContribution: null,
 
   showQuickFilter: false,
   hideSmallContributions: false,
@@ -57,6 +61,10 @@ export default Component.extend({
       } else {
         window.alert('Only members can veto contributions. Please ask someone to set you up.');
       }
+    },
+
+    openContributionDetails(contribution) {
+      this.router.transitionTo('dashboard.contributions.show', contribution);
     }
 
   }

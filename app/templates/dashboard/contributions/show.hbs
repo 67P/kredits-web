@@ -1,0 +1,47 @@
+<section id="contribution-details">
+  <header class="with-nav">
+    <h2>Contribution #{{model.id}}</h2>
+    <nav>
+      <span class="amount">{{model.amount}}</span>&nbsp;
+      <span class="symbol">₭S</span>
+    </nav>
+  </header>
+
+  <div class="content">
+    <p class="who-what-when">
+      <span class="contributor">
+        {{user-avatar contributor=model.contributor}}
+        {{link-to model.contributor.name "dashboard.contributors.show" model.contributor}}
+      </span>
+      contributed
+      <span class="date" title={{model.iso8601Date}}>{{moment-from model.iso8601Date}}</span>:
+    </p>
+    <h3>{{model.description}}</h3>
+    <p>
+      Kind: {{model.kind}}
+      <br>Status: {{contribution-status model}}
+    </p>
+    {{#if model.url}}
+      <p>
+        <a href={{model.url}}
+           title={{model.description}}
+           class="button"
+           target="_blank"
+           rel="noopener">
+          Open URL
+        </a>
+      </p>
+    {{/if}}
+  </div>
+
+  <div class="actions">
+    <p>
+      {{#if model.ipfsHash}}
+        <a href="https://ipfs.io/ipfs/{{model.ipfsHash}}"
+           class="button small" target="_blank" rel="noopener">
+          Inspect IPFS data
+        </a>
+      {{/if}}
+    </p>
+  </div>
+</section>

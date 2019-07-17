@@ -31,17 +31,13 @@
 
 <ul class="contribution-list">
   {{#each contributionsFiltered as |contribution|}}
-    <li data-contribution-id={{contribution.id}} class="{{contribution-status contribution}} {{if contribution.vetoed "vetoed"}}">
+    <li role="button" {{action "openContributionDetails" contribution}}
+        data-contribution-id={{contribution.id}}
+        class="{{contribution-status contribution}}{{if contribution.vetoed " vetoed"}}{{if (eq contribution.id selectedContributionId) " selected"}}">
       <p class="meta">
         <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
         <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
-        <span class="title">
-          {{#if contribution.url}}
-            <a href={{contribution.url}} target="_blank" rel="noopener" title={{contribution.description}}>{{contribution.description}}</a>
-          {{else}}
-            {{contribution.description}}
-          {{/if}}
-        </span>
+        <span class="title">{{contribution.description}}</span>
       </p>
       <p class="kredits-amount">
         <span class="amount">{{contribution.amount}}</span><span class="symbol">₭S</span>

@@ -7,6 +7,7 @@ export default Component.extend({
 
   tagName: 'table',
   classNames: 'contributor-list',
+
   selectedContributorId: null,
 
   actions: {

@@ -53,6 +53,7 @@
           {{contribution-list contributions=contributionsUnconfirmedSorted
                               vetoContribution=(action "vetoContribution")
                               contractInteractionEnabled=kredits.hasAccounts
+                              selectedContributionId=selectedContributionId
                               showQuickFilter=showQuickFilterUnconfirmed}}
         </div>
       </section>
@@ -68,6 +69,7 @@
       <div class="content">
         {{contribution-list contributions=contributionsConfirmedSorted
                             vetoContribution=(action "vetoContribution")
+                            selectedContributionId=selectedContributionId
                             showQuickFilter=showQuickFilterConfirmed}}
       </div>
     </section>
