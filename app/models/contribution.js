@@ -1,4 +1,4 @@
-import EmberObject from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import bignumber from 'kredits-web/utils/cps/bignumber';
 
 export default EmberObject.extend({
@@ -18,11 +18,17 @@ export default EmberObject.extend({
   description: null,
   details: null,
   url: null,
+  date: null,
+  time: null,
   ipfsData: '',
 
   init () {
     this._super(...arguments);
     this.set('details', {});
-  }
+  },
+
+  iso8601Date: computed('date', 'time', function() {
+    return this.time ? `${this.date}T${this.time}` : this.date;
+  })
 
 });

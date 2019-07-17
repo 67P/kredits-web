@@ -1,0 +1,60 @@
+section#contribution-details {
+  header {
+    nav {
+      .amount {
+        font-size: 1.5rem;
+      }
+
+      .symbol {
+        // font-size: 0.8rem;
+        padding-left: 0.2rem;
+      }
+    }
+  }
+
+  .content {
+    width: 100%;
+    margin: 0 0 1.5rem;
+    padding: 2rem 2rem;
+
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    background-color: rgba(255,255,255,0.1);
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    p {
+      margin-bottom: 2rem;
+
+      span {
+        font-size: inherit;
+      }
+
+      &.who-what-when {
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+
+    a {
+      color: $primary-color;
+      text-decoration: none;
+      font-size: inherit;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .actions {
+    text-align: center;
+  }
+}
