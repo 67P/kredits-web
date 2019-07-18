@@ -1,0 +1,12 @@
+<section id="user-account">
+  {{#if kredits.hasAccounts }}
+    {{#if kredits.currentUser}}
+      {{kredits.currentUser.name}}
+      {{#if kredits.currentUserIsCore}}
+        <span class="core-flag">(core)</span>
+      {{/if}}
+    {{/if}}
+  {{else}}
+    Anonymous
+  {{/if}}
+</section>

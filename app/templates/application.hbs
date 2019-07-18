@@ -1,16 +1,6 @@
 <header id="topbar">
   <h1>{{link-to "Kosmos Kredits" "dashboard"}}</h1>
-
-  <section id="user-account">
-    {{#if kredits.hasAccounts }}
-      {{#if kredits.currentUser}}
-        {{kredits.currentUser.name}}
-        {{#if kredits.currentUserIsCore}}(core){{/if}}
-      {{/if}}
-    {{else}}
-      Anonymous
-    {{/if}}
-  </section>
+  {{topbar-account-panel}}
 </header>
 
 {{outlet}}
