@@ -6,5 +6,14 @@ export default Component.extend({
   tagName: '',
 
   kredits: service(),
+  router: service(),
+
+  actions: {
+
+    signup() {
+      this.router.transitionTo('signup');
+    }
+
+  }
 
 });

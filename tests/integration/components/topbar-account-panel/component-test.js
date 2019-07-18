@@ -9,7 +9,7 @@ module('Integration | Component | topbar-account-panel', function(hooks) {
   test('unknown user without wallet (or no permission to get wallet/account info)', async function(assert) {
     await render(hbs`<TopbarAccountPanel />`);
 
-    assert.equal(this.element.textContent.trim(), 'Anonymous');
+    assert.ok(this.element.textContent.trim().match(/^Anonymous/));
   });
 
   test('unknown user with Ethereum wallet', async function(assert) {
@@ -17,7 +17,7 @@ module('Integration | Component | topbar-account-panel', function(hooks) {
     service.set('currentUserAccounts', [{ foo: 'bar' }]);
     await render(hbs`<TopbarAccountPanel />`);
 
-    assert.equal(this.element.textContent.trim(), 'Anonymous');
+    assert.ok(this.element.textContent.trim().match(/^Anonymous/));
   });
 
   test('known contributor', async function(assert) {
