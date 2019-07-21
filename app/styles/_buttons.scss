@@ -53,4 +53,17 @@ button, input[type=submit], .button {
       border-color: $green;
     }
   }
+
+  &.icon {
+    svg {
+      width: 2rem;
+      height: 2rem;
+      vertical-align: middle;
+      margin-right: 1rem;
+
+      .fg {
+        fill: $primary-color;
+      }
+    }
+  }
 }
