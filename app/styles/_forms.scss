@@ -1,11 +1,16 @@
 section#add-contributor,
 section#add-contribution,
-section#add-proposal {
+section#add-proposal,
+section#signup {
 
   form {
 
     p {
       margin-bottom: 1.5rem;
+
+      &.mg-bottom-md {
+        margin-bottom: 2rem;
+      }
 
       &.actions {
         padding-top: 1.5rem;

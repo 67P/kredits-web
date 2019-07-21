@@ -23,6 +23,10 @@ button, input[type=submit], .button {
     border-color: $primary-color;
   }
 
+  &[disabled] {
+    color: rgba(255,255,255,0.5);
+  }
+
   &.small {
     font-size: 0.8rem;
     padding: 0.2rem 0.8rem;

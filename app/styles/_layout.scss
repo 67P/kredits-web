@@ -40,6 +40,10 @@ main {
       }
 
       p {
+        &.mg-bottom-md {
+          margin-bottom: 2rem;
+        }
+
         &.actions {
           text-align: center;
           padding-top: 2rem;

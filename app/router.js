@@ -26,7 +26,9 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: ':id/edit' });
   });
-  this.route('signup');
+  this.route('signup', function() {
+    this.route('eth-account');
+  });
 });
 
 export default Router;
