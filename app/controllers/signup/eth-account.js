@@ -1,13 +1,23 @@
 import Controller from '@ember/controller';
-import { not, notEmpty } from '@ember/object/computed';
-// import { computed } from '@ember/object';
+import { computed } from '@ember/object';
+import { not } from '@ember/object/computed';
+import { isAddress } from 'web3-utils';
 
 export default Controller.extend({
 
   ethAddress: null,
 
-  // TODO address validation
-  isValidEthAccount: notEmpty('ethAddress'),
-  signupButtonDisabled: not('isValidEthAccount')
+  isValidEthAccount: computed('ethAddress', function() {
+    return isAddress(this.ethAddress);
+  }),
+
+  signupButtonDisabled: not('isValidEthAccount'),
+
+  actions: {
+
+    completeSignup() {
+    }
+
+  }
 
 });

@@ -67,7 +67,8 @@
     "ndjson": "github:hugomrdias/ndjson#feat/readable-stream3",
     "qunit-dom": "^0.8.4",
     "transform-loader": "^0.2.4",
-    "tv4": "^1.3.0"
+    "tv4": "^1.3.0",
+    "web3-utils": "^1.0.0"
   },
   "engines": {
     "node": "8.* || >= 10.*"
