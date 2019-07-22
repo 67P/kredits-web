@@ -136,6 +136,10 @@ export default Service.extend({
     });
   },
 
+  getKreditsDeployedNetwork() {
+    return Kredits.availableNetworks();
+  },
+
   setup () {
     return this.getEthProvider().then((providerAndSigner) => {
       let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
