@@ -11,8 +11,8 @@ export default Component.extend({
 
   attributes: null,
 
-  isValidAccount: computed('ethAddress', function() {
-    return isAddress(this.ethAddress);
+  isValidAccount: computed('account', function() {
+    return isAddress(this.account);
   }),
 
   isValidName: notEmpty('name'),
