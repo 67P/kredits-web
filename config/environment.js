@@ -37,8 +37,8 @@ module.exports = function(environment) {
 
     web3ProviderUrl: 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9',
 
-    githubConnectUrl: 'https://hal8000.chat.kosmos.org:8082/kredits/signup/connect/github',
-    githubSignupUrl: 'https://hal8000.chat.kosmos.org:8082/kredits/signup/github',
+    githubConnectUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/connect/github',
+    githubSignupUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/github',
 
     ipfs: {
       host: 'ipfs.kosmos.org',
