@@ -24,6 +24,7 @@ export default Service.extend({
   contributors: null,
   contributions: null,
   proposals: null,
+  githubAccessToken: null,
 
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),

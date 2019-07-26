@@ -1,6 +1,5 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { isEmpty } from '@ember/utils';
 
 export default Route.extend({
 
@@ -9,9 +8,11 @@ export default Route.extend({
   redirect () {
     this._super(...arguments);
 
-    if (isEmpty(this.kredits.githubAccessToken)) {
-      this.transitionTo('signup.index');
-    }
+    const accessToken = window.location.hash.match(/access_token=(.+)/)[1];
+    this.kredits.set('githubAccessToken', accessToken);
+
+    this.transitionTo('signup.eth-account');
   }
 
 });
+
