@@ -21,13 +21,13 @@ export default Component.extend({
 
   init () {
     this._super(...arguments);
-    this.set('defaultDate', new Date());
+    this.set('defaultDate', new Date()); // TODO use beginning of current hour
 
     // Default attributes used by reset
     this.set('attributes', {
       contributorId: null,
       kind: null,
-      date: [new Date()],
+      date: this.defaultDate,
       amount: null,
       description: null,
       url: null,
@@ -49,8 +49,8 @@ export default Component.extend({
       }
 
       const attributes = this.getProperties(Object.keys(this.attributes));
-      const [ date/* , time */ ] = attributes.date[0].toISOString().split('T');
-      attributes.date = date;
+      const [ date, time ] = attributes.date[0].toISOString().split('T');
+      [ attributes.date, attributes.time ] = [ date, time ];
 
       this.set('inProgress', true);
 
