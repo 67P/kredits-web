@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
+import moment from 'moment';
 
 export default Component.extend({
 
