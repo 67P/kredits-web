@@ -21,7 +21,7 @@ export default Component.extend({
 
   init () {
     this._super(...arguments);
-    this.set('defaultDate', new Date()); // TODO use beginning of current hour
+    this.set('defaultDate', moment().startOf('hour').toDate());
 
     // Default attributes used by reset
     this.set('attributes', {
