@@ -50,7 +50,11 @@ export default Component.extend({
       }
 
       const attributes = this.getProperties(Object.keys(this.attributes));
-      const [ date, time ] = attributes.date[0].toISOString().split('T');
+
+      let dateInput = (attributes.date instanceof Array) ?
+        attributes.date[0] : attributes.date;
+
+      const [ date, time ] = dateInput.toISOString().split('T');
       [ attributes.date, attributes.time ] = [ date, time ];
 
       this.set('inProgress', true);
