@@ -7,6 +7,10 @@ section#add-proposal {
     p {
       margin-bottom: 1.5rem;
 
+      &.label {
+        margin-bottom: .5rem;
+      }
+
       &.actions {
         padding-top: 1.5rem;
         text-align: center;

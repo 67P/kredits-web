@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
+import moment from 'moment';
 
 export default Component.extend({
 
@@ -21,13 +22,13 @@ export default Component.extend({
 
   init () {
     this._super(...arguments);
-    this.set('defaultDate', new Date());
+    this.set('defaultDate', moment().startOf('hour').toDate());
 
     // Default attributes used by reset
     this.set('attributes', {
       contributorId: null,
       kind: null,
-      date: [new Date()],
+      date: this.defaultDate,
       amount: null,
       description: null,
       url: null,
@@ -49,8 +50,12 @@ export default Component.extend({
       }
 
       const attributes = this.getProperties(Object.keys(this.attributes));
-      const [ date/* , time */ ] = attributes.date[0].toISOString().split('T');
-      attributes.date = date;
+
+      let dateInput = (attributes.date instanceof Array) ?
+        attributes.date[0] : attributes.date;
+
+      const [ date, time ] = dateInput.toISOString().split('T');
+      [ attributes.date, attributes.time ] = [ date, time ];
 
       this.set('inProgress', true);
 
