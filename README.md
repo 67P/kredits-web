@@ -100,6 +100,10 @@ If that is the case the DAO address must be provided as `KREDITS_KERNEL_ADDRESS`
   * `npm run dao:address` in the kredits-contracts repo to find your address
   * `KREDITS_KERNEL_ADDRESS=<0xYOURADDRESS> npm run start:local`
 
+#### 4. Metamask network
+
+Switch the network in Metamask to "Custom RPC" with the RPC URL `http://localhost:7545`.
+
 #### IPFS
 
 Install IPFS with your favorite package manager and run
