@@ -71,10 +71,10 @@ These are the basic steps to get up and running:
 
 #### 1. IPFS
 
-Run a local IPFS deamon in offline mode.
+Run a local IPFS deamon.
 
   * Make sure CORS headers are configured. See [IPFS](#ipfs) for more info.
-  * `ipfs daemon --offline`
+  * `ipfs daemon`
 
 #### 2. kredits-contracts
 
@@ -108,6 +108,7 @@ Install IPFS with your favorite package manager and run
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["localhost:4200"]'
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "GET", "POST"]'
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials '["true"]'
+    ipfs config Addresses.Gateway /ip4/127.0.0.1/tcp/8080
 
 ## Further Reading / Useful Links
 
