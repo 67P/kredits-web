@@ -31,12 +31,20 @@ main {
 
   section {
     .content {
+      a {
+        font-size: inherit;
+      }
+
       &.text-lg {
         p {
           font-size: 1.2rem;
           margin-bottom: 1em;
           line-height: 1.5em;
         }
+      }
+
+      &.text-center {
+        text-align: center;
       }
 
       p {

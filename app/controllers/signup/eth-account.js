@@ -28,13 +28,10 @@ export default Controller.extend({
 
       fetch(config.githubSignupUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      }).then(response => {
-        return response.json();
       })
+      .then(res => res.json())
       .then(data => {
         console.log('Created contributor:', data);
 
@@ -43,7 +40,7 @@ export default Controller.extend({
           ethAddress: null
         });
 
-        // TODO show success message or transition to success page
+        this.transitionToRoute('signup.complete');
       });
     }
 

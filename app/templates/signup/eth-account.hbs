@@ -1,22 +1,25 @@
-<p class="mg-bottom-md">
-  Kredits allow you to take part in project governance, and to earn rewards for
-  your contributions. For both, you will need an Ethereum wallet/account.
-</p>
-
-<form {{action "submit" on="submit"}}>
-  <p>
-    <label>
-      Ethereum account:<br>
-      {{input type="text" value=ethAddress
-              placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
-              class=(if isValidEthAccount "valid" "")}}
-    </label>
+<header>
+  <h2>Complete your contributor profile</h2>
+</header>
+<div class="content text-lg">
+  <p class="mg-bottom-md">
+    Kredits allow you to take part in project governance, and to earn rewards for
+    your contributions. For both, you will need an Ethereum wallet/account.
   </p>
-</form>
-
-<p class="actions">
-  <button disabled={{signupButtonDisabled}}
-          {{action "completeSignup"}}>
-    Complete my profile
-  </button>
-</p>
+  <form {{action "submit" on="submit"}}>
+    <p>
+      <label>
+        Ethereum account:<br>
+        {{input type="text" value=ethAddress
+                placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
+                class=(if isValidEthAccount "valid" "")}}
+      </label>
+    </p>
+  </form>
+  <p class="actions">
+    <button disabled={{signupButtonDisabled}}
+            {{action "completeSignup"}}>
+      Complete my profile
+    </button>
+  </p>
+</div>
