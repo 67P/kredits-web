@@ -1,0 +1,11 @@
+<section id="user-account">
+  {{#if (and kredits.hasAccounts kredits.currentUser)}}
+    {{kredits.currentUser.name}}
+    {{#if kredits.currentUserIsCore}}
+      <span class="core-flag">(core)</span>
+    {{/if}}
+  {{else}}
+    Anonymous
+    <button {{action "signup"}} class="small green">Sign up</button>
+  {{/if}}
+</section>

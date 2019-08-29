@@ -1,7 +1,9 @@
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { isPresent } from '@ember/utils';
+import { isAddress } from 'web3-utils';
 
 export default Component.extend({
 
@@ -9,14 +11,17 @@ export default Component.extend({
 
   attributes: null,
 
-  // TODO: add proper address validation
-  isValidAccount: notEmpty('account'),
+  isValidAccount: computed('account', function() {
+    return isAddress(this.account);
+  }),
+
   isValidName: notEmpty('name'),
   isValidURL: notEmpty('url'),
   isValidGithubUID: notEmpty('github_uid'),
   isValidGithubUsername: notEmpty('github_username'),
   isValidGiteaUsername: notEmpty('gitea_username'),
   isValidWikiUsername: notEmpty('wiki_username'),
+
   isValid: and(
     'isValidAccount',
     'isValidName',

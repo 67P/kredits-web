@@ -26,6 +26,11 @@ Router.map(function() {
     this.route('new');
     this.route('edit', { path: ':id/edit' });
   });
+  this.route('signup', function() {
+    this.route('github');
+    this.route('eth-account');
+    this.route('complete');
+  });
 });
 
 export default Router;

@@ -38,6 +38,10 @@ h1, h2, h3, h4, h5, input, button {
   font-weight: 300;
 }
 
+a {
+  color: $primary-color;
+}
+
 section {
   h2 {
     font-size: 1.4rem;
@@ -106,4 +110,5 @@ section {
 @import "components/loading-spinner";
 @import "components/proposal-list";
 @import "components/topbar";
+@import "components/topbar-account-panel";
 @import "components/user-avatar";

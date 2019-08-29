@@ -37,6 +37,9 @@ module.exports = function(environment) {
 
     web3ProviderUrl: 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9',
 
+    githubConnectUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/connect/github',
+    githubSignupUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/github',
+
     ipfs: {
       host: 'ipfs.kosmos.org',
       port: '5444',
@@ -52,6 +55,9 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
     ENV.web3ProviderUrl = 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9';
+
+    ENV.githubConnectUrl = 'http://localhost:8888/kredits/signup/connect/github';
+    ENV.githubSignupUrl = 'http://localhost:8888/kredits/signup/github';
 
     ENV.ipfs = {
       host: 'localhost',
