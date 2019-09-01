@@ -11,13 +11,10 @@ main section {
   margin-bottom: 2rem;
 
   p {
-    font-size: inherit;
     padding: 0.2rem 0 0;
   }
 
   label {
-    font-size: inherit;
-
     &+ label {
       margin-left: 3.6rem;
     }
@@ -60,7 +57,6 @@ ul.contribution-list {
     p {
       align-self: center;
       margin: 0;
-      font-size: inherit;
       line-height: 2rem;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -72,11 +68,8 @@ ul.contribution-list {
     }
 
     span {
-      font-size: inherit;
-
       &.title {
         a {
-          font-size: inherit;
           text-decoration: none;
           color: $body-text-color;
         }
@@ -151,9 +144,7 @@ ul.contribution-list {
         }
       }
 
-
       .description {
-        font-size: inherit;
       }
     }
   }

@@ -19,7 +19,6 @@ ul.proposal-list {
     p {
       align-self: center;
       margin: 0;
-      font-size: inherit;
       line-height: 2rem;
 
       &.kredits-amount, &.voting {
@@ -36,7 +35,6 @@ ul.proposal-list {
     }
 
     span {
-      font-size: inherit;
     }
 
     .description {
@@ -107,7 +105,6 @@ ul.proposal-list {
 
 
       .description {
-        font-size: inherit;
       }
     }
   }
