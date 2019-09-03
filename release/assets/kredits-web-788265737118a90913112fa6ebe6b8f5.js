@@ -256,6 +256,6 @@ return r}}),define("kredits-web/utils/group-by",["exports"],function(e){Object.d
 r&&r.forEach(function(e){var r=Ember.get(e,t),o=n.findBy("value",r)
 Ember.isPresent(o)?Ember.get(o,"items").push(e):(o={property:t,value:r,items:[e]},n.push(o))})
 return n}}),define("kredits-web/config/environment",[],function(){try{var e="kredits-web/config/environment",t=document.querySelector('meta[name="'+e+'"]').getAttribute("content"),n={default:JSON.parse(decodeURIComponent(t))}
-return Object.defineProperty(n,"__esModule",{value:!0}),n}catch(r){throw new Error('Could not read config from meta tag with name "'+e+'".')}}),runningTests||require("kredits-web/app").default.create({name:"kredits-web",version:"1.8.0+74c8e32c"})
+return Object.defineProperty(n,"__esModule",{value:!0}),n}catch(r){throw new Error('Could not read config from meta tag with name "'+e+'".')}}),runningTests||require("kredits-web/app").default.create({name:"kredits-web",version:"1.9.0+9bf2ae2d"})
 
-//# sourceMappingURL=kredits-web-868d8b969971077e799f2af0a4243e4d.map
+//# sourceMappingURL=kredits-web-7fe8964c31666d314f384f34f575c3ac.map
