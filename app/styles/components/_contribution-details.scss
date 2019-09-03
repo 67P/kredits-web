@@ -29,7 +29,6 @@ section#contribution-details {
       margin-bottom: 2rem;
 
       span {
-        font-size: inherit;
       }
 
       &.who-what-when {
@@ -45,9 +44,8 @@ section#contribution-details {
     a {
       color: $primary-color;
       text-decoration: none;
-      font-size: inherit;
 
-      &:hover {
+      &:not(.button):hover {
         text-decoration: underline;
       }
     }
