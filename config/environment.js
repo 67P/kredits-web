@@ -36,6 +36,7 @@ module.exports = function(environment) {
     },
 
     web3ProviderUrl: 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9',
+    web3RequiredNetwork: 'rinkeby',
 
     githubConnectUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/connect/github',
     githubSignupUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/github',
@@ -81,6 +82,7 @@ module.exports = function(environment) {
 
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
+    ENV.web3RequiredNetwork = null;
   }
   if (process.env.KREDITS_DAO_ADDRESS) {
     ENV.kreditsKernelAddress = process.env.KREDITS_DAO_ADDRESS;
