@@ -30,10 +30,6 @@ export default Service.extend({
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
 
-  accountNeedsUnlock: computed('currentUserAccounts', function() {
-    return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
-  }),
-
   contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions.filter(contribution => {
       return contribution.confirmedAt > this.currentBlock;
@@ -103,6 +99,7 @@ export default Service.extend({
       }
 
       async function instantiateWithAccount (web3Provider, context) {
+        // TODO check if network is rinkeby
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         ethProvider = new ethers.providers.Web3Provider(web3Provider);
         // const network = await ethProvider.getNetwork();
@@ -120,7 +117,7 @@ export default Service.extend({
         try {
           // Request account access if needed
           await window.ethereum.enable();
-          // Acccounts now exposed
+          // Accounts now exposed
           instantiateWithAccount(window.ethereum, this);
         } catch (error) {
           instantiateWithoutAccount();
