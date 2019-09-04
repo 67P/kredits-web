@@ -114,12 +114,9 @@ export default Service.extend({
       }
 
       if (window.ethereum) {
-        try {
-          // Request account access if needed
-          await window.ethereum.enable();
-          // Accounts now exposed
+        if (window.ethereum.isConnected()) {
           instantiateWithAccount(window.ethereum, this);
-        } catch (error) {
+        } else {
           instantiateWithoutAccount();
         }
       }
