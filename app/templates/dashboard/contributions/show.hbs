@@ -42,7 +42,7 @@
           kredits will be issued.
         </p>
         <p>
-          {{link-to "Re-submit contribution" "signup" class="button small green"}}.
+          {{link-to "Re-submit contribution …" "signup" class="button small green"}}.
         </p>
       </div>
     {{/if}}
@@ -51,7 +51,7 @@
   <div class="actions">
     <p>
       {{#if model.ipfsHash}}
-        <a href="https://ipfs.io/ipfs/{{model.ipfsHash}}"
+        <a href="{{ipfsGatewayUrl}}/{{model.ipfsHash}}"
            class="button small" target="_blank" rel="noopener">
           Inspect IPFS data
         </a>
