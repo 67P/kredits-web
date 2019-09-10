@@ -1,11 +1,18 @@
 <section id="user-account">
-  {{#if (and kredits.hasAccounts kredits.currentUser)}}
-    {{kredits.currentUser.name}}
-    {{#if kredits.currentUserIsCore}}
-      <span class="core-flag">(core)</span>
-    {{/if}}
+  {{#if setupInProgress}}
+    Connecting account...
   {{else}}
-    Anonymous
-    <button {{action "signup"}} class="small green">Sign up</button>
+    {{#if (and kredits.hasAccounts kredits.currentUser)}}
+      {{kredits.currentUser.name}}
+      {{#if kredits.currentUserIsCore}}
+        <span class="core-flag">(core)</span>
+      {{/if}}
+    {{else}}
+      Anonymous
+      <button {{action "signup"}} class="small">Sign up</button>
+      {{#if showConnectButton}}
+        <button {{action "connectAccount"}} class="small green">Connect account</button>
+      {{/if}}
+    {{/if}}
   {{/if}}
 </section>

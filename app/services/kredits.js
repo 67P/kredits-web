@@ -6,7 +6,7 @@ import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
-import { isEmpty } from '@ember/utils';
+import { isEmpty, isPresent } from '@ember/utils';
 
 import groupBy from 'kredits-web/utils/group-by';
 import formatKredits from 'kredits-web/utils/format-kredits';
@@ -29,10 +29,6 @@ export default Service.extend({
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
-
-  accountNeedsUnlock: computed('currentUserAccounts', function() {
-    return this.currentUserAccounts && isEmpty(this.currentUserAccounts);
-  }),
 
   contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions.filter(contribution => {
@@ -105,7 +101,14 @@ export default Service.extend({
       async function instantiateWithAccount (web3Provider, context) {
         console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
         ethProvider = new ethers.providers.Web3Provider(web3Provider);
-        // const network = await ethProvider.getNetwork();
+
+        const network = await ethProvider.getNetwork();
+        if (isPresent(config.web3RequiredNetwork) &&
+            network.name !== config.web3RequiredNetwork) {
+          window.alert(`Please switch your Ethereum wallet to the "${config.web3RequiredNetwork}" network before connecting your account.`);
+          return instantiateWithoutAccount();
+        }
+
         ethProvider.listAccounts().then(accounts => {
           context.set('currentUserAccounts', accounts);
           const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
@@ -117,12 +120,9 @@ export default Service.extend({
       }
 
       if (window.ethereum) {
-        try {
-          // Request account access if needed
-          await window.ethereum.enable();
-          // Acccounts now exposed
+        if (window.ethereum.isConnected()) {
           instantiateWithAccount(window.ethereum, this);
-        } catch (error) {
+        } else {
           instantiateWithoutAccount();
         }
       }
