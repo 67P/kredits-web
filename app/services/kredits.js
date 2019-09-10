@@ -225,33 +225,36 @@ export default Service.extend({
         console.debug('[kredits] add contribution response', data);
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
         const contribution = Contribution.create(attributes);
-        // TODO receive from wrapper
         contribution.set('confirmedAtBlock', data.blockNumber + 40320);
         this.contributions.pushObject(contribution);
         return contribution;
       });
   },
 
-  addProposal (attributes) {
-    console.debug('[kredits] add proposal', attributes);
+  //
+  // TODO Implement proposals with voting
+  //
 
-    return this.kredits.Proposal.addProposal(attributes)
-      .then((data) => {
-        console.debug('[kredits] add proposal response', data);
-        attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
-        return Proposal.create(attributes);
-      });
-  },
+  // addProposal (attributes) {
+  //   console.debug('[kredits] add proposal', attributes);
+  //
+  //   return this.kredits.Proposal.addProposal(attributes)
+  //     .then((data) => {
+  //       console.debug('[kredits] add proposal response', data);
+  //       attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
+  //       return Proposal.create(attributes);
+  //     });
+  // },
 
-  getProposals () {
-    return this.kredits.Proposal.all()
-      .then((proposals) => {
-        return proposals.map((proposal) => {
-          proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
-          return Proposal.create(proposal);
-        });
-      });
-  },
+  // getProposals () {
+  //   return this.kredits.Proposal.all()
+  //     .then(proposals => {
+  //       return proposals.map(proposal => {
+  //         proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
+  //         return Proposal.create(proposal);
+  //       });
+  //     });
+  // },
 
   getContributions () {
     return this.kredits.Contribution.all({page: {size: 200}})
@@ -311,6 +314,7 @@ export default Service.extend({
       .on('ContributorAdded', this.handleContributorChange.bind(this))
 
     this.kredits.Contribution
+      .on('ContributionAdded', this.handleContributionAdded.bind(this))
       .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
 
     this.kredits.Proposal
@@ -336,6 +340,24 @@ export default Service.extend({
 
     console.debug('[kredits] new contributor', newContributor);
     this.contributors.pushObject(newContributor);
+  },
+
+  async handleContributionAdded (id, contributorId, amount) {
+    console.debug('[kredits] ContributionAdded event received', { id, contributorId, amount });
+
+    const pendingContribution = this.contributions.find(c => {
+      return (c.id === null) &&
+             (c.contributorId.toString() === contributorId.toString()) &&
+             (c.amount.toString() === amount.toString());
+    });
+
+    if (pendingContribution) {
+      const attributes = await this.kredits.Contribution.getById(id);
+      attributes.contributor = this.contributors.findBy('id', attributes.contributorId.toString());
+      const newContribution = Contribution.create(attributes);
+      this.contributions.addObject(newContribution);
+      this.contributions.removeObject(pendingContribution);
+    }
   },
 
   handleContributionVetoed (contributionId) {

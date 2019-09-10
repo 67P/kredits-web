@@ -41,7 +41,7 @@ section#contribution-details {
       }
     }
 
-    a {
+    a:not(.button) {
       color: $primary-color;
       text-decoration: none;
 
@@ -54,4 +54,35 @@ section#contribution-details {
   .actions {
     text-align: center;
   }
+
+  &.vetoed {
+    .content {
+      h3 {
+        text-decoration: line-through;
+      }
+    }
+  }
+
+  .hint.vetoed {
+    overflow: auto;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 1.2rem;
+
+    .icon {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      float: left;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+
+      svg {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
 }

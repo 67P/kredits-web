@@ -1,5 +1,7 @@
 import EmberObject, { computed } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import bignumber from 'kredits-web/utils/cps/bignumber';
+import moment from 'moment';
 
 export default EmberObject.extend({
 
@@ -24,11 +26,15 @@ export default EmberObject.extend({
 
   init () {
     this._super(...arguments);
-    this.set('details', {});
+    if (isEmpty(this.details)) this.set('details', {});
   },
 
   iso8601Date: computed('date', 'time', function() {
     return this.time ? `${this.date}T${this.time}` : this.date;
+  }),
+
+  jsDate: computed('iso8601Date', function() {
+    return moment(this.iso8601Date).toDate();
   })
 
 });

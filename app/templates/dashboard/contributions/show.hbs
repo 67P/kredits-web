@@ -1,4 +1,4 @@
-<section id="contribution-details">
+<section id="contribution-details" class={{if model.vetoed "vetoed"}}>
   <header class="with-nav">
     <h2>Contribution #{{model.id}}</h2>
     <nav>
@@ -32,12 +32,26 @@
         </a>
       </p>
     {{/if}}
+    {{#if model.vetoed}}
+      <div class="hint vetoed">
+        <div class="icon">
+          {{icon-warning}}
+        </div>
+        <p>
+          This contribution has been vetoed, meaning no
+          kredits will be issued.
+        </p>
+        <p>
+          {{link-to "Re-submit contribution …" "contributions.resubmit" model class="button small green"}}.
+        </p>
+      </div>
+    {{/if}}
   </div>
 
   <div class="actions">
     <p>
       {{#if model.ipfsHash}}
-        <a href="https://ipfs.io/ipfs/{{model.ipfsHash}}"
+        <a href="{{ipfsGatewayUrl}}/{{model.ipfsHash}}"
            class="button small" target="_blank" rel="noopener">
           Inspect IPFS data
         </a>

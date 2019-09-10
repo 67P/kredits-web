@@ -63,6 +63,17 @@
     </p>
   </label>
 
+  {{#if details}}
+    <label>
+      <p class="label">Details:</p>
+      <p>
+        <pre>
+          {{details}}
+        </pre>
+      </p>
+    </label>
+  {{/if}}
+
   <p class="actions">
     {{input type="submit"
             disabled=inProgress
