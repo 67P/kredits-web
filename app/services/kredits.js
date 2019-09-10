@@ -232,26 +232,30 @@ export default Service.extend({
       });
   },
 
-  addProposal (attributes) {
-    console.debug('[kredits] add proposal', attributes);
+  //
+  // TODO Implement proposals with voting
+  //
 
-    return this.kredits.Proposal.addProposal(attributes)
-      .then((data) => {
-        console.debug('[kredits] add proposal response', data);
-        attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
-        return Proposal.create(attributes);
-      });
-  },
+  // addProposal (attributes) {
+  //   console.debug('[kredits] add proposal', attributes);
+  //
+  //   return this.kredits.Proposal.addProposal(attributes)
+  //     .then((data) => {
+  //       console.debug('[kredits] add proposal response', data);
+  //       attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
+  //       return Proposal.create(attributes);
+  //     });
+  // },
 
-  getProposals () {
-    return this.kredits.Proposal.all()
-      .then((proposals) => {
-        return proposals.map((proposal) => {
-          proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
-          return Proposal.create(proposal);
-        });
-      });
-  },
+  // getProposals () {
+  //   return this.kredits.Proposal.all()
+  //     .then(proposals => {
+  //       return proposals.map(proposal => {
+  //         proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
+  //         return Proposal.create(proposal);
+  //       });
+  //     });
+  // },
 
   getContributions () {
     return this.kredits.Contribution.all({page: {size: 200}})

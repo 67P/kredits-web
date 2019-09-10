@@ -1,0 +1,13 @@
+<main class="center-column">
+
+  <section id="add-contribution">
+    <header>
+      <h2>Re-submit contribution #{{model.id}}</h2>
+    </header>
+
+    <div class="content">
+      {{add-contribution attributes=attributes contributors=sortedContributors save=(action "save")}}
+    </div>
+  </section>
+
+</main>

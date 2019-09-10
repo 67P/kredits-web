@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
+import { isEmpty } from '@ember/utils';
 import moment from 'moment';
 
 export default Component.extend({
@@ -25,14 +26,17 @@ export default Component.extend({
     this.set('defaultDate', moment().startOf('hour').toDate());
 
     // Default attributes used by reset
-    this.set('attributes', {
-      contributorId: null,
-      kind: null,
-      date: this.defaultDate,
-      amount: null,
-      description: null,
-      url: null,
-    });
+    if (isEmpty(this.attributes)) {
+      this.set('attributes', {
+        contributorId: null,
+        kind: null,
+        date: this.defaultDate,
+        amount: null,
+        description: null,
+        url: null,
+        details: null
+      });
+    }
 
     this.reset();
   },
@@ -67,7 +71,6 @@ export default Component.extend({
           window.alert('Something went wrong. Check the browser console for details.');
         })
         .finally(() => this.set('inProgress', false));
-
     }
 
   }
