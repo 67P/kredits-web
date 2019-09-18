@@ -43,6 +43,11 @@
     {{input name="wiki_username" type="text" value=wiki_username placeholder="ZeroCool"
             class=(if isValidWikiUsername "valid" "") id="c-wiki-username"}}
   </p>
+  <p>
+    <label for="c-zoom-display-name">Zoom display name</label>
+    {{input name="zoom_display_name" type="text" value=zoom_display_name placeholder="Zero Cool"
+            class=(if isValidZoomDisplayName "valid" "") id="c-zoom-display-name"}}
+  </p>
   <p class="actions">
     {{input type="submit" disabled=inProgress
             value=(if inProgress "Processing" "Save")}}

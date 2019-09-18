@@ -22,7 +22,8 @@ export default Route.extend({
       github_username: model.github_username,
       github_uid: model.github_uid,
       gitea_username: model.gitea_username,
-      wiki_username: model.wiki_username
+      wiki_username: model.wiki_username,
+      zoom_display_name: model.zoom_display_name
     });
   }
 

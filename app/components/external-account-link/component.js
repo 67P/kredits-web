@@ -6,7 +6,7 @@ export default Component.extend({
   account: null,
 
   iconComponentName: computed('account.site', function() {
-    if (this.account.site.match(/github|gitea|wiki/)) {
+    if (this.account.site.match(/github|gitea|wiki|zoom/)) {
       return 'icon-account-' + this.account.site.replace(/\./g, '-');
     } else {
       return 'icon-web-globe';

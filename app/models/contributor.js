@@ -19,6 +19,7 @@ export default EmberObject.extend({
   github_username: null,
   github_uid: null,
   wiki_username: null,
+  zoom_display_name: null,
   ipfsData: ''
 
 });
