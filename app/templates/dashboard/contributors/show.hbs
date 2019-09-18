@@ -28,7 +28,7 @@
     <p>
       <a href="https://rinkeby.etherscan.io/address/{{model.account}}" class="button small" target="_blank" rel="noopener">Inspect Ethereum transactions</a>
       {{#if model.ipfsHash}}
-        <a href="https://ipfs.io/ipfs/{{model.ipfsHash}}" class="button small" target="_blank" rel="noopener">Inspect IPFS profile</a>
+        <a href="{{ipfsGatewayUrl}}/{{model.ipfsHash}}" class="button small" target="_blank" rel="noopener">Inspect IPFS profile</a>
       {{/if}}
       {{link-to "Edit profile" "contributors.edit" model class="button small"}}
     </p>
