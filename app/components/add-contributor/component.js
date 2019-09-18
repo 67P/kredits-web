@@ -8,6 +8,7 @@ import { isAddress } from 'web3-utils';
 export default Component.extend({
 
   kredits: service(),
+  router: service(),
 
   attributes: null,
 
@@ -75,6 +76,7 @@ export default Component.extend({
         window.alert('Something went wrong. Please check the browser console.');
       }).finally(() => {
         this.set('inProgress', false);
+        this.router.transitionTo('dashboard');
       });
     }
 
