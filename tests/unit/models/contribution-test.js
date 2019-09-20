@@ -24,4 +24,13 @@ module('Unit | Model | contribution', function(hooks) {
     assert.ok(model.jsDate instanceof Date);
     assert.equal(model.jsDate.toISOString(), '2019-09-10T09:33:00.141Z');
   });
+
+  test('hasPendingChanges', function(assert) {
+    const model = Contribution.create({});
+    assert.equal(model.hasPendingChanges, false);
+
+    model.set('pendingTx', { hash: 'abcdef123456' });
+    assert.equal(model.hasPendingChanges, true);
+  });
+
 });

@@ -225,6 +225,7 @@ export default Service.extend({
         console.debug('[kredits] add contribution response', data);
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
         const contribution = Contribution.create(attributes);
+        contribution.set('pendingTx', data);
         contribution.set('confirmedAtBlock', data.blockNumber + 40320);
         this.contributions.pushObject(contribution);
         return contribution;
@@ -278,10 +279,12 @@ export default Service.extend({
 
   veto (contributionId) {
     console.debug('[kredits] veto against', contributionId);
+    const contribution = this.contributions.findBy('id', contributionId);
 
     return this.kredits.Contribution.functions.veto(contributionId, { gasLimit: 300000 })
       .then(data => {
         console.debug('[kredits] veto response', data);
+        contribution.set('pendingTx', data);
         return data;
       });
   },
@@ -367,6 +370,7 @@ export default Service.extend({
 
     if (contribution) {
       contribution.set('vetoed', true);
+      contribution.set('pendingTx', null);
     }
   },
 
