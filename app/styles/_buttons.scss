@@ -32,7 +32,7 @@ button, input[type=submit], .button {
     padding: 0.2rem 0.8rem;
   }
 
-  &.danger {
+  &.danger:not(:disabled) {
     color: $red;
     background-color: rgba(40, 21, 21, 0.6);
     border-color: rgba(40, 21, 21, 1);
@@ -45,7 +45,7 @@ button, input[type=submit], .button {
     }
   }
 
-  &.green {
+  &.green:not(:disabled) {
     color: $green;
     background-color: rgba(21, 40, 21, 0.6);
     border-color: rgba(21, 40, 21, 1);
