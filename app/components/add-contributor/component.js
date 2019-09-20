@@ -8,6 +8,7 @@ import { isAddress } from 'web3-utils';
 export default Component.extend({
 
   kredits: service(),
+  router: service(),
 
   attributes: null,
 
@@ -21,6 +22,7 @@ export default Component.extend({
   isValidGithubUsername: notEmpty('github_username'),
   isValidGiteaUsername: notEmpty('gitea_username'),
   isValidWikiUsername: notEmpty('wiki_username'),
+  isValidZoomDisplayName: notEmpty('zoom_display_name'),
 
   isValid: and(
     'isValidAccount',
@@ -47,7 +49,8 @@ export default Component.extend({
       github_username: null,
       github_uid: null,
       gitea_username: null,
-      wiki_username: null
+      wiki_username: null,
+      zoom_display_name: null
     });
   },
 
@@ -75,6 +78,7 @@ export default Component.extend({
         window.alert('Something went wrong. Please check the browser console.');
       }).finally(() => {
         this.set('inProgress', false);
+        this.router.transitionTo('dashboard');
       });
     }
 

@@ -62,7 +62,7 @@
     "eslint-plugin-node": "^9.0.1",
     "ethers": "^4.0.27",
     "kosmos-schemas": "^2.0.0",
-    "kredits-contracts": "^5.4.0",
+    "kredits-contracts": "^5.5.0",
     "loader.js": "^4.7.0",
     "ndjson": "github:hugomrdias/ndjson#feat/readable-stream3",
     "qunit-dom": "^0.8.4",

@@ -8,9 +8,7 @@ export default Controller.extend({
   actions: {
 
     save (contributor) {
-      return this.kredits
-                 .addContributor(contributor)
-                 .then(() => this.transitionToRoute('index'))
+      return this.kredits.addContributor(contributor);
     }
 
   }
