@@ -12,6 +12,6 @@ export default Controller.extend({
 
   ipfsGatewayUrl: computed(function() {
     return config.ipfs.gatewayUrl;
-  }).volatile()
+  })
 
 });

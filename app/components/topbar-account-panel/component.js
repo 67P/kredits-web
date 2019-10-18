@@ -14,7 +14,7 @@ export default Component.extend({
 
   userHasEthereumWallet: computed(function() {
     return isPresent(window.ethereum);
-  }).volatile(),
+  }),
 
   showConnectButton: computed('userHasEthereumWallet',
                               'kredits.hasAccounts', function() {
