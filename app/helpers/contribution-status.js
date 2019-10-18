@@ -11,13 +11,23 @@ export default Helper.extend({
   compute([contribution]) {
     this.setupRecompute(contribution);
 
+    let status = [];
+
     if (contribution.vetoed) {
-      return 'vetoed';
+      status.push('vetoed');
     } else if (contribution.confirmedAt > this.currentBlock) {
-      return 'unconfirmed';
+      status.push('unconfirmed');
     } else {
-      return 'confirmed'
+      status.push('confirmed');
     }
+
+    if (contribution.hasPendingChanges) {
+      status.push('pending');
+    }
+
+    status.push('pending');
+
+    return status.join(' ');
   },
 
   destroy () {
@@ -31,11 +41,13 @@ export default Helper.extend({
     contribution.addObserver('vetoed' , this, this.triggerRecompute);
     contribution.addObserver('confirmedAt' , this, this.triggerRecompute);
     contribution.addObserver('currentBlock' , this, this.triggerRecompute);
+    contribution.addObserver('hasPendingChanges' , this, this.triggerRecompute);
 
     this.teardown = () => {
       contribution.removeObserver('vetoed', this, this.triggerRecompute);
       contribution.removeObserver('confirmedAt', this, this.triggerRecompute);
       contribution.removeObserver('currentBlock', this, this.triggerRecompute);
+      contribution.removeObserver('hadPendingChanges', this, this.triggerRecompute);
     };
   },
 
