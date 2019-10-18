@@ -33,7 +33,7 @@
   {{#each contributionsFiltered as |contribution|}}
     <li role="button" {{action "openContributionDetails" contribution}}
         data-contribution-id={{contribution.id}}
-        class="{{contribution-status contribution}}{{if contribution.hasPendingChanges " pending"}}{{if contribution.vetoed " vetoed"}}{{if (eq contribution.id selectedContributionId) " selected"}}">
+        class="{{contribution-status contribution}}{{if contribution.hasPendingChanges " pending"}}{{if (eq contribution.id selectedContributionId) " selected"}}">
       <p class="meta">
         <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
         <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
