@@ -1,5 +1,5 @@
 import EmberObject, { computed } from '@ember/object';
-import { isEmpty } from '@ember/utils';
+import { isEmpty, isPresent } from '@ember/utils';
 import bignumber from 'kredits-web/utils/cps/bignumber';
 import moment from 'moment';
 
@@ -24,6 +24,8 @@ export default EmberObject.extend({
   time: null,
   ipfsData: '',
 
+  pendingTx: null,
+
   init () {
     this._super(...arguments);
     if (isEmpty(this.details)) this.set('details', {});
@@ -35,6 +37,10 @@ export default EmberObject.extend({
 
   jsDate: computed('iso8601Date', function() {
     return moment(this.iso8601Date).toDate();
+  }),
+
+  hasPendingChanges: computed('pendingTx', function() {
+    return isPresent(this.pendingTx);
   })
 
 });
