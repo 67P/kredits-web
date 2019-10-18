@@ -210,8 +210,8 @@ export default Service.extend({
 
   getContributors () {
     return this.kredits.Contributor.all()
-      .then((contributors) => {
-        return contributors.map((contributor) => {
+      .then(contributors => {
+        return contributors.map(contributor => {
           return Contributor.create(contributor);
         });
       });
