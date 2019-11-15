@@ -25,8 +25,6 @@ export default Helper.extend({
       status.push('pending');
     }
 
-    status.push('pending');
-
     return status.join(' ');
   },
 
