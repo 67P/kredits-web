@@ -61,6 +61,40 @@ main {
   }
 }
 
+#intro {
+  padding: 2rem;
+  background-color: rgba(0,0,0,.2);
+  font-size: 1.6rem;
+
+  @include media-max(small) {
+    padding: 2rem 1rem;
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: inherit;
+    margin-bottom: 1em;
+  }
+
+  p {
+    margin-bottom: 1em;
+    line-height: 1.5em;
+    font-size: 1.2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+  }
+}
+
 @media (min-width: 550px) {
   main {
     &#dashboard {

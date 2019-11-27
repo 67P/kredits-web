@@ -8,4 +8,10 @@ header#topbar section#user-account {
     margin-left: 0.6rem;
   }
 
+  @include media-max(small) {
+    .anonymous {
+      display: none;
+    }
+  }
+
 }

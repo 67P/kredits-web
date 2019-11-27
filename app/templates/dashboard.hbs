@@ -1,3 +1,19 @@
+{{#if showIntroText}}
+  <div id="intro">
+    <h2>
+      Welcome to the contribution dashboard of the
+      <a href="https://kosmos.org" target="_blank" rel="noopener">Kosmos</a> project!
+    </h2>
+    <p>
+      If you want to learn more about what the numbers mean and how this works,
+      check out the
+      <a href="https://wiki.kosmos.org/Kredits" target="_blank" rel="noopener">Kredits documentation</a>.
+      If you want to start earning kredits for your contributions,
+      {{link-to "create a contributor profile" "signup"}}.
+    </p>
+  </div>
+{{/if}}
+
 <main id="dashboard" class={{if showDetailsPane "with-details"}}>
 
   <div id="stats">
@@ -41,12 +57,12 @@
       <section id="contributions-unconfirmed">
         <header class="with-nav">
           <h2>Latest Contributions</h2>
-          {{#if kredits.hasAccounts}}
-            <nav>
-              <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
+          <nav>
+            <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
+            {{#if kredits.hasAccounts}}
               {{link-to "add" "contributions.new" title="Submit a contribution" class="button small green"}}
-            </nav>
-          {{/if}}
+            {{/if}}
+          </nav>
         </header>
         <div class="content">
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}

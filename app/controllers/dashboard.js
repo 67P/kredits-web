@@ -33,6 +33,10 @@ export default Controller.extend({
   showQuickFilterUnconfirmed: false,
   showQuickFilterConfirmed: false,
 
+  showIntroText: computed('kredits.{hasAccounts,currentUser}', function(){
+    return (!this.kredits.hasAccounts || !this.kredits.currentUser);
+  }),
+
   actions: {
 
     vetoContribution (contributionId) {
