@@ -41,12 +41,12 @@
       <section id="contributions-unconfirmed">
         <header class="with-nav">
           <h2>Latest Contributions</h2>
-          {{#if kredits.hasAccounts}}
-            <nav>
-              <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
+          <nav>
+            <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
+            {{#if kredits.hasAccounts}}
               {{link-to "add" "contributions.new" title="Submit a contribution" class="button small green"}}
-            </nav>
-          {{/if}}
+            {{/if}}
+          </nav>
         </header>
         <div class="content">
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
