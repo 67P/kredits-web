@@ -86,12 +86,15 @@ section#contribution-details {
   }
 }
 
-// On small screens, hide contributor and contributions list when
+// On small screens, hide intro text, contributor and contributions list when
 // showing details
 @include media-max(small) {
   #dashboard.with-details {
     #contributions, #stats {
       display: none;
     }
+  }
+  #intro.with-details {
+    display: none;
   }
 }
