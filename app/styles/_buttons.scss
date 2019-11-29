@@ -10,6 +10,7 @@ button, input[type=submit], .button {
   text-transform: uppercase;
   cursor: pointer;
   letter-spacing: 0.1em;
+  -webkit-appearance: none;
 
   &+button, &+input[type=submit], &+.button {
     margin-left: 0.5rem;
