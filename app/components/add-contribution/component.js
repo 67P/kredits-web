@@ -24,18 +24,25 @@ export default Component.extend({
   init () {
     this._super(...arguments);
     this.set('defaultDate', moment().startOf('hour').toDate());
+    this.set('defaultAttr', {
+      contributorId: null,
+      kind: null,
+      date: this.defaultDate,
+      amount: null,
+      description: null,
+      url: null,
+      details: null
+    });
 
     // Default attributes used by reset
     if (isEmpty(this.attributes)) {
-      this.set('attributes', {
-        contributorId: null,
-        kind: null,
-        date: this.defaultDate,
-        amount: null,
-        description: null,
-        url: null,
-        details: null
-      });
+      this.set('attributes', this.defaultAttr);
+    } else {
+      Object.keys(this.defaultAttr).forEach(a => {
+        if (typeof this.attributes[a] === 'undefined') {
+          this.attributes[a] = this.defaultAttr[a];
+        }
+      })
     }
 
     this.reset();
