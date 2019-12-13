@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
-import { isEmpty } from '@ember/utils';
+import { assign } from '@ember/polyfills';
 import moment from 'moment';
 
 export default Component.extend({
@@ -34,16 +34,7 @@ export default Component.extend({
       details: null
     });
 
-    // Default attributes used by reset
-    if (isEmpty(this.attributes)) {
-      this.set('attributes', this.defaultAttr);
-    } else {
-      Object.keys(this.defaultAttr).forEach(a => {
-        if (typeof this.attributes[a] === 'undefined') {
-          this.attributes[a] = this.defaultAttr[a];
-        }
-      })
-    }
+    this.set('attributes', assign({}, this.defaultAttr, this.attributes));
 
     this.reset();
   },
