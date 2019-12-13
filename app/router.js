@@ -20,7 +20,7 @@ Router.map(function() {
     this.route('new');
   });
   this.route('contributions', function() {
-    this.route('new');
+    this.route('new', { queryParams: ['contributorId', 'kind', 'amount'] });
     this.route('resubmit', { path: ':id/resubmit' });
   });
   this.route('contributors', function() {

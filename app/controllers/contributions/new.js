@@ -6,6 +6,8 @@ export default Controller.extend({
 
   kredits: service(),
 
+  queryParams: ['contributorId', 'kind', 'amount'],
+
   contributors: alias('kredits.contributors'),
   minedContributors: filterBy('contributors', 'id'),
 

@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { and, notEmpty } from '@ember/object/computed';
-import { isEmpty } from '@ember/utils';
+import { assign } from '@ember/polyfills';
 import moment from 'moment';
 
 export default Component.extend({
@@ -24,19 +24,17 @@ export default Component.extend({
   init () {
     this._super(...arguments);
     this.set('defaultDate', moment().startOf('hour').toDate());
+    this.set('defaultAttr', {
+      contributorId: null,
+      kind: null,
+      date: this.defaultDate,
+      amount: null,
+      description: null,
+      url: null,
+      details: null
+    });
 
-    // Default attributes used by reset
-    if (isEmpty(this.attributes)) {
-      this.set('attributes', {
-        contributorId: null,
-        kind: null,
-        date: this.defaultDate,
-        amount: null,
-        description: null,
-        url: null,
-        details: null
-      });
-    }
+    this.set('attributes', assign({}, this.defaultAttr, this.attributes));
 
     this.reset();
   },
