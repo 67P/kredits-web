@@ -1,0 +1,4 @@
+2020-05-09T13:41:58.543Z [warn] WARNING: {{await}} was not converted as it has positional parameters which can't be automatically converted. Source: app/templates/dashboard.hbs
+2020-05-09T13:41:58.919Z [warn] WARNING: {{contribution-status}} was not converted as it has positional parameters which can't be automatically converted. Source: app/templates/dashboard/contributions/show.hbs
+2020-05-09T14:59:55.142Z [warn] WARNING: {{contribution-status}} was not converted as it has positional parameters which can't be automatically converted. Source: app/templates/dashboard/contributions/show.hbs
+2020-05-09T14:59:56.285Z [warn] WARNING: {{await}} was not converted as it has positional parameters which can't be automatically converted. Source: app/templates/dashboard.hbs

@@ -6,7 +6,7 @@
     </header>
 
     <div class="content">
-      {{add-contribution attributes=attributes contributors=sortedContributors save=(action "save")}}
+      <AddContribution @attributes={{attributes}} @contributors={{sortedContributors}} @save={{action "save"}} />
     </div>
   </section>
 

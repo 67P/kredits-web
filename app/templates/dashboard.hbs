@@ -9,7 +9,7 @@
       check out the
       <a href="https://wiki.kosmos.org/Kredits" target="_blank" rel="noopener">Kredits documentation</a>.
       If you want to start earning kredits for your contributions,
-      {{link-to "create a contributor profile" "signup"}}.
+      <LinkTo @route="signup">create a contributor profile</LinkTo>.
     </p>
   </div>
 {{/if}}
@@ -22,21 +22,19 @@
         <h2>Contributors</h2>
         {{#if kredits.hasAccounts}}
           <nav>
-            {{link-to "add" "contributors.new" title="Add contributor profile" class="button small green"}}
+            <LinkTo @route="contributors.new" @title="Add contributor profile" class="button small green">add</LinkTo>
           </nav>
         {{/if}}
       </header>
       <div class="content">
-        {{contributor-list contributorList=kreditsToplist
-                           showUnconfirmedKredits=showUnconfirmedKredits
-                           selectedContributorId=selectedContributorId}}
+        <ContributorList @contributorList={{kreditsToplist}} @showUnconfirmedKredits={{showUnconfirmedKredits}} @selectedContributorId={{selectedContributorId}} />
 
         <p class="stats">
           <span class="number">{{await kredits.totalKreditsEarned}}</span> kredits confirmed and issued to
           <span class="number">{{contributorsWithKredits.length}}</span> contributors
         </p>
         <p class="stats">
-          {{input type="checkbox" id="hide-unnconfirmed-kredits" checked=showUnconfirmedKredits}}
+          <Input @type="checkbox" @id="hide-unnconfirmed-kredits" @checked={{showUnconfirmedKredits}} />
           <label for="hide-unnconfirmed-kredits">Show unconfirmed kredits in toplist</label>
         </p>
       </div>
@@ -47,7 +45,7 @@
         <h2>Contributions by type</h2>
       </header>
       <div class="content">
-        {{chart-contributions-by-type contributions=contributions}}
+        <ChartContributionsByType @contributions={{contributions}} />
       </div>
     </section>
   </div>
@@ -60,17 +58,13 @@
           <nav>
             <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
             {{#if kredits.hasAccounts}}
-              {{link-to "add" "contributions.new" title="Submit a contribution" class="button small green"}}
+              <LinkTo @route="contributions.new" @title="Submit a contribution" class="button small green">add</LinkTo>
             {{/if}}
           </nav>
         </header>
         <div class="content">
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
-          {{contribution-list contributions=contributionsUnconfirmedSorted
-                              vetoContribution=(action "vetoContribution")
-                              contractInteractionEnabled=kredits.hasAccounts
-                              selectedContributionId=selectedContributionId
-                              showQuickFilter=showQuickFilterUnconfirmed}}
+          <ContributionList @contributions={{contributionsUnconfirmedSorted}} @vetoContribution={{action "vetoContribution"}} @contractInteractionEnabled={{kredits.hasAccounts}} @selectedContributionId={{selectedContributionId}} @showQuickFilter={{showQuickFilterUnconfirmed}} />
         </div>
       </section>
     {{/if}}
@@ -83,10 +77,7 @@
         </nav>
       </header>
       <div class="content">
-        {{contribution-list contributions=contributionsConfirmedSorted
-                            vetoContribution=(action "vetoContribution")
-                            selectedContributionId=selectedContributionId
-                            showQuickFilter=showQuickFilterConfirmed}}
+        <ContributionList @contributions={{contributionsConfirmedSorted}} @vetoContribution={{action "vetoContribution"}} @selectedContributionId={{selectedContributionId}} @showQuickFilter={{showQuickFilterConfirmed}} />
       </div>
     </section>
   </div>

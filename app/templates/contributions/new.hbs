@@ -6,9 +6,7 @@
     </header>
 
     <div class="content">
-      {{add-contribution contributors=sortedContributors
-                         attributes=model.params
-                         save=(action "save")}}
+      <AddContribution @contributors={{sortedContributors}} @attributes={{model.params}} @save={{action "save"}} />
     </div>
   </section>
 

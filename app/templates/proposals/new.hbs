@@ -4,7 +4,7 @@
   </header>
 
   <div class="content">
-    {{add-proposal contributors=minedContributors save=(action "save")}}
+    <AddProposal @contributors={{minedContributors}} @save={{action "save"}} />
   </div>
 </section>
 

@@ -1,6 +1,6 @@
 <section id="contributor-profile">
   <header>
-    {{user-avatar contributor=model size="medium"}}
+    <UserAvatar @contributor={{model}} @size="medium" />
   </header>
 
   <div class="content">
@@ -10,23 +10,21 @@
     <ul class="external-accounts">
       {{#each model.accounts as |account|}}
         <li>
-          {{external-account-link account=account}}
+          <ExternalAccountLink @account={{account}} />
         </li>
       {{/each}}
       {{#if model.url}}
         <li>
           <a href={{model.url}} target="_blank" rel="noopener" title="Website">
             <span class="site">Web</span>
-            {{icon-web-globe}}
+            <IconWebGlobe />
           </a>
         </li>
       {{/if}}
     </ul>
     <div class="actions">
       <p>
-        {{link-to "♥ Give kredits" "contributions.new"
-                  (query-params contributorId=model.id)
-                  class="button green"}}
+        <LinkTo @route="contributions.new" @query={{hash contributorId=model.id}} class="button green">♥ Give kredits</LinkTo>
       </p>
     </div>
   </div>
@@ -37,7 +35,7 @@
       {{#if model.ipfsHash}}
         <a href="{{ipfsGatewayUrl}}/{{model.ipfsHash}}" class="button small" target="_blank" rel="noopener">Inspect IPFS profile</a>
       {{/if}}
-      {{link-to "Edit profile" "contributors.edit" model class="button small"}}
+      <LinkTo @route="contributors.edit" @model={{model}} class="button small">Edit profile</LinkTo>
     </p>
   </div>
 </section>
