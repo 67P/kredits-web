@@ -6,5 +6,10 @@ module.exports = {
   rules: {
     'simple-unless': false,
     'no-nested-interactive': false
-  }
+  },
+
+  ignore: [
+    'kredits-web/templates/components/**',
+    'app/templates/components/**'
+  ]
 };
