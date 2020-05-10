@@ -1,8 +1,8 @@
-<section id="contribution-details" class={{if model.vetoed "vetoed"}}>
+<section id="contribution-details" class={{if this.model.vetoed "vetoed"}}>
   <header class="with-nav">
-    <h2>Contribution #{{model.id}}</h2>
+    <h2>Contribution #{{this.model.id}}</h2>
     <nav>
-      <span class="amount">{{model.amount}}</span>&nbsp;
+      <span class="amount">{{this.model.amount}}</span>&nbsp;
       <span class="symbol">₭S</span>
     </nav>
   </header>
@@ -10,29 +10,29 @@
   <div class="content">
     <p class="who-what-when">
       <span class="contributor">
-        <UserAvatar @contributor={{model.contributor}} />
-        <LinkTo @route="dashboard.contributors.show" @model={{model.contributor}}>{{model.contributor.name}}</LinkTo>
+        <UserAvatar @contributor={{this.model.contributor}} />
+        <LinkTo @route="dashboard.contributors.show" @model={{this.model.contributor}}>{{this.model.contributor.name}}</LinkTo>
       </span>
       contributed
-      <span class="date" title={{model.iso8601Date}}>{{moment-from model.iso8601Date}}</span>:
+      <span class="date" title={{this.model.iso8601Date}}>{{moment-from this.model.iso8601Date}}</span>:
     </p>
-    <h3>{{model.description}}</h3>
+    <h3>{{this.model.description}}</h3>
     <p>
-      Kind: {{model.kind}}
-      <br>Status: {{contribution-status model}}
+      Kind: {{this.model.kind}}
+      <br>Status: {{contribution-status this.model}}
     </p>
-    {{#if model.url}}
+    {{#if this.model.url}}
       <p>
-        <a href={{model.url}}
-           title={{model.description}}
+        <a href={{this.model.url}}
+           title={{this.model.description}}
            class="button"
            target="_blank"
-           rel="noopener">
+           rel="noopener noreferrer">
           Open URL
         </a>
       </p>
     {{/if}}
-    {{#if model.vetoed}}
+    {{#if this.model.vetoed}}
       <div class="hint vetoed">
         <div class="icon">
           <IconWarning />
@@ -42,7 +42,7 @@
           kredits will be issued.
         </p>
         <p>
-          <LinkTo @route="contributions.resubmit" @model={{model}} class="button small green">Re-submit contribution …</LinkTo>
+          <LinkTo @route="contributions.resubmit" @model={{this.model}} class="button small green">Re-submit contribution …</LinkTo>
         </p>
       </div>
     {{/if}}
@@ -50,10 +50,10 @@
 
   <div class="actions">
     <p>
-      <LinkTo @route="contributions.resubmit" @model={{model}} class="button small">Copy & edit as new</LinkTo>
-      {{#if model.ipfsHash}}
-        <a href="{{ipfsGatewayUrl}}/{{model.ipfsHash}}"
-           class="button small" target="_blank" rel="noopener">
+      <LinkTo @route="contributions.resubmit" @model={{this.model}} class="button small">Copy & edit as new</LinkTo>
+      {{#if this.model.ipfsHash}}
+        <a href="{{this.ipfsGatewayUrl}}/{{this.model.ipfsHash}}"
+           class="button small" target="_blank" rel="noopener noreferrer">
           Inspect IPFS data
         </a>
       {{/if}}

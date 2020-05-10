@@ -2,11 +2,13 @@
 
   <section id="add-contribution">
     <header>
-      <h2>Re-submit contribution #{{model.id}}</h2>
+      <h2>Re-submit contribution #{{this.model.id}}</h2>
     </header>
 
     <div class="content">
-      <AddContribution @attributes={{attributes}} @contributors={{sortedContributors}} @save={{action "save"}} />
+      <AddContribution @attributes={{this.attributes}}
+                       @contributors={{this.sortedContributors}}
+                       @save={{action "save"}} />
     </div>
   </section>
 

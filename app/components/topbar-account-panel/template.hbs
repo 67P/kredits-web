@@ -1,17 +1,17 @@
 <section id="user-account">
-  {{#if setupInProgress}}
+  {{#if this.setupInProgress}}
     Connecting account...
   {{else}}
-    {{#if (and kredits.hasAccounts kredits.currentUser)}}
-      {{kredits.currentUser.name}}
-      {{#if kredits.currentUserIsCore}}
+    {{#if (and this.kredits.hasAccounts this.kredits.currentUser)}}
+      {{this.kredits.currentUser.name}}
+      {{#if this.kredits.currentUserIsCore}}
         <span class="core-flag">(core)</span>
       {{/if}}
     {{else}}
       <span class="anonymous">Anonymous</span>
-      <button {{action "signup"}} class="small">Sign up</button>
-      {{#if showConnectButton}}
-        <button {{action "connectAccount"}} class="small green">Connect account</button>
+      <button {{on "click" this.signup}} class="small" type="button">Sign up</button>
+      {{#if this.showConnectButton}}
+        <button {{on "click" this.connectAccount}} class="small green" type="button">Connect account</button>
       {{/if}}
     {{/if}}
   {{/if}}

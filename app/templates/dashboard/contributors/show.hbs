@@ -1,21 +1,21 @@
 <section id="contributor-profile">
   <header>
-    <UserAvatar @contributor={{model}} @size="medium" />
+    <UserAvatar @contributor={{this.model}} @size="medium" />
   </header>
 
   <div class="content">
-    <h2>{{model.name}}</h2>
-    <p class="role">{{roleName}}</p>
+    <h2>{{this.model.name}}</h2>
+    <p class="role">{{this.roleName}}</p>
 
     <ul class="external-accounts">
-      {{#each model.accounts as |account|}}
+      {{#each this.model.accounts as |account|}}
         <li>
-          <ExternalAccountLink @account={{account}} />
+          <ExternalAccountLink @account={{this.account}} />
         </li>
       {{/each}}
-      {{#if model.url}}
+      {{#if this.model.url}}
         <li>
-          <a href={{model.url}} target="_blank" rel="noopener" title="Website">
+          <a href={{this.model.url}} target="_blank" rel="noopener noreferrer" title="Website">
             <span class="site">Web</span>
             <IconWebGlobe />
           </a>
@@ -24,18 +24,18 @@
     </ul>
     <div class="actions">
       <p>
-        <LinkTo @route="contributions.new" @query={{hash contributorId=model.id}} class="button green">♥ Give kredits</LinkTo>
+        <LinkTo @route="contributions.new" @query={{hash contributorId=this.model.id}} class="button green">♥ Give kredits</LinkTo>
       </p>
     </div>
   </div>
 
   <div class="actions">
     <p>
-      <a href="https://rinkeby.etherscan.io/address/{{model.account}}" class="button small" target="_blank" rel="noopener">Inspect Ethereum transactions</a>
-      {{#if model.ipfsHash}}
-        <a href="{{ipfsGatewayUrl}}/{{model.ipfsHash}}" class="button small" target="_blank" rel="noopener">Inspect IPFS profile</a>
+      <a href="https://rinkeby.etherscan.io/address/{{this.model.account}}" class="button small" target="_blank" rel="noopener noreferrer">Inspect Ethereum transactions</a>
+      {{#if this.model.ipfsHash}}
+        <a href="{{this.ipfsGatewayUrl}}/{{this.model.ipfsHash}}" class="button small" target="_blank" rel="noopener noreferrer">Inspect IPFS profile</a>
       {{/if}}
-      <LinkTo @route="contributors.edit" @model={{model}} class="button small">Edit profile</LinkTo>
+      <LinkTo @route="contributors.edit" @model={{this.model}} class="button small">Edit profile</LinkTo>
     </p>
   </div>
 </section>

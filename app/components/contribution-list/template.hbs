@@ -1,28 +1,28 @@
-{{#if showQuickFilter}}
+{{#if @showQuickFilter}}
   <div class="quick-filter">
     <p>
       <label class="filter-contributor">
         Contributor:
-        <select onchange={{action (mut contributorId) value="target.value"}}>
+        <select onchange={{action (mut this.contributorId) value="target.value"}}>
           <option value="" selected>all</option>
-          {{#each contributorsActive as |contributor|}}
-            <option value={{contributor.id}} selected={{eq contributorId contributor.id}}>{{contributor.name}}</option>
+          {{#each this.contributorsActive as |contributor|}}
+            <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
           {{/each}}
         </select>
       </label>
 
       <label class="filter-contribution-kind">
         Kind:
-        <select onchange={{action (mut contributionKind) value="target.value"}}>
+        <select onchange={{action (mut this.contributionKind) value="target.value"}}>
           <option value="" selected>all</option>
-          {{#each contributionKinds as |kind|}}
-            <option value={{kind}} selected={{eq contributionKind kind}}>{{capitalize-string kind}}</option>
+          {{#each this.contributionKinds as |kind|}}
+            <option value={{kind}} selected={{eq this.contributionKind kind}}>{{capitalize-string kind}}</option>
           {{/each}}
         </select>
       </label>
 
       <label class="filter-contribution-size">
-        {{input type="checkbox" checked=hideSmallContributions}}
+        <Input type="checkbox" @checked={{this.hideSmallContributions}} />
         Hide small contributions
       </label>
     </p>
@@ -30,12 +30,12 @@
 {{/if}}
 
 <ul class="contribution-list">
-  {{#each contributionsFiltered as |contribution|}}
-    <li role="button" {{action "openContributionDetails" contribution}}
-        data-contribution-id={{contribution.id}}
-        class="{{contribution-status contribution}}{{if (eq contribution.id selectedContributionId) " selected"}}">
+  {{#each this.contributionsFiltered as |contribution|}}
+    <li role="button" data-contribution-id={{contribution.id}}
+        {{on "click" (fn this.openContributionDetails contribution)}}
+        class="{{contribution-status contribution}}{{if (eq contribution.id @selectedContributionId) " selected"}}">
       <p class="meta">
-        <span class="recipient">{{user-avatar contributor=contribution.contributor}}</span>
+        <span class="recipient"><UserAvatar @contributor={{contribution.contributor}} /></span>
         <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
         <span class="title">{{contribution.description}}</span>
       </p>
@@ -45,10 +45,9 @@
       {{#unless contribution.vetoed}}
         {{#unless (is-confirmed-contribution contribution)}}
           <p class="voting">
-            {{input type="button" class="button small danger"
-                    click=(action "veto" contribution.id)
-                    disabled=contribution.hasPendingChanges
-                    value="veto"}}
+            <Input @type="button" @class="button small danger" @value="veto"
+                   @click={{fn this.veto contribution.id}}
+                   @disabled={{contribution.hasPendingChanges}} />
           </p>
         {{/unless}}
       {{/unless}}
