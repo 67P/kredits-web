@@ -76,22 +76,6 @@ section {
       }
     }
   }
-
-  &#proposals-open, &#proposals-closed {
-    .actions {
-      padding-top: 3rem;
-      font-size: 1rem;
-      color: $primary-color;
-      text-align: center;
-      @include media-max(small) {
-        padding-top: 2rem;
-      }
-
-      a {
-        color: $primary-color;
-      }
-    }
-  }
 }
 
 @media (min-width: 550px) {
@@ -111,7 +95,6 @@ section {
 @import "components/contributor-profile";
 @import "components/external-account-link";
 @import "components/loading-spinner";
-@import "components/proposal-list";
 @import "components/topbar";
 @import "components/topbar-account-panel";
 @import "components/user-avatar";

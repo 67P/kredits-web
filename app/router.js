@@ -16,9 +16,6 @@ Router.map(function() {
       this.route('show', { path: ':id' });
     });
   });
-  this.route('proposals', function() {
-    this.route('new');
-  });
   this.route('contributions', function() {
     this.route('new', { queryParams: ['contributorId', 'kind', 'amount'] });
     this.route('resubmit', { path: ':id/resubmit' });
