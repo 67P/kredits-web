@@ -50,9 +50,7 @@ export default Helper.extend({
   },
 
   triggerRecompute () {
-    once(this, function () {
-      this.recompute();
-    });
+    once(this, this.recompute);
   }
 
 });

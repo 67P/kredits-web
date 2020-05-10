@@ -25,8 +25,10 @@ module.exports = {
   },
   rules: {
     'ember/avoid-leaking-state-in-ember-objects': 'warn',
-    'no-console': 'off'
-    'ember/no-jquery': 'error'
+    'no-console': 'off',
+    'ember/no-jquery': 'error',
+    'ember/require-computed-property-dependencies': 'warn',
+    'ember/no-observers': 'off'
   },
   overrides: [
     // node files

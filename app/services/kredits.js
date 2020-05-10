@@ -251,12 +251,12 @@ export default Service.extend({
       });
   },
 
-  getCurrentUser: computed('kredits.provider', function() {
+  getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
     if (isEmpty(this.currentUserAccounts)) {
       return RSVP.resolve();
     }
     return this.kredits.Contributor
-      .functions.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
+      .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
       .then((id) => {
         // check if the user is a contributor or not
         if (id === 0) {

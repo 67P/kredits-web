@@ -24,6 +24,9 @@ export default Component.extend({
 
     if (github_uid) {
       return `https://avatars2.githubusercontent.com/u/${github_uid}?v=3&s=${SIZES[this.size]}`;
+    } else {
+      // TODO use custom avatar
+      return '';
     }
   })
 
