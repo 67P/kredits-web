@@ -22,7 +22,7 @@
       </label>
 
       <label class="filter-contribution-size">
-        <Input type="checkbox" @checked={{this.hideSmallContributions}} />
+        <Input @type="checkbox" @checked={{this.hideSmallContributions}} />
         Hide small contributions
       </label>
     </p>
@@ -32,8 +32,8 @@
 <ul class="contribution-list">
   {{#each this.contributionsFiltered as |contribution|}}
     <li role="button" data-contribution-id={{contribution.id}}
-        {{on "click" (fn this.openContributionDetails contribution)}}
-        class="{{contribution-status contribution}}{{if (eq contribution.id @selectedContributionId) " selected"}}">
+        {{action "openContributionDetails" contribution}}
+        class="{{if (eq contribution.id @selectedContributionId) " selected"}}">
       <p class="meta">
         <span class="recipient"><UserAvatar @contributor={{contribution.contributor}} /></span>
         <span class="category {{contribution.kind}}">({{contribution.kind}})</span>
@@ -45,9 +45,9 @@
       {{#unless contribution.vetoed}}
         {{#unless (is-confirmed-contribution contribution)}}
           <p class="voting">
-            <Input @type="button" @class="button small danger" @value="veto"
-                   @click={{fn this.veto contribution.id}}
-                   @disabled={{contribution.hasPendingChanges}} />
+            {{input type="button" class="button small danger" value="veto"
+                    click=(action "veto" contribution.id)
+                    disabled=contribution.hasPendingChanges}}
           </p>
         {{/unless}}
       {{/unless}}

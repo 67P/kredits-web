@@ -24,12 +24,10 @@ export default Component.extend({
   contributors: sort('kredits.contributors', 'contributorsSorting'),
 
   contributorsActive: computed('contributors.[]', 'contributions', function() {
-    let activeIds = this.contributions.mapBy('contributorId')
-                                      .map(id => id.toString())
-                                      .uniq();
-    return this.contributors.filter(c => {
-      return activeIds.includes(c.id.toString());
-    });
+    const activeIds = new Set(this.contributions.mapBy('contributorId')
+                                                .map(id => id.toString()));
+
+    return this.contributors.filter(c => activeIds.has(c.id.toString()));
   }),
 
   contributionKinds: computed('contributions.[]', function() {

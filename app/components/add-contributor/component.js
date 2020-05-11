@@ -7,8 +7,8 @@ import { isAddress } from 'web3-utils';
 
 export default Component.extend({
 
-  kredits: service(),
   router: service(),
+  kredits: service(),
 
   attributes: null,
 
@@ -60,9 +60,15 @@ export default Component.extend({
 
   actions: {
 
-    submit () {
+    submit (evt) {
+      evt.preventDefault();
+
+      if (!this.kredits.currentUserIsCore) {
+        window.alert('Only core team members can edit profiles. Please ask someone to set you up.');
+        return;
+      }
       if (!this.isValid) {
-        alert('Invalid data. Please review and try again.');
+        window.alert('Invalid data. Please review and try again.');
         return;
       }
 

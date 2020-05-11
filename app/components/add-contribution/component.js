@@ -45,7 +45,9 @@ export default Component.extend({
 
   actions: {
 
-    submit () {
+    submit (evt) {
+      evt.preventDefault();
+
       if (!this.isValid) {
         alert('Invalid data. Please review and try again.');
         return;

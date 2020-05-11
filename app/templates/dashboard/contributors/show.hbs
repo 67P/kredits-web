@@ -10,7 +10,7 @@
     <ul class="external-accounts">
       {{#each this.model.accounts as |account|}}
         <li>
-          <ExternalAccountLink @account={{this.account}} />
+          <ExternalAccountLink @account={{account}} />
         </li>
       {{/each}}
       {{#if this.model.url}}

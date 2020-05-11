@@ -1,7 +1,7 @@
 <tbody>
   {{#each @contributorList as |c|}}
     <tr role="button"
-        {{on "click" (fn this.openContributorDetails c.contributor)}}
+        onclick={{action "openContributorDetails" c.contributor}}
         class="{{if (is-current-user c.contributor) "current-user"}} {{if (eq c.contributor.id @selectedContributorId) "selected"}}">
       <td class="person">
         <UserAvatar @contributor={{c.contributor}} /> {{c.contributor.name}}

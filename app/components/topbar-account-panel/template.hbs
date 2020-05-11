@@ -9,9 +9,9 @@
       {{/if}}
     {{else}}
       <span class="anonymous">Anonymous</span>
-      <button {{on "click" this.signup}} class="small" type="button">Sign up</button>
+      <button onclick={{action "signup"}} class="small" type="button">Sign up</button>
       {{#if this.showConnectButton}}
-        <button {{on "click" this.connectAccount}} class="small green" type="button">Connect account</button>
+        <button onclick={{action "connectAccount"}} class="small green" type="button">Connect account</button>
       {{/if}}
     {{/if}}
   {{/if}}
