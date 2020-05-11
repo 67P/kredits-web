@@ -45,7 +45,7 @@ export default Helper.extend({
       contribution.removeObserver('vetoed', this, this.triggerRecompute);
       contribution.removeObserver('confirmedAt', this, this.triggerRecompute);
       contribution.removeObserver('currentBlock', this, this.triggerRecompute);
-      contribution.removeObserver('hadPendingChanges', this, this.triggerRecompute);
+      contribution.removeObserver('hasPendingChanges', this, this.triggerRecompute);
     };
   },
 
