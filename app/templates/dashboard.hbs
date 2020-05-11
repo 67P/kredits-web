@@ -1,42 +1,44 @@
-{{#if showIntroText}}
-  <div id="intro" class={{if showDetailsPane "with-details"}}>
+{{#if this.showIntroText}}
+  <div id="intro" class={{if this.showDetailsPane "with-details"}}>
     <h2>
       Welcome to the contribution dashboard of the
-      <a href="https://kosmos.org" target="_blank" rel="noopener">Kosmos</a> project!
+      <a href="https://kosmos.org" target="_blank" rel="noreferrer noopener">Kosmos</a> project!
     </h2>
     <p>
       If you want to learn more about what the numbers mean and how this works,
       check out the
-      <a href="https://wiki.kosmos.org/Kredits" target="_blank" rel="noopener">Kredits documentation</a>.
+      <a href="https://wiki.kosmos.org/Kredits" target="_blank" rel="noreferrer noopener">Kredits documentation</a>.
       If you want to start earning kredits for your contributions,
-      {{link-to "create a contributor profile" "signup"}}.
+      <LinkTo @route="signup">create a contributor profile</LinkTo>.
     </p>
   </div>
 {{/if}}
 
-<main id="dashboard" class={{if showDetailsPane "with-details"}}>
+<main id="dashboard" class={{if this.showDetailsPane "with-details"}}>
 
   <div id="stats">
     <section id="people">
       <header class="with-nav">
         <h2>Contributors</h2>
-        {{#if kredits.hasAccounts}}
+        {{#if this.kredits.hasAccounts}}
           <nav>
-            {{link-to "add" "contributors.new" title="Add contributor profile" class="button small green"}}
+            <LinkTo @route="contributors.new" @title="Add contributor profile" class="button small green">add</LinkTo>
           </nav>
         {{/if}}
       </header>
       <div class="content">
-        {{contributor-list contributorList=kreditsToplist
-                           showUnconfirmedKredits=showUnconfirmedKredits
-                           selectedContributorId=selectedContributorId}}
+        <ContributorList @contributorList={{this.kreditsToplist}}
+                         @showUnconfirmedKredits={{this.showUnconfirmedKredits}}
+                         @selectedContributorId={{this.selectedContributorId}} />
 
         <p class="stats">
-          <span class="number">{{await kredits.totalKreditsEarned}}</span> kredits confirmed and issued to
-          <span class="number">{{contributorsWithKredits.length}}</span> contributors
+          <span class="number">{{await this.kredits.totalKreditsEarned}}</span> kredits confirmed and issued to
+          <span class="number">{{this.contributorsWithKredits.length}}</span> contributors
         </p>
         <p class="stats">
-          {{input type="checkbox" id="hide-unnconfirmed-kredits" checked=showUnconfirmedKredits}}
+          <Input id="hide-unnconfirmed-kredits"
+                 @type="checkbox"
+                 @checked={{this.showUnconfirmedKredits}} />
           <label for="hide-unnconfirmed-kredits">Show unconfirmed kredits in toplist</label>
         </p>
       </div>
@@ -47,30 +49,36 @@
         <h2>Contributions by type</h2>
       </header>
       <div class="content">
-        {{chart-contributions-by-type contributions=contributions}}
+        <ChartContributionsByType @contributions={{this.contributions}} />
       </div>
     </section>
   </div>
 
   <div id="contributions">
-    {{#if contributionsUnconfirmed}}
+    {{#if this.contributionsUnconfirmed}}
       <section id="contributions-unconfirmed">
         <header class="with-nav">
           <h2>Latest Contributions</h2>
           <nav>
-            <button {{action "toggleQuickFilterUnconfirmed"}} class="small {{if showQuickFilterUnconfirmed "active"}}">filter</button>
-            {{#if kredits.hasAccounts}}
-              {{link-to "add" "contributions.new" title="Submit a contribution" class="button small green"}}
+            <button type="button"
+                    onclick={{action "toggleQuickFilterUnconfirmed"}}
+                    class="small {{if this.showQuickFilterUnconfirmed "active"}}">
+              filter
+            </button>
+            {{#if this.kredits.hasAccounts}}
+              <LinkTo @route="contributions.new"
+                      @title="Submit a contribution"
+                      class="button small green">add</LinkTo>
             {{/if}}
           </nav>
         </header>
         <div class="content">
           {{!-- TODO: We need a better naming for kredits.hasAccounts --}}
-          {{contribution-list contributions=contributionsUnconfirmedSorted
-                              vetoContribution=(action "vetoContribution")
-                              contractInteractionEnabled=kredits.hasAccounts
-                              selectedContributionId=selectedContributionId
-                              showQuickFilter=showQuickFilterUnconfirmed}}
+          <ContributionList @contributions={{this.contributionsUnconfirmedSorted}}
+                            @vetoContribution={{action "vetoContribution"}}
+                            @contractInteractionEnabled={{this.kredits.hasAccounts}}
+                            @selectedContributionId={{this.selectedContributionId}}
+                            @showQuickFilter={{this.showQuickFilterUnconfirmed}} />
         </div>
       </section>
     {{/if}}
@@ -79,14 +87,18 @@
       <header class="with-nav">
         <h2>Confirmed Contributions</h2>
         <nav>
-          <button {{action "toggleQuickFilterConfirmed"}} class="small {{if showQuickFilterConfirmed "active"}}">filter</button>
+          <button type="button"
+                  onclick={{action "toggleQuickFilterConfirmed"}}
+                  class="small {{if this.showQuickFilterConfirmed "active"}}">
+            filter
+          </button>
         </nav>
       </header>
       <div class="content">
-        {{contribution-list contributions=contributionsConfirmedSorted
-                            vetoContribution=(action "vetoContribution")
-                            selectedContributionId=selectedContributionId
-                            showQuickFilter=showQuickFilterConfirmed}}
+        <ContributionList @contributions={{this.contributionsConfirmedSorted}}
+                          @vetoContribution={{action "vetoContribution"}}
+                          @selectedContributionId={{this.selectedContributionId}}
+                          @showQuickFilter={{this.showQuickFilterConfirmed}} />
       </div>
     </section>
   </div>

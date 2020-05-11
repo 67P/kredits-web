@@ -45,12 +45,6 @@ export default Controller.extend({
       });
     },
 
-    confirmProposal (proposalId) {
-      this.kredits.vote(proposalId).then(transaction => {
-        console.debug('[controllers:index] Vote submitted to Ethereum blockhain: '+transaction.hash);
-      });
-    },
-
     toggleQuickFilterUnconfirmed () {
       this.toggleProperty('showQuickFilterUnconfirmed');
     },

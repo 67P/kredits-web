@@ -1,13 +1,14 @@
 <tbody>
-  {{#each contributorList as |c|}}
-    <tr role="button" {{action "openContributorDetails" c.contributor}}
-        class="{{if (is-current-user c.contributor) "current-user"}} {{if (eq c.contributor.id selectedContributorId) "selected"}}">
+  {{#each @contributorList as |c|}}
+    <tr role="button"
+        onclick={{action "openContributorDetails" c.contributor}}
+        class="{{if (is-current-user c.contributor) "current-user"}} {{if (eq c.contributor.id @selectedContributorId) "selected"}}">
       <td class="person">
-        {{user-avatar contributor=c.contributor}} {{c.contributor.name}}
+        <UserAvatar @contributor={{c.contributor}} /> {{c.contributor.name}}
       </td>
       <td class="kredits">
         <span class="amount">
-          {{#if showUnconfirmedKredits}}
+          {{#if @showUnconfirmedKredits}}
             {{c.amountTotal}}
           {{else}}
             {{c.amountConfirmed}}

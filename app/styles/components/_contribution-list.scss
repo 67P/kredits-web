@@ -115,37 +115,3 @@ ul.contribution-list {
   }
 
 }
-
-@media (min-width: 550px) {
-  ul.proposal-list {
-    li {
-      grid-template-columns: auto 10rem;
-      grid-row-gap: 0.5rem;
-
-      p {
-        &.kredits-amount, &.voting {
-          text-align: right;
-        }
-      }
-
-      &.unconfirmed {
-        p {
-          &.kredits-amount, &.voting {
-            text-align: right;
-          }
-
-          &.description {
-            grid-column-start: span 1;
-          }
-
-          &.voting {
-            grid-column-start: span 1;
-          }
-        }
-      }
-
-      .description {
-      }
-    }
-  }
-}

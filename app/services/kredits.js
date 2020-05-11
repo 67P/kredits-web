@@ -13,7 +13,6 @@ import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor'
-import Proposal from 'kredits-web/models/proposal'
 import Contribution from 'kredits-web/models/contribution'
 
 export default Service.extend({
@@ -23,7 +22,6 @@ export default Service.extend({
   currentUser: null,
   contributors: null,
   contributions: null,
-  proposals: null,
   githubAccessToken: null,
 
   currentUserIsContributor: notEmpty('currentUser'),
@@ -77,7 +75,6 @@ export default Service.extend({
   init () {
     this._super(...arguments);
     this.set('contributors', []);
-    this.set('proposals', []);
     this.set('contributions', []);
   },
 
@@ -232,31 +229,6 @@ export default Service.extend({
       });
   },
 
-  //
-  // TODO Implement proposals with voting
-  //
-
-  // addProposal (attributes) {
-  //   console.debug('[kredits] add proposal', attributes);
-  //
-  //   return this.kredits.Proposal.addProposal(attributes)
-  //     .then((data) => {
-  //       console.debug('[kredits] add proposal response', data);
-  //       attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
-  //       return Proposal.create(attributes);
-  //     });
-  // },
-
-  // getProposals () {
-  //   return this.kredits.Proposal.all()
-  //     .then(proposals => {
-  //       return proposals.map(proposal => {
-  //         proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
-  //         return Proposal.create(proposal);
-  //       });
-  //     });
-  // },
-
   getContributions () {
     return this.kredits.Contribution.all({page: {size: 200}})
       .then(contributions => {
@@ -264,16 +236,6 @@ export default Service.extend({
           contribution.contributor = this.contributors.findBy('id', contribution.contributorId.toString());
           return Contribution.create(contribution);
         });
-      });
-  },
-
-  vote (proposalId) {
-    console.debug('[kredits] vote for', proposalId);
-
-    return this.kredits.Proposal.functions.vote(proposalId)
-      .then(data => {
-        console.debug('[kredits] vote response', data);
-        return data;
       });
   },
 
@@ -289,12 +251,12 @@ export default Service.extend({
       });
   },
 
-  getCurrentUser: computed('kredits.provider', function() {
+  getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
     if (isEmpty(this.currentUserAccounts)) {
       return RSVP.resolve();
     }
     return this.kredits.Contributor
-      .functions.getContributorIdByAddress(this.get('currentUserAccounts.firstObject'))
+      .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
       .then((id) => {
         // check if the user is a contributor or not
         if (id === 0) {
@@ -304,10 +266,6 @@ export default Service.extend({
         }
       });
   }),
-
-  findProposalById(proposalId) {
-    return this.proposals.findBy('id', proposalId.toString());
-  },
 
   // Contract events
   addContractEventHandlers () {
@@ -319,11 +277,6 @@ export default Service.extend({
     this.kredits.Contribution
       .on('ContributionAdded', this.handleContributionAdded.bind(this))
       .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
-
-    this.kredits.Proposal
-      .on('ProposalCreated', this.handleProposalCreated.bind(this))
-      .on('ProposalVoted', this.handleProposalVoted.bind(this))
-      .on('ProposalExecuted', this.handleProposalExecuted.bind(this));
 
     this.kredits.Token
       .on('Transfer', this.handleTransfer.bind(this));
@@ -372,45 +325,6 @@ export default Service.extend({
       contribution.set('vetoed', true);
       contribution.set('pendingTx', null);
     }
-  },
-
-  handleProposalCreated (proposalId) {
-    let proposal = this.findProposalById(proposalId);
-
-    if (proposal) {
-      console.debug('[events] proposal exists, not adding from event');
-      return;
-    }
-
-    this.kredits.Proposal.getById(proposalId)
-      .then((proposal) => {
-        proposal.contributor = this.contributors.findBy('id', proposal.contributorId.toString());
-        this.proposals.pushObject(Proposal.create(proposal));
-      });
-  },
-
-  // TODO: We may want to reload that proposal to show the voter as voted
-  handleProposalVoted (proposalId, voterId, totalVotes) {
-    let proposal = this.findProposalById(proposalId);
-
-    if (proposal) {
-      proposal.set('votesCount', totalVotes);
-    }
-  },
-
-  handleProposalExecuted (proposalId, contributorId, amount) {
-    let proposal = this.findProposalById(proposalId);
-
-    if (proposal.get('isExecuted')) {
-      console.debug('[events] proposal already executed, not adding from event');
-      return;
-    }
-
-    proposal.set('executed', true);
-
-    this.contributors
-        .findBy('id', contributorId.toString())
-        .incrementProperty('balance', amount);
   },
 
   handleTransfer (from, to, value) {

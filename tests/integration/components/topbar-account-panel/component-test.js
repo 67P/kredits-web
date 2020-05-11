@@ -29,7 +29,7 @@ module('Integration | Component | topbar-account-panel', function(hooks) {
     });
     await render(hbs`<TopbarAccountPanel />`);
 
-    assert.equal(this.element.textContent.trim(), 'Dorian Nakamoto');
+    assert.dom(this.element).hasText('Dorian Nakamoto');
 
     service.set('currentUser.isCore', true);
     await render(hbs`<TopbarAccountPanel />`);

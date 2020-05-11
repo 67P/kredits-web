@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 module('Integration | Component | chart-contributions-by-type', function(hooks) {
   setupRenderingTest(hooks);
 
-  let proposals = [
+  let contributions = [
     { kind: 'dev', amount: 500 },
     { kind: 'dev', amount: 1500 },
     { kind: 'ops', amount: 1500 },
@@ -20,9 +20,9 @@ module('Integration | Component | chart-contributions-by-type', function(hooks) 
   ];
 
   test('it renders', async function(assert) {
-    this.set('proposals', proposals);
+    this.set('contributions', contributions);
 
-    await render(hbs`{{chart-contributions-by-type contributions=proposals}}`);
+    await render(hbs`{{chart-contributions-by-type contributions=contributions}}`);
 
     assert.dom(this.element).hasText('');
   });

@@ -1,10 +1,93 @@
 'use strict';
 
 module.exports = {
-  extends: 'recommended',
+  extends: 'octane',
 
   rules: {
     'simple-unless': false,
     'no-nested-interactive': false
-  }
+  },
+
+  ignore: [
+    'kredits-web/templates/components/**',
+    'app/templates/components/**'
+  ],
+
+	pending: [
+		{
+			"moduleId": "app/templates/dashboard",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/components/add-contribution/template",
+			"only": [
+				"no-action",
+				"no-curly-component-invocation"
+			]
+		},
+		{
+			"moduleId": "app/components/add-contributor/template",
+			"only": [
+				"no-action",
+				"no-curly-component-invocation"
+			]
+		},
+		{
+			"moduleId": "app/components/contribution-list/template",
+			"only": [
+				"no-action",
+				"no-curly-component-invocation"
+			]
+		},
+		{
+			"moduleId": "app/components/contributor-list/template",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/components/topbar-account-panel/template",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/templates/contributions/new",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/templates/contributions/resubmit",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/templates/contributors/edit",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/templates/contributors/new",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/templates/signup/eth-account",
+			"only": [
+				"no-action"
+			]
+		},
+		{
+			"moduleId": "app/templates/signup/index",
+			"only": [
+				"no-action"
+			]
+		}
+	]
 };

@@ -1,10 +1,10 @@
 import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
 
-const Router = EmberRouter.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 Router.map(function() {
   this.route('dashboard', function() {
@@ -15,9 +15,6 @@ Router.map(function() {
     this.route('contributions', function() {
       this.route('show', { path: ':id' });
     });
-  });
-  this.route('proposals', function() {
-    this.route('new');
   });
   this.route('contributions', function() {
     this.route('new', { queryParams: ['contributorId', 'kind', 'amount'] });
@@ -33,5 +30,3 @@ Router.map(function() {
     this.route('complete');
   });
 });
-
-export default Router;

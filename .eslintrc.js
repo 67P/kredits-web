@@ -1,8 +1,14 @@
+'use strict';
+
 module.exports = {
   root: true,
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true
+    }
   },
   globals: {
     console: true
@@ -19,7 +25,10 @@ module.exports = {
   },
   rules: {
     'ember/avoid-leaking-state-in-ember-objects': 'warn',
-    'no-console': 'off'
+    'no-console': 'off',
+    'ember/no-jquery': 'error',
+    'ember/require-computed-property-dependencies': 'warn',
+    'ember/no-observers': 'warn'
   },
   overrides: [
     // node files
@@ -35,8 +44,7 @@ module.exports = {
         'server/**/*.js'
       ],
       parserOptions: {
-        sourceType: 'script',
-        ecmaVersion: 2015
+        sourceType: 'script'
       },
       env: {
         browser: false,

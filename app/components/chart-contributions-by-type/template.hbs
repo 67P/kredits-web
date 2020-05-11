@@ -1,7 +1,6 @@
 <div class="chart">
-  {{ember-chart type="doughnut"
-                data=chartData
-                options=chartOptions
-                width=200
-                height=200}}
+  <EmberChart @type="doughnut"
+              @data={{this.chartData}}
+              @options={{this.chartOptions}}
+              @width="200" @height="200" />
 </div>

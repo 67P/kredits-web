@@ -1,11 +1,11 @@
-<form {{action "submit" on="submit"}}>
+<form onsubmit={{action "submit"}}>
   <label>
     <p class="label">Contributor:</p>
     <p>
-      <select required onchange={{action (mut contributorId) value="target.value"}}>
+      <select required onchange={{action (mut this.contributorId) value="target.value"}}>
         <option value="" selected disabled hidden></option>
-        {{#each contributors as |contributor|}}
-          <option value={{contributor.id}} selected={{eq contributorId contributor.id}}>{{contributor.name}}</option>
+        {{#each @contributors as |contributor|}}
+          <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
         {{/each}}
       </select>
     </p>
@@ -13,14 +13,14 @@
   <label>
     <p class="label">Kind:</p>
     <p>
-      <select required onchange={{action (mut kind) value="target.value"}}>
+      <select required onchange={{action (mut this.kind) value="target.value"}}>
         <option value="" selected disabled hidden></option>
-        <option value="community" selected={{eq kind "community"}}>Community</option>
-        <option value="design" selected={{eq kind "design"}}>Design</option>
-        <option value="dev" selected={{eq kind "dev"}}>Development</option>
-        <option value="docs" selected={{eq kind "docs"}}>Documentation</option>
-        <option value="ops" selected={{eq kind "ops"}}>IT Operations</option>
-        <option value="special" selected={{eq kind "special"}}>Special</option>
+        <option value="community" selected={{eq this.kind "community"}}>Community</option>
+        <option value="design" selected={{eq this.kind "design"}}>Design</option>
+        <option value="dev" selected={{eq this.kind "dev"}}>Development</option>
+        <option value="docs" selected={{eq this.kind "docs"}}>Documentation</option>
+        <option value="ops" selected={{eq this.kind "ops"}}>IT Operations</option>
+        <option value="special" selected={{eq this.kind "special"}}>Special</option>
       </select>
     </p>
   </label>
@@ -28,12 +28,12 @@
     <p class="label">Date:</p>
     <p>
       {{ember-flatpickr
-        date=date
-        defaultDate=defaultDate
-        maxDate=defaultDate
+        date=this.date
+        defaultDate=this.defaultDate
+        maxDate=this.defaultDate
         enableTime=true
         time_24hr=true
-        onChange=(action (mut date))
+        onChange=(action (mut this.date))
       }}
     </p>
   </label>
@@ -42,33 +42,33 @@
     <p>
       {{input type="text"
               placeholder="500"
-              value=amount
-              class=(if isValidAmount "valid" "")}}
+              value=this.amount
+              class=(if this.isValidAmount "valid" "")}}
     </p>
   </label>
   <label>
     <p class="label">Description:</p>
     <p>
       {{input type="text"
-              value=description
-              class=(if isValidDescription "valid" "")}}
+              value=this.description
+              class=(if this.isValidDescription "valid" "")}}
     </p>
   </label>
   <label>
     <p class="label">URL (optional):</p>
     <p>
       {{input type="text"
-              value=url
-              class=(if isValidUrl "valid" "")}}
+              value=this.url
+              class=(if this.isValidUrl "valid" "")}}
     </p>
   </label>
 
-  {{#if details}}
+  {{#if this.details}}
     <label>
       <p class="label">Details:</p>
       <p>
         <pre>
-          {{details}}
+          {{this.details}}
         </pre>
       </p>
     </label>
@@ -76,8 +76,8 @@
 
   <p class="actions">
     {{input type="submit"
-            disabled=inProgress
-            value=(if inProgress "Processing" "Save")}}
+            disabled=this.inProgress
+            value=(if this.inProgress "Processing" "Save")}}
   </p>
 </form>
 

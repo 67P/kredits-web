@@ -1,55 +1,56 @@
-<form {{action "submit" on="submit"}}>
+<form onsubmit={{action "submit"}}>
   <p>
     <label for="c-account">Ethereum account</label>
-    {{input name="account" id="c-account"
-            type="text" value=account
-            placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
-            class=(if isValidAccount "valid" "")}}
+      <Input @type="text"
+             @value={{this.account}}
+             name="account" id="c-account"
+             placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
+             class={{if this.isValidAccount "valid" ""}} />
   </p>
   <p>
     <label for="c-kind">Kind</label>
-    <select required onchange={{action (mut kind) value="target.value"}} id="c-kind">
-      <option value="person" selected={{eq kind "person"}}>Person</option>
-      <option value="organization" selected={{eq kind "organization"}}>Organization</option>
+    <select required onchange={{action (mut this.kind) value="target.value"}} id="c-kind">
+      <option value="person" selected={{eq this.kind "person"}}>Person</option>
+      <option value="organization" selected={{eq this.kind "organization"}}>Organization</option>
     </select>
   </p>
   <p>
     <label for="c-name">Name</label>
-    {{input name="name" type="text" value=name placeholder="Zero Cool"
-            class=(if isValidName "valid" "") id="c-name"}}
+    {{input name="name" type="text" value=this.name placeholder="Zero Cool"
+            class=(if this.isValidName "valid" "") id="c-name"}}
   </p>
   <p>
     <label for="c-url">URL</label>
-    {{input name="url" type="text" value=url placeholder="http://zerocool.bit"
-            class=(if isValidURL "valid" "") id="c-url"}}
+    {{input name="url" type="text" value=this.url placeholder="http://zerocool.bit"
+            class=(if this.isValidURL "valid" "") id="c-url"}}
   </p>
   <p>
     <label for="c-github-uid">GitHub UID</label>
-    {{input name="github_uid" type="text" value=github_uid placeholder="2342"
-            class=(if isValidGithubUID "valid" "") id="c-github-uid"}}
+    {{input name="github_uid" type="text" value=this.github_uid placeholder="2342"
+            class=(if this.isValidGithubUID "valid" "") id="c-github-uid"}}
   </p>
   <p>
     <label for="c-github-username">GitHub username</label>
-    {{input name="github_username" type="text" value=github_username placeholder="zerocool"
-            class=(if isValidGithubUsername "valid" "") id="c-github-username"}}
+    {{input name="github_username" type="text" value=this.github_username placeholder="zerocool"
+            class=(if this.isValidGithubUsername "valid" "") id="c-github-username"}}
   </p>
   <p>
     <label for="c-gitea-username">Gitea username</label>
-    {{input name="gitea_username" type="text" value=gitea_username placeholder="zerocool"
-            class=(if isValidGiteaUsername "valid" "") id="c-gitea-username"}}
+    {{input name="gitea_username" type="text" value=this.gitea_username placeholder="zerocool"
+            class=(if this.isValidGiteaUsername "valid" "") id="c-gitea-username"}}
   </p>
   <p>
     <label for="c-wiki-username">Wiki username</label>
-    {{input name="wiki_username" type="text" value=wiki_username placeholder="ZeroCool"
-            class=(if isValidWikiUsername "valid" "") id="c-wiki-username"}}
+    {{input name="wiki_username" type="text" value=this.wiki_username placeholder="ZeroCool"
+            class=(if this.isValidWikiUsername "valid" "") id="c-wiki-username"}}
   </p>
   <p>
     <label for="c-zoom-display-name">Zoom display name</label>
-    {{input name="zoom_display_name" type="text" value=zoom_display_name placeholder="Zero Cool"
-            class=(if isValidZoomDisplayName "valid" "") id="c-zoom-display-name"}}
+    {{input name="zoom_display_name" type="text" value=this.zoom_display_name placeholder="Zero Cool"
+            class=(if this.isValidZoomDisplayName "valid" "") id="c-zoom-display-name"}}
   </p>
   <p class="actions">
-    {{input type="submit" disabled=inProgress
-            value=(if inProgress "Processing" "Save")}}
+    {{input type="submit" disabled=this.inProgress
+            value=(if this.inProgress "Processing" "Save")}}
   </p>
 </form>

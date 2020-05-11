@@ -1,4 +1,5 @@
-<a href={{account.url}} target="_blank" rel="noopener" title="{{account.username}} on {{account.site}}">
-  <span class="site">{{account.site}}</span>
-  {{component iconComponentName}}
+<a href={{this.account.url}} target="_blank" rel="noopener noreferrer"
+   title="{{this.account.username}} on {{this.account.site}}">
+  <span class="site">{{this.account.site}}</span>
+  {{component this.iconComponentName}}
 </a>
