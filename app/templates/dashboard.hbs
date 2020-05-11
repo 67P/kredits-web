@@ -36,7 +36,8 @@
           <span class="number">{{this.contributorsWithKredits.length}}</span> contributors
         </p>
         <p class="stats">
-          <Input @type="checkbox" @id="hide-unnconfirmed-kredits"
+          <Input id="hide-unnconfirmed-kredits"
+                 @type="checkbox"
                  @checked={{this.showUnconfirmedKredits}} />
           <label for="hide-unnconfirmed-kredits">Show unconfirmed kredits in toplist</label>
         </p>

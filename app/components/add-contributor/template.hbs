@@ -1,10 +1,11 @@
 <form onsubmit={{action "submit"}}>
   <p>
     <label for="c-account">Ethereum account</label>
-      <Input @name="account" @id="c-account"
-             @type="text" value={{this.account}}
-             @placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
-             @class={{if this.isValidAccount "valid" ""}} />
+      <Input @type="text"
+             @value={{this.account}}
+             name="account" id="c-account"
+             placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4"
+             class={{if this.isValidAccount "valid" ""}} />
   </p>
   <p>
     <label for="c-kind">Kind</label>
