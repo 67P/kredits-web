@@ -28,7 +28,7 @@ module.exports = {
     'no-console': 'off',
     'ember/no-jquery': 'error',
     'ember/require-computed-property-dependencies': 'warn',
-    'ember/no-observers': 'off'
+    'ember/no-observers': 'warn'
   },
   overrides: [
     // node files
