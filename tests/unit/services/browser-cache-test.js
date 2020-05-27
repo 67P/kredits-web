@@ -14,5 +14,4 @@ module('Unit | Service | browser-cache', function(hooks) {
     assert.equal(cache.contributors._config.name, "kredits:contributors");
     assert.equal(cache.contributions._config.name, "kredits:contributions");
   });
-
 });

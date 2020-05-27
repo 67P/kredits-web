@@ -7,6 +7,7 @@ import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
+import { inject as service } from '@ember/service';
 
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
@@ -17,6 +18,8 @@ import Contributor from 'kredits-web/models/contributor'
 import Contribution from 'kredits-web/models/contribution'
 
 export default Service.extend({
+
+  browserCache: service(),
 
   currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -172,8 +175,9 @@ export default Service.extend({
 
 
   loadInitialData () {
-    return this.getContributors()
-               .then(contributors => this.contributors.pushObjects(contributors))
+    return this.fetchContributors()
+               // .then(contributors => this.contributors.pushObjects(contributors))
+               .then(() => this.cacheContributors())
                .then(() => this.getContributions())
                .then(contributions => this.contributions.pushObjects(contributions))
   },
@@ -206,13 +210,23 @@ export default Service.extend({
       });
   },
 
-  getContributors () {
+  fetchContributors () {
     return this.kredits.Contributor.all()
       .then(contributors => {
         return contributors.map(data => {
-          return Contributor.create(processContributorData(data));
+          const contributor = Contributor.create(processContributorData(data));
+          this.contributors.pushObject(contributor);
+          return contributor;
         });
       });
+  },
+
+  async cacheContributors () {
+    for (const c of this.contributors) {
+      await this.browserCache.contributors.setItem(c.id, c.serialize());
+    }
+    console.debug(`[kredits] Cached ${this.contributors.length} contributors in browser storage`);
+    return Promise.resolve();
   },
 
   addContribution (attributes) {
