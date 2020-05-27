@@ -1,14 +1,12 @@
 import EmberObject from '@ember/object';
-import bignumber from 'kredits-web/utils/cps/bignumber';
-import kreditsValue from 'kredits-web/utils/cps/kredits';
 
 export default EmberObject.extend({
   // Contract
-  id: bignumber('idRaw', 'toString'),
+  id: null,
   account: null,
-  balance: kreditsValue('balanceRaw'),
-  totalKreditsEarned: bignumber('totalKreditsEarnedRaw', 'toNumber'),
-  contributionsCount: bignumber('contributionsCountRaw', 'toNumber'),
+  balance: 0,
+  totalKreditsEarned: 0,
+  contributionsCount: 0,
   isCore: false,
   ipfsHash: null,
 
@@ -20,6 +18,5 @@ export default EmberObject.extend({
   github_uid: null,
   wiki_username: null,
   zoom_display_name: null,
-  ipfsData: ''
 
 });

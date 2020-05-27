@@ -9,6 +9,7 @@ import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 
 import groupBy from 'kredits-web/utils/group-by';
+import processContributorData from 'kredits-web/utils/process-contributor-data';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
@@ -208,8 +209,8 @@ export default Service.extend({
   getContributors () {
     return this.kredits.Contributor.all()
       .then(contributors => {
-        return contributors.map(contributor => {
-          return Contributor.create(contributor);
+        return contributors.map(data => {
+          return Contributor.create(processContributorData(data));
         });
       });
   },
