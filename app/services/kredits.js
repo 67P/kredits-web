@@ -230,7 +230,7 @@ export default Service.extend({
   },
 
   getContributions () {
-    return this.kredits.Contribution.all({page: {size: 200}})
+    return this.kredits.Contribution.all({page: {size: 30}})
       .then(contributions => {
         return contributions.map(contribution => {
           contribution.contributor = this.contributors.findBy('id', contribution.contributorId.toString());
