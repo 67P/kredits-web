@@ -15,11 +15,14 @@
     <p>
       <select required onchange={{action (mut this.kind) value="target.value"}}>
         <option value="" selected disabled hidden></option>
+        <option value="bureaucracy" selected={{eq this.kind "bureaucracy"}}>Bureaucracy</option>
         <option value="community" selected={{eq this.kind "community"}}>Community</option>
         <option value="design" selected={{eq this.kind "design"}}>Design</option>
         <option value="dev" selected={{eq this.kind "dev"}}>Development</option>
         <option value="docs" selected={{eq this.kind "docs"}}>Documentation</option>
         <option value="ops" selected={{eq this.kind "ops"}}>IT Operations</option>
+        <option value="outreach" selected={{eq this.kind "outreach"}}>Outreach</option>
+        <option value="qa" selected={{eq this.kind "qa"}}>Quality Assurance</option>
         <option value="special" selected={{eq this.kind "special"}}>Special</option>
       </select>
     </p>
