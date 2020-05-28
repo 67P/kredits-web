@@ -27,6 +27,7 @@ export default Route.extend({
         if (this.kredits.contributorsNeedFetch) {
           schedule('afterRender', this.kredits, this.kredits.fetchContributors);
         }
+        schedule('afterRender', this.kredits, this.kredits.fetchContributions);
       });
   }
 });

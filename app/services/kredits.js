@@ -22,7 +22,6 @@ export default Service.extend({
 
   browserCache: service(),
   contributorsNeedFetch: false,
-  contributionsNeedFetch: false,
 
   currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -186,11 +185,11 @@ export default Service.extend({
     }
 
     const numCachedContributions = await this.browserCache.contributions.length();
-    // if (numCachedContributions > 0) {
-      // TODO promises.push(this.loadContributionsFromCache);
-    // } else {
+    if (numCachedContributions > 0) {
+      await this.loadContributionsFromCache();
+    } else {
       await this.fetchContributions({ page: { size: 30 } });
-    // }
+    }
 
     return Promise.resolve();
   },
@@ -278,6 +277,8 @@ export default Service.extend({
         return contributions.map(data => {
           const contribution = Contribution.create(processContributionData(data));
           contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+          const loadedContribution = this.contributions.findBy('id', contribution.id);
+          if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
           this.contributions.pushObject(contribution);
           return contribution;
         });
@@ -298,6 +299,14 @@ export default Service.extend({
     }
     console.debug(`[kredits] Cached ${this.contributions.length} contributions in browser storage`);
     return Promise.resolve();
+  },
+
+  async loadContributionsFromCache () {
+    return this.browserCache.contributions.iterate((value/*, key , iterationNumber */) => {
+      this.contributions.pushObject(Contribution.create(JSON.parse(value)));
+    }).then((/* result */) => {
+      console.debug(`[kredits] Loaded ${this.contributions.length} contributions from cache`);
+    });
   },
 
   veto (contributionId) {
