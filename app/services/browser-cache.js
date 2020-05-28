@@ -1,8 +1,10 @@
 import Service from '@ember/service';
 import * as localforage from 'localforage';
+import config from 'kredits-web/config/environment';
 
 function createStore(name) {
-  return localforage.createInstance({ name: `kredits:${name}` });
+  const networkName = config.web3RequiredNetwork || 'custom';
+  return localforage.createInstance({ name: `kredits:${networkName}:${name}` });
 }
 
 export default class BrowserCacheService extends Service {
