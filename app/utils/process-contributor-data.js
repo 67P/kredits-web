@@ -3,7 +3,7 @@ export default function processContributorData(data) {
     id: data.id.toString(),
     balance: data.balanceInt,
     totalKreditsEarned: data.totalKreditsEarned,
-    contributionsCount: data.contributionsCount.toNumber()
+    contributionsCount: data.contributionsCount?.toNumber()
   }
 
   const otherProperties = [

@@ -1,6 +1,5 @@
 import EmberObject, { computed } from '@ember/object';
 import { isEmpty, isPresent } from '@ember/utils';
-import bignumber from 'kredits-web/utils/cps/bignumber';
 import moment from 'moment';
 
 export default EmberObject.extend({
@@ -9,11 +8,15 @@ export default EmberObject.extend({
   id: null,
   contributorId: null,
   amount: null,
-  confirmedAt: bignumber('confirmedAtBlock', 'toNumber'),
+  confirmedAt: null,
   vetoed: null,
   ipfsHash: null,
 
-  creatorAccount: null,
+  // contributor model instance
+  contributor: null,
+
+  // TODO contributor who submitted the contribution
+  // submittedBy: null,
 
   // IPFS
   kind: null,
@@ -22,7 +25,6 @@ export default EmberObject.extend({
   url: null,
   date: null,
   time: null,
-  ipfsData: '',
 
   pendingTx: null,
 
@@ -41,6 +43,10 @@ export default EmberObject.extend({
 
   hasPendingChanges: computed('pendingTx', function() {
     return isPresent(this.pendingTx);
-  })
+  }),
+
+  serialize () {
+    return JSON.stringify(this);
+  }
 
 });

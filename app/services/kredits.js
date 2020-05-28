@@ -11,6 +11,7 @@ import { inject as service } from '@ember/service';
 
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
+import processContributionData from 'kredits-web/utils/process-contribution-data';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
@@ -185,11 +186,11 @@ export default Service.extend({
     }
 
     const numCachedContributions = await this.browserCache.contributions.length();
-    if (numCachedContributions > 0) {
+    // if (numCachedContributions > 0) {
       // TODO promises.push(this.loadContributionsFromCache);
-    } else {
+    // } else {
       await this.fetchContributions({ page: { size: 30 } });
-    }
+    // }
 
     return Promise.resolve();
   },
@@ -235,11 +236,11 @@ export default Service.extend({
         });
       })
       .then(() => {
-        return this.cacheContributors();
+        return this.cacheLoadedContributors();
       });
   },
 
-  async cacheContributors () {
+  async cacheLoadedContributors () {
     for (const c of this.contributors) {
       await this.browserCache.contributors.setItem(c.id, c.serialize());
     }
@@ -248,9 +249,9 @@ export default Service.extend({
   },
 
   async loadContributorsFromCache () {
-    return this.browserCache.contributors.iterate((value, key/* , iterationNumber */) => {
+    return this.browserCache.contributors.iterate((value/*, key , iterationNumber */) => {
       this.contributors.pushObject(Contributor.create(JSON.parse(value)));
-    }).then(result => {
+    }).then((/* result */) => {
       console.debug(`[kredits] Loaded ${this.contributors.length} contributors from cache`);
     });
   },
@@ -275,15 +276,28 @@ export default Service.extend({
     return this.kredits.Contribution.all(options)
       .then(contributions => {
         return contributions.map(data => {
-          data.contributor = this.contributors.findBy('id', data.contributorId.toString());
-          const contribution = Contribution.create(data);
+          const contribution = Contribution.create(processContributionData(data));
+          contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
           this.contributions.pushObject(contribution);
           return contribution;
         });
+      })
+      .then(contributions => {
+        const cacheWrites = contributions.map(c => {
+          return this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
+        });
+        return Promise.all(cacheWrites).then(() => {
+          console.debug(`[kredits] Cached ${contributions.length} contributions in browser storage`);
+        });
       });
-      // TODO .then(() => {
-      //   this.cacheContributions()
-      // });
+  },
+
+  async cacheLoadedContributions () {
+    for (const c of this.contributions) {
+      await this.browserCache.contributions.setItem(c.id, c.serialize());
+    }
+    console.debug(`[kredits] Cached ${this.contributions.length} contributions in browser storage`);
+    return Promise.resolve();
   },
 
   veto (contributionId) {
