@@ -19,7 +19,7 @@ export default EmberObject.extend({
   wiki_username: null,
   zoom_display_name: null,
 
-  serialize() {
+  serialize () {
     return JSON.stringify(this);
   }
 });

@@ -20,6 +20,8 @@ import Contribution from 'kredits-web/models/contribution'
 export default Service.extend({
 
   browserCache: service(),
+  contributorsNeedFetch: false,
+  contributionsNeedFetch: false,
 
   currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -173,13 +175,23 @@ export default Service.extend({
       .then(total => total.toNumber());
   }),
 
+  async loadInitialData () {
+    const numCachedContributors = await this.browserCache.contributors.length();
+    if (numCachedContributors > 0) {
+      await this.loadContributorsFromCache();
+      this.set('contributorsNeedFetch', true);
+    } else {
+      await this.fetchContributors();
+    }
 
-  loadInitialData () {
-    return this.fetchContributors()
-               // .then(contributors => this.contributors.pushObjects(contributors))
-               .then(() => this.cacheContributors())
-               .then(() => this.getContributions())
-               .then(contributions => this.contributions.pushObjects(contributions))
+    const numCachedContributions = await this.browserCache.contributions.length();
+    if (numCachedContributions > 0) {
+      // TODO promises.push(this.loadContributionsFromCache);
+    } else {
+      await this.fetchContributions({ page: { size: 30 } });
+    }
+
+    return Promise.resolve();
   },
 
   addContributor (attributes) {
@@ -211,13 +223,19 @@ export default Service.extend({
   },
 
   fetchContributors () {
+    console.debug(`[kredits] Fetching all contributors from the network`);
     return this.kredits.Contributor.all()
       .then(contributors => {
         return contributors.map(data => {
           const contributor = Contributor.create(processContributorData(data));
+          const loadedContributor = this.contributors.findBy('id', contributor.id);
+          if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
           this.contributors.pushObject(contributor);
           return contributor;
         });
+      })
+      .then(() => {
+        return this.cacheContributors();
       });
   },
 
@@ -227,6 +245,14 @@ export default Service.extend({
     }
     console.debug(`[kredits] Cached ${this.contributors.length} contributors in browser storage`);
     return Promise.resolve();
+  },
+
+  async loadContributorsFromCache () {
+    return this.browserCache.contributors.iterate((value, key/* , iterationNumber */) => {
+      this.contributors.pushObject(Contributor.create(JSON.parse(value)));
+    }).then(result => {
+      console.debug(`[kredits] Loaded ${this.contributors.length} contributors from cache`);
+    });
   },
 
   addContribution (attributes) {
@@ -244,14 +270,20 @@ export default Service.extend({
       });
   },
 
-  getContributions () {
-    return this.kredits.Contribution.all({page: {size: 30}})
+  fetchContributions (options = { page: { size: 200 } }) {
+    console.debug(`[kredits] Fetching contributions from the network`);
+    return this.kredits.Contribution.all(options)
       .then(contributions => {
-        return contributions.map(contribution => {
-          contribution.contributor = this.contributors.findBy('id', contribution.contributorId.toString());
-          return Contribution.create(contribution);
+        return contributions.map(data => {
+          data.contributor = this.contributors.findBy('id', data.contributorId.toString());
+          const contribution = Contribution.create(data);
+          this.contributions.pushObject(contribution);
+          return contribution;
         });
       });
+      // TODO .then(() => {
+      //   this.cacheContributions()
+      // });
   },
 
   veto (contributionId) {
