@@ -22,7 +22,6 @@ import Contribution from 'kredits-web/models/contribution'
 export default Service.extend({
 
   browserCache: service(),
-  contributorsNeedFetch: false,
 
   currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -34,6 +33,10 @@ export default Service.extend({
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
+
+  // When data was loaded from cache, we need to fetch updates from the network
+  contributorsNeedSync: false,
+  contributionsNeedSync: false,
 
   contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions.filter(contribution => {
@@ -180,7 +183,7 @@ export default Service.extend({
     const numCachedContributors = await this.browserCache.contributors.length();
     if (numCachedContributors > 0) {
       await this.loadContributorsFromCache();
-      this.set('contributorsNeedFetch', true);
+      this.set('contributorsNeedSync', true);
     } else {
       await this.fetchContributors();
     }
@@ -188,6 +191,7 @@ export default Service.extend({
     const numCachedContributions = await this.browserCache.contributions.length();
     if (numCachedContributions > 0) {
       await this.loadContributionsFromCache();
+      this.set('contributionsNeedSync', true);
     } else {
       await this.fetchContributions({ page: { size: 30 } });
     }
