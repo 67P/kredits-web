@@ -1,6 +1,5 @@
 import ethers from 'ethers';
 import Kredits from 'kredits-contracts';
-import RSVP from 'rsvp';
 
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
@@ -90,7 +89,7 @@ export default Service.extend({
   getEthProvider () {
     let ethProvider;
 
-    return new RSVP.Promise(async (resolve) => {
+    return new Promise(async (resolve) => {
       function instantiateWithoutAccount () {
         console.debug('[kredits] Creating new instance from npm module class');
         console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
@@ -323,14 +322,14 @@ export default Service.extend({
 
   getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
     if (isEmpty(this.currentUserAccounts)) {
-      return RSVP.resolve();
+      return Promise.resolve();
     }
     return this.kredits.Contributor
       .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
       .then((id) => {
         // check if the user is a contributor or not
         if (id === 0) {
-          return RSVP.resolve();
+          return Promise.resolve();
         } else {
           return this.kredits.Contributor.getById(id);
         }
