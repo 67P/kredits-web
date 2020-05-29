@@ -8,6 +8,8 @@ import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
+import { task } from 'ember-concurrency';
+
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
 import processContributionData from 'kredits-web/utils/process-contribution-data';
@@ -240,6 +242,7 @@ export default Service.extend({
     const loadedContributor = this.contributors.findBy('id', contributor.id);
     if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
     this.contributors.pushObject(contributor);
+    return contributor;
   },
 
   async cacheLoadedContributors () {
@@ -257,6 +260,10 @@ export default Service.extend({
       console.debug(`[kredits] Loaded ${this.contributors.length} contributors from cache`);
     });
   },
+
+  syncContributors: task(function * () {
+    yield this.fetchContributors();
+  }),
 
   addContribution (attributes) {
     console.debug('[kredits] add contribution', attributes);
@@ -278,7 +285,7 @@ export default Service.extend({
     return this.kredits.Contribution.all(options)
       .then(contributions => {
         return contributions.map(data => {
-          loadContributionFromData(data);
+          const contribution = this.loadContributionFromData(data);
           return contribution;
         });
       })
@@ -298,6 +305,7 @@ export default Service.extend({
     const loadedContribution = this.contributions.findBy('id', contribution.id);
     if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
     this.contributions.pushObject(contribution);
+    return contribution;
   },
 
   async cacheLoadedContributions () {
@@ -315,6 +323,41 @@ export default Service.extend({
       console.debug(`[kredits] Loaded ${this.contributions.length} contributions from cache`);
     });
   },
+
+  syncContributions: task(function * () {
+    yield this.fetchNewContributions.perform();
+    yield this.syncUnconfirmedContributions.perform();
+  }),
+
+  fetchNewContributions: task(function * () {
+    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const lastKnownContributionId = Math.max.apply(null, this.contributions.mapBy('id'));
+    const toFetch = count - lastKnownContributionId;
+
+    if (toFetch > 0) {
+      console.debug(`[kredits] Fetching ${toFetch} new contributions`);
+      for (let id = lastKnownContributionId; id <= count; id++) {
+        const data = yield this.kredits.Contribution.getById(id);
+        const c = this.loadContributionFromData(data);
+        yield this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No new contributions to fetch`);
+    }
+  }),
+
+  syncUnconfirmedContributions: task(function * () {
+    if (this.contributionsUnconfirmed.length > 0) {
+      console.debug(`[kredits] Syncing unconfirmed contributions`);
+      for (const c of this.contributionsUnconfirmed) {
+        const data = yield this.kredits.Contribution.getById(c.id);
+        const contribution = this.loadContributionFromData(data);
+        yield this.browserCache.contributions.setItem(c.id.toString(), contribution.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No unconfirmed contributions to sync`);
+    }
+  }),
 
   veto (contributionId) {
     console.debug('[kredits] veto against', contributionId);

@@ -25,9 +25,11 @@ export default Route.extend({
       })
       .then(() => {
         if (this.kredits.contributorsNeedFetch) {
-          schedule('afterRender', this.kredits, this.kredits.fetchContributors);
+          schedule('afterRender', this.kredits.syncContributors,
+                   this.kredits.syncContributors.perform);
         }
-        schedule('afterRender', this.kredits, this.kredits.fetchContributions);
+        schedule('afterRender', this.kredits.syncContributions,
+                 this.kredits.syncContributions.perform);
       });
   }
 });

@@ -2,11 +2,9 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
+  tagName: '',
 
   router: service(),
-
-  tagName: 'table',
-  classNames: 'contributor-list',
 
   selectedContributorId: null,
 
@@ -17,5 +15,4 @@ export default Component.extend({
     }
 
   }
-
 });
