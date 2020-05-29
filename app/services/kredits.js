@@ -352,7 +352,7 @@ export default Service.extend({
     }
   }),
 
-  fetchAllContributions: task(function * () {
+  fetchMissingContributions: task(function * () {
     const count = yield this.kredits.Contribution.functions.contributionsCount();
     const allIds = [...Array(count+1).keys()];
     allIds.shift(); // remove first item, which is 0
@@ -373,6 +373,9 @@ export default Service.extend({
         const c = this.loadContributionFromData(data);
         yield this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
         countFetched++;
+        if (countFetched % 20 === 0) {
+          console.debug(`[kredits] Fetched ${countFetched} more contributions`);
+        }
       }
     }
     console.debug(`[kredits] Cached ${countFetched} past contributions`);
