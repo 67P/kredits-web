@@ -225,17 +225,21 @@ export default Service.extend({
     console.debug(`[kredits] Fetching all contributors from the network`);
     return this.kredits.Contributor.all()
       .then(contributors => {
-        return contributors.map(data => {
-          const contributor = Contributor.create(processContributorData(data));
-          const loadedContributor = this.contributors.findBy('id', contributor.id);
-          if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
-          this.contributors.pushObject(contributor);
-          return contributor;
+        return contributors.forEach(data => {
+          this.loadContributorFromData(data);
+          return;
         });
       })
       .then(() => {
         return this.cacheLoadedContributors();
       });
+  },
+
+  loadContributorFromData(data) {
+    const contributor = Contributor.create(processContributorData(data));
+    const loadedContributor = this.contributors.findBy('id', contributor.id);
+    if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
+    this.contributors.pushObject(contributor);
   },
 
   async cacheLoadedContributors () {
@@ -274,11 +278,7 @@ export default Service.extend({
     return this.kredits.Contribution.all(options)
       .then(contributions => {
         return contributions.map(data => {
-          const contribution = Contribution.create(processContributionData(data));
-          contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
-          const loadedContribution = this.contributions.findBy('id', contribution.id);
-          if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
-          this.contributions.pushObject(contribution);
+          loadContributionFromData(data);
           return contribution;
         });
       })
@@ -290,6 +290,14 @@ export default Service.extend({
           console.debug(`[kredits] Cached ${contributions.length} contributions in browser storage`);
         });
       });
+  },
+
+  loadContributionFromData(data) {
+    const contribution = Contribution.create(processContributionData(data));
+    contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    const loadedContribution = this.contributions.findBy('id', contribution.id);
+    if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
+    this.contributions.pushObject(contribution);
   },
 
   async cacheLoadedContributions () {
