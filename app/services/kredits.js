@@ -8,7 +8,7 @@ import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
-import { task } from 'ember-concurrency';
+import { task, taskGroup } from 'ember-concurrency';
 
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
@@ -328,10 +328,12 @@ export default Service.extend({
     });
   },
 
+  contributionTasks: taskGroup().enqueue(),
+
   syncContributions: task(function * () {
     yield this.fetchNewContributions.perform();
     yield this.syncUnconfirmedContributions.perform();
-  }),
+  }).group('contributionTasks'),
 
   fetchNewContributions: task(function * () {
     const count = yield this.kredits.Contribution.functions.contributionsCount();
@@ -349,6 +351,32 @@ export default Service.extend({
       console.debug(`[kredits] No new contributions to fetch`);
     }
   }),
+
+  fetchAllContributions: task(function * () {
+    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const allIds = [...Array(count+1).keys()];
+    allIds.shift(); // remove first item, which is 0
+    const loadedContributions = new Set(this.contributions.mapBy('id'));
+    const toFetch = allIds.filter(id => !loadedContributions.has(id));
+    if (toFetch.length === 0) {
+      console.debug(`[kredits] No contributions left to fetch`);
+      return;
+    }
+    console.debug(`[kredits] Fetching ${toFetch.length} past contributions`);
+    let countFetched = 0;
+
+    for (let id = count; id > 0; id--) {
+      if (loadedContributions.has(id)) {
+        continue;
+      } else {
+        const data = yield this.kredits.Contribution.getById(id);
+        const c = this.loadContributionFromData(data);
+        yield this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
+        countFetched++;
+      }
+    }
+    console.debug(`[kredits] Cached ${countFetched} past contributions`);
+  }).group('contributionTasks'),
 
   syncUnconfirmedContributions: task(function * () {
     if (this.contributionsUnconfirmed.length > 0) {

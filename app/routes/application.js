@@ -32,6 +32,8 @@ export default Route.extend({
           schedule('afterRender', this.kredits.syncContributions,
                    this.kredits.syncContributions.perform);
         }
+        schedule('afterRender', this.kredits.fetchAllContributions,
+                 this.kredits.fetchAllContributions.perform);
       });
   }
 });
