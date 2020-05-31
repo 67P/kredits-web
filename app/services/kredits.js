@@ -7,8 +7,11 @@ import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
+import { inject as service } from '@ember/service';
 
 import groupBy from 'kredits-web/utils/group-by';
+import processContributorData from 'kredits-web/utils/process-contributor-data';
+import processContributionData from 'kredits-web/utils/process-contribution-data';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
@@ -16,6 +19,9 @@ import Contributor from 'kredits-web/models/contributor'
 import Contribution from 'kredits-web/models/contribution'
 
 export default Service.extend({
+
+  browserCache: service(),
+  contributorsNeedFetch: false,
 
   currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -169,12 +175,23 @@ export default Service.extend({
       .then(total => total.toNumber());
   }),
 
+  async loadInitialData () {
+    const numCachedContributors = await this.browserCache.contributors.length();
+    if (numCachedContributors > 0) {
+      await this.loadContributorsFromCache();
+      this.set('contributorsNeedFetch', true);
+    } else {
+      await this.fetchContributors();
+    }
 
-  loadInitialData () {
-    return this.getContributors()
-               .then(contributors => this.contributors.pushObjects(contributors))
-               .then(() => this.getContributions())
-               .then(contributions => this.contributions.pushObjects(contributions))
+    const numCachedContributions = await this.browserCache.contributions.length();
+    if (numCachedContributions > 0) {
+      await this.loadContributionsFromCache();
+    } else {
+      await this.fetchContributions({ page: { size: 30 } });
+    }
+
+    return Promise.resolve();
   },
 
   addContributor (attributes) {
@@ -205,13 +222,37 @@ export default Service.extend({
       });
   },
 
-  getContributors () {
+  fetchContributors () {
+    console.debug(`[kredits] Fetching all contributors from the network`);
     return this.kredits.Contributor.all()
       .then(contributors => {
-        return contributors.map(contributor => {
-          return Contributor.create(contributor);
+        return contributors.map(data => {
+          const contributor = Contributor.create(processContributorData(data));
+          const loadedContributor = this.contributors.findBy('id', contributor.id);
+          if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
+          this.contributors.pushObject(contributor);
+          return contributor;
         });
+      })
+      .then(() => {
+        return this.cacheLoadedContributors();
       });
+  },
+
+  async cacheLoadedContributors () {
+    for (const c of this.contributors) {
+      await this.browserCache.contributors.setItem(c.id, c.serialize());
+    }
+    console.debug(`[kredits] Cached ${this.contributors.length} contributors in browser storage`);
+    return Promise.resolve();
+  },
+
+  async loadContributorsFromCache () {
+    return this.browserCache.contributors.iterate((value/*, key , iterationNumber */) => {
+      this.contributors.pushObject(Contributor.create(JSON.parse(value)));
+    }).then((/* result */) => {
+      console.debug(`[kredits] Loaded ${this.contributors.length} contributors from cache`);
+    });
   },
 
   addContribution (attributes) {
@@ -229,14 +270,43 @@ export default Service.extend({
       });
   },
 
-  getContributions () {
-    return this.kredits.Contribution.all({page: {size: 200}})
+  fetchContributions (options = { page: { size: 200 } }) {
+    console.debug(`[kredits] Fetching contributions from the network`);
+    return this.kredits.Contribution.all(options)
       .then(contributions => {
-        return contributions.map(contribution => {
-          contribution.contributor = this.contributors.findBy('id', contribution.contributorId.toString());
-          return Contribution.create(contribution);
+        return contributions.map(data => {
+          const contribution = Contribution.create(processContributionData(data));
+          contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+          const loadedContribution = this.contributions.findBy('id', contribution.id);
+          if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
+          this.contributions.pushObject(contribution);
+          return contribution;
+        });
+      })
+      .then(contributions => {
+        const cacheWrites = contributions.map(c => {
+          return this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
+        });
+        return Promise.all(cacheWrites).then(() => {
+          console.debug(`[kredits] Cached ${contributions.length} contributions in browser storage`);
         });
       });
+  },
+
+  async cacheLoadedContributions () {
+    for (const c of this.contributions) {
+      await this.browserCache.contributions.setItem(c.id, c.serialize());
+    }
+    console.debug(`[kredits] Cached ${this.contributions.length} contributions in browser storage`);
+    return Promise.resolve();
+  },
+
+  async loadContributionsFromCache () {
+    return this.browserCache.contributions.iterate((value/*, key , iterationNumber */) => {
+      this.contributions.pushObject(Contribution.create(JSON.parse(value)));
+    }).then((/* result */) => {
+      console.debug(`[kredits] Loaded ${this.contributions.length} contributions from cache`);
+    });
   },
 
   veto (contributionId) {

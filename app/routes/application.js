@@ -1,5 +1,6 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
+import { schedule } from '@ember/runloop';
 
 export default Route.extend({
   kredits: service(),
@@ -21,6 +22,12 @@ export default Route.extend({
     return this.kredits.loadInitialData()
       .then(() => {
         this.kredits.addContractEventHandlers();
+      })
+      .then(() => {
+        if (this.kredits.contributorsNeedFetch) {
+          schedule('afterRender', this.kredits, this.kredits.fetchContributors);
+        }
+        schedule('afterRender', this.kredits, this.kredits.fetchContributions);
       });
   }
 });
