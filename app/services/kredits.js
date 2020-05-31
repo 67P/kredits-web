@@ -94,7 +94,7 @@ export default Service.extend({
   getEthProvider () {
     let ethProvider;
 
-    return new Promise(async (resolve) => {
+    return new Promise(resolve => {
       function instantiateWithoutAccount () {
         console.debug('[kredits] Creating new instance from npm module class');
         console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
