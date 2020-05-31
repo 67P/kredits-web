@@ -14,10 +14,6 @@ notifications:
 addons:
   chrome: stable
 
-cache:
-  directories:
-    - $HOME/.npm
-
 env:
   global:
     # See https://git.io/vdao3 for details.
