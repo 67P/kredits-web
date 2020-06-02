@@ -114,4 +114,13 @@ ul.contribution-list {
     }
   }
 
+  &.loading {
+    @include loading-border-top;
+
+    li {
+      &:first-of-type {
+        border-top: none;
+      }
+    }
+  }
 }

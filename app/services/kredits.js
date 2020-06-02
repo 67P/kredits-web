@@ -1,6 +1,5 @@
 import ethers from 'ethers';
 import Kredits from 'kredits-contracts';
-import RSVP from 'rsvp';
 
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
@@ -8,6 +7,8 @@ import { computed } from '@ember/object';
 import { alias, notEmpty } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 import { inject as service } from '@ember/service';
+
+import { task, taskGroup } from 'ember-concurrency';
 
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
@@ -21,7 +22,6 @@ import Contribution from 'kredits-web/models/contribution'
 export default Service.extend({
 
   browserCache: service(),
-  contributorsNeedFetch: false,
 
   currentBlock: null,
   currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
@@ -33,6 +33,10 @@ export default Service.extend({
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
+
+  // When data was loaded from cache, we need to fetch updates from the network
+  contributorsNeedSync: false,
+  contributionsNeedSync: false,
 
   contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions.filter(contribution => {
@@ -90,7 +94,7 @@ export default Service.extend({
   getEthProvider () {
     let ethProvider;
 
-    return new RSVP.Promise(async (resolve) => {
+    return new Promise(resolve => {
       function instantiateWithoutAccount () {
         console.debug('[kredits] Creating new instance from npm module class');
         console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
@@ -179,7 +183,7 @@ export default Service.extend({
     const numCachedContributors = await this.browserCache.contributors.length();
     if (numCachedContributors > 0) {
       await this.loadContributorsFromCache();
-      this.set('contributorsNeedFetch', true);
+      this.set('contributorsNeedSync', true);
     } else {
       await this.fetchContributors();
     }
@@ -187,6 +191,7 @@ export default Service.extend({
     const numCachedContributions = await this.browserCache.contributions.length();
     if (numCachedContributions > 0) {
       await this.loadContributionsFromCache();
+      this.set('contributionsNeedSync', true);
     } else {
       await this.fetchContributions({ page: { size: 30 } });
     }
@@ -226,17 +231,22 @@ export default Service.extend({
     console.debug(`[kredits] Fetching all contributors from the network`);
     return this.kredits.Contributor.all()
       .then(contributors => {
-        return contributors.map(data => {
-          const contributor = Contributor.create(processContributorData(data));
-          const loadedContributor = this.contributors.findBy('id', contributor.id);
-          if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
-          this.contributors.pushObject(contributor);
-          return contributor;
+        return contributors.forEach(data => {
+          this.loadContributorFromData(data);
+          return;
         });
       })
       .then(() => {
         return this.cacheLoadedContributors();
       });
+  },
+
+  loadContributorFromData(data) {
+    const contributor = Contributor.create(processContributorData(data));
+    const loadedContributor = this.contributors.findBy('id', contributor.id);
+    if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
+    this.contributors.pushObject(contributor);
+    return contributor;
   },
 
   async cacheLoadedContributors () {
@@ -254,6 +264,10 @@ export default Service.extend({
       console.debug(`[kredits] Loaded ${this.contributors.length} contributors from cache`);
     });
   },
+
+  syncContributors: task(function * () {
+    yield this.fetchContributors();
+  }),
 
   addContribution (attributes) {
     console.debug('[kredits] add contribution', attributes);
@@ -275,11 +289,7 @@ export default Service.extend({
     return this.kredits.Contribution.all(options)
       .then(contributions => {
         return contributions.map(data => {
-          const contribution = Contribution.create(processContributionData(data));
-          contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
-          const loadedContribution = this.contributions.findBy('id', contribution.id);
-          if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
-          this.contributions.pushObject(contribution);
+          const contribution = this.loadContributionFromData(data);
           return contribution;
         });
       })
@@ -291,6 +301,15 @@ export default Service.extend({
           console.debug(`[kredits] Cached ${contributions.length} contributions in browser storage`);
         });
       });
+  },
+
+  loadContributionFromData(data) {
+    const contribution = Contribution.create(processContributionData(data));
+    contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    const loadedContribution = this.contributions.findBy('id', contribution.id);
+    if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
+    this.contributions.pushObject(contribution);
+    return contribution;
   },
 
   async cacheLoadedContributions () {
@@ -309,6 +328,72 @@ export default Service.extend({
     });
   },
 
+  contributionTasks: taskGroup().enqueue(),
+
+  syncContributions: task(function * () {
+    yield this.fetchNewContributions.perform();
+    yield this.syncUnconfirmedContributions.perform();
+  }).group('contributionTasks'),
+
+  fetchNewContributions: task(function * () {
+    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const lastKnownContributionId = Math.max.apply(null, this.contributions.mapBy('id'));
+    const toFetch = count - lastKnownContributionId;
+
+    if (toFetch > 0) {
+      console.debug(`[kredits] Fetching ${toFetch} new contributions`);
+      for (let id = lastKnownContributionId; id <= count; id++) {
+        const data = yield this.kredits.Contribution.getById(id);
+        const c = this.loadContributionFromData(data);
+        yield this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No new contributions to fetch`);
+    }
+  }),
+
+  fetchMissingContributions: task(function * () {
+    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const allIds = [...Array(count+1).keys()];
+    allIds.shift(); // remove first item, which is 0
+    const loadedContributions = new Set(this.contributions.mapBy('id'));
+    const toFetch = allIds.filter(id => !loadedContributions.has(id));
+    if (toFetch.length === 0) {
+      console.debug(`[kredits] No contributions left to fetch`);
+      return;
+    }
+    console.debug(`[kredits] Fetching ${toFetch.length} past contributions`);
+    let countFetched = 0;
+
+    for (let id = count; id > 0; id--) {
+      if (loadedContributions.has(id)) {
+        continue;
+      } else {
+        const data = yield this.kredits.Contribution.getById(id);
+        const c = this.loadContributionFromData(data);
+        yield this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
+        countFetched++;
+        if (countFetched % 20 === 0) {
+          console.debug(`[kredits] Fetched ${countFetched} more contributions`);
+        }
+      }
+    }
+    console.debug(`[kredits] Cached ${countFetched} past contributions`);
+  }).group('contributionTasks'),
+
+  syncUnconfirmedContributions: task(function * () {
+    if (this.contributionsUnconfirmed.length > 0) {
+      console.debug(`[kredits] Syncing unconfirmed contributions`);
+      for (const c of this.contributionsUnconfirmed) {
+        const data = yield this.kredits.Contribution.getById(c.id);
+        const contribution = this.loadContributionFromData(data);
+        yield this.browserCache.contributions.setItem(c.id.toString(), contribution.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No unconfirmed contributions to sync`);
+    }
+  }),
+
   veto (contributionId) {
     console.debug('[kredits] veto against', contributionId);
     const contribution = this.contributions.findBy('id', contributionId);
@@ -323,14 +408,14 @@ export default Service.extend({
 
   getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
     if (isEmpty(this.currentUserAccounts)) {
-      return RSVP.resolve();
+      return Promise.resolve();
     }
     return this.kredits.Contributor
       .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
       .then((id) => {
         // check if the user is a contributor or not
         if (id === 0) {
-          return RSVP.resolve();
+          return Promise.resolve();
         } else {
           return this.kredits.Contributor.getById(id);
         }

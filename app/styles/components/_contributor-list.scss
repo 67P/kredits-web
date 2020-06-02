@@ -1,4 +1,5 @@
 table.contributor-list {
+  position: relative;
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1.5rem;
@@ -46,6 +47,13 @@ table.contributor-list {
           padding-left: 0.2rem;
         }
       }
+    }
+  }
+
+  &.loading {
+    @include loading-border-top;
+    &::before {
+      position: absolute;
     }
   }
 }

@@ -29,7 +29,8 @@
       <div class="content">
         <ContributorList @contributorList={{this.kreditsToplist}}
                          @showUnconfirmedKredits={{this.showUnconfirmedKredits}}
-                         @selectedContributorId={{this.selectedContributorId}} />
+                         @selectedContributorId={{this.selectedContributorId}}
+                         @loading={{this.kredits.syncContributors.isRunning}} />
 
         <p class="stats">
           <span class="number">{{await this.kredits.totalKreditsEarned}}</span> kredits confirmed and issued to
@@ -58,7 +59,9 @@
     {{#if this.contributionsUnconfirmed}}
       <section id="contributions-unconfirmed">
         <header class="with-nav">
-          <h2>Latest Contributions</h2>
+          <h2>
+            Latest Contributions
+          </h2>
           <nav>
             <button type="button"
                     onclick={{action "toggleQuickFilterUnconfirmed"}}
@@ -78,7 +81,8 @@
                             @vetoContribution={{action "vetoContribution"}}
                             @contractInteractionEnabled={{this.kredits.hasAccounts}}
                             @selectedContributionId={{this.selectedContributionId}}
-                            @showQuickFilter={{this.showQuickFilterUnconfirmed}} />
+                            @showQuickFilter={{this.showQuickFilterUnconfirmed}}
+                            @loading={{this.kredits.syncContributions.isRunning}}/>
         </div>
       </section>
     {{/if}}

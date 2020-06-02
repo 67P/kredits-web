@@ -24,10 +24,16 @@ export default Route.extend({
         this.kredits.addContractEventHandlers();
       })
       .then(() => {
-        if (this.kredits.contributorsNeedFetch) {
-          schedule('afterRender', this.kredits, this.kredits.fetchContributors);
+        if (this.kredits.contributorsNeedSync) {
+          schedule('afterRender', this.kredits.syncContributors,
+                   this.kredits.syncContributors.perform);
         }
-        schedule('afterRender', this.kredits, this.kredits.fetchContributions);
+        if (this.kredits.contributionsNeedSync) {
+          schedule('afterRender', this.kredits.syncContributions,
+                   this.kredits.syncContributions.perform);
+        }
+        schedule('afterRender', this.kredits.fetchMissingContributions,
+                 this.kredits.fetchMissingContributions.perform);
       });
   }
 });
