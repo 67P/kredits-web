@@ -29,4 +29,7 @@ Router.map(function() {
     this.route('eth-account');
     this.route('complete');
   });
+  this.route('budget', function() {
+    this.route('expenses');
+  });
 });
