@@ -13,11 +13,15 @@ import { task, taskGroup } from 'ember-concurrency';
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
 import processContributionData from 'kredits-web/utils/process-contribution-data';
+import processReimbursementData from 'kredits-web/utils/process-reimbursement-data';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
-import Contributor from 'kredits-web/models/contributor'
-import Contribution from 'kredits-web/models/contribution'
+import Contributor from 'kredits-web/models/contributor';
+import Contribution from 'kredits-web/models/contribution';
+import Reimbursement from 'kredits-web/models/reimbursement';
+// Lets us access the model classes dynamically
+const models = { Contributor, Contribution, Reimbursement }
 
 export default Service.extend({
 
@@ -28,6 +32,7 @@ export default Service.extend({
   currentUser: null,
   contributors: null,
   contributions: null,
+  reimbursements: null,
   githubAccessToken: null,
 
   currentUserIsContributor: notEmpty('currentUser'),
@@ -37,11 +42,13 @@ export default Service.extend({
   // When data was loaded from cache, we need to fetch updates from the network
   contributorsNeedSync: false,
   contributionsNeedSync: false,
+  reimbursementsNeedSync: false,
 
   init () {
     this._super(...arguments);
     this.set('contributors', []);
     this.set('contributions', []);
+    this.set('reimbursements', []);
   },
 
   // This is called in the application route's beforeModel(). So it is
@@ -182,24 +189,31 @@ export default Service.extend({
   }),
 
   contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt > this.currentBlock;
-    });
+    return this.contributions
+               .filter(c => c.confirmedAt > this.currentBlock);
   }),
 
   contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
     return this.contributions
                .filterBy('vetoed', false)
-               .filter(contribution => {
-                 return contribution.confirmedAt <= this.currentBlock;
-               });
+               .filter(c => c.confirmedAt <= this.currentBlock);
   }),
 
+  reimbursementsUnconfirmed: computed('reimbursements.[]', 'currentBlock', function() {
+    return this.reimbursements
+               .filter(r => r.confirmedAt > this.currentBlock);
+  }),
+
+  reimbursementsConfirmed: computed('reimbursements.[]', 'currentBlock', function() {
+    return this.reimbursements
+               .filterBy('vetoed', false)
+               .filter(r => r.confirmedAt <= this.currentBlock);
+  }),
 
   async loadInitialData () {
     const numCachedContributors = await this.browserCache.contributors.length();
     if (numCachedContributors > 0) {
-      await this.loadContributorsFromCache();
+      await this.loadObjectsFromCache('Contributor');
       this.set('contributorsNeedSync', true);
     } else {
       await this.fetchContributors();
@@ -207,7 +221,7 @@ export default Service.extend({
 
     const numCachedContributions = await this.browserCache.contributions.length();
     if (numCachedContributions > 0) {
-      await this.loadContributionsFromCache();
+      await this.loadObjectsFromCache('Contribution');
       this.set('contributionsNeedSync', true);
     } else {
       await this.fetchContributions({ page: { size: 30 } });
@@ -353,7 +367,7 @@ export default Service.extend({
   }).group('contributionTasks'),
 
   fetchNewContributions: task(function * () {
-    const count = yield this.kredits.Contribution.count();
+    const count = yield this.kredits.Contribution.functions.contributionsCount();
     const lastKnownContributionId = Math.max.apply(null, this.contributions.mapBy('id'));
     const toFetch = count - lastKnownContributionId;
 
@@ -421,6 +435,142 @@ export default Service.extend({
         contribution.set('pendingTx', data);
         return data;
       });
+  },
+
+  //
+  // Generic data handling (for objects that can be vetoed)
+  //
+
+  fetchObjects(objectClass, options = { page: { size: 200 } }) {
+    const objectClassLowerCase = objectClass.toLowerCase();
+    console.debug(`[kredits] Fetching ${objectClassLowerCase}s from the network`);
+    return this.kredits[objectClass].all(options)
+      .then(objects => {
+        return objects.map(data => {
+          const classInstance = this[`load${objectClass}FromData`](data);
+          return classInstance;
+        });
+      })
+      .then(objects => {
+        const cacheWrites = objects.map(o => {
+          return this.browserCache[objectClassLowerCase+'s']
+                     .setItem(o.id.toString(), o.serialize());
+        });
+        return Promise.all(cacheWrites).then(() => {
+          console.debug(`[kredits] Cached ${objects.length} ${objectClassLowerCase+'s'} in browser storage`);
+        });
+      });
+  },
+
+  removeObjectFromCollectionIfLoaded (collection, objectId) {
+    const loadedObj = this[collection].findBy('id', objectId);
+    if (loadedObj) { this[collection].removeObject(loadedObj); }
+  },
+
+  async cacheLoadedObjects (collection) {
+    for (const o of this[collection]) {
+      await this.browserCache[collection].setItem(o.id, o.serialize());
+    }
+    console.debug(`[kredits] Cached ${this[collection].length} ${collection} in browser storage`);
+    return Promise.resolve();
+  },
+
+  async loadObjectsFromCache (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    return this.browserCache[collection].iterate((value/*, key , iterationNumber */) => {
+      const obj = models[objectClass].create(JSON.parse(value));
+      this[collection].pushObject(obj);
+    }).then((/* result */) => {
+      console.debug(`[kredits] Loaded ${this[collection].length} ${collection} from cache`);
+    });
+  },
+
+  fetchNewObjects: task(function * (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    const count = yield this.kredits[objectClass].functions[`${collection}Count`]();
+    const lastKnownObjectId = Math.max.apply(null, this[collection].mapBy('id'));
+    const toFetch = count - lastKnownObjectId;
+
+    if (toFetch > 0) {
+      console.debug(`[kredits] Fetching ${toFetch} new ${collection}`);
+      for (let id = lastKnownObjectId; id <= count; id++) {
+        const data = yield this.kredits[objectClass].getById(id);
+        const o = this[`load${objectClass}FromData`](data);
+        yield this.browserCache[collection].setItem(o.id.toString(), o.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No new ${collection} to fetch`);
+    }
+  }),
+
+  fetchMissingObjects: task(function * (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    const count = yield this.kredits[objectClass].count();
+    const allIds = [...Array(count+1).keys()];
+    allIds.shift(); // remove first item, which is 0
+    const loadedObjects = new Set(this[collection].mapBy('id'));
+    const toFetch = allIds.filter(id => !loadedObjects.has(id));
+    if (toFetch.length === 0) {
+      console.debug(`[kredits] No ${collection} left to fetch`);
+      return;
+    }
+    console.debug(`[kredits] Fetching ${toFetch.length} past ${collection}`);
+    let countFetched = 0;
+
+    for (let id = count; id > 0; id--) {
+      if (loadedObjects.has(id)) {
+        continue;
+      } else {
+        const data = yield this.kredits[objectClass].getById(id);
+        const o = this[`load${objectClass}fromData`](data);
+        yield this.browserCache[collection].setItem(o.id.toString(), o.serialize());
+        countFetched++;
+        if (countFetched % 20 === 0) {
+          console.debug(`[kredits] Fetched ${countFetched} more ${collection}`);
+        }
+      }
+    }
+    console.debug(`[kredits] Cached ${countFetched} past ${collection}`);
+  }).group('syncTaskGroup'),
+
+  syncUnconfirmedObjects: task(function * (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    if (this`${collection}Unconfirmed`.length > 0) {
+      console.debug(`[kredits] Syncing unconfirmed ${collection}`);
+      for (const o of this[`${collection}Unconfirmed`]) {
+        const data = yield this.kredits[objectClass].getById(o.id);
+        const object = this[`load${objectClass}FromData`](data);
+        yield this.browserCache[collection]
+                  .setItem(o.id.toString(), object.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No unconfirmed ${collection} to sync`);
+    }
+  }),
+
+  vetoAgainstObject (objectClass, objectId) {
+    console.debug(`[kredits] veto against ${objectClass.toLowerCase()}`, objectId);
+    const collection = objectClass.toLowerCase()+'s';
+    const object = this[collection].findBy('id', objectId);
+
+    return this.kredits[objectClass].functions.veto(objectId, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] veto response', data);
+        object.set('pendingTx', data);
+        return data;
+      });
+  },
+
+  //
+  // Reimbursements
+  //
+
+  loadReimbursementFromData(data) {
+    const obj = Reimbursement.create(processReimbursementData(data));
+    obj.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    this.removeObjectFromCollectionIfLoaded('reimbursements', obj.id);
+    this.reimbursements.pushObject(obj);
+    return obj;
   },
 
   //
