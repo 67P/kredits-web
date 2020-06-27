@@ -38,50 +38,6 @@ export default Service.extend({
   contributorsNeedSync: false,
   contributionsNeedSync: false,
 
-  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt > this.currentBlock;
-    });
-  }),
-
-  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions
-               .filterBy('vetoed', false)
-               .filter(contribution => {
-                 return contribution.confirmedAt <= this.currentBlock;
-               });
-  }),
-
-  kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
-    const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
-    const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
-    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
-    const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
-
-    const kreditsByContributor = contributionsGrouped.map(c => {
-      const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
-      const contributor = this.contributors.findBy('id', c.value.toString());
-
-      return EmberObject.create({
-        contributor: contributor,
-        amountUnconfirmed: amountUnconfirmed,
-        amountConfirmed: contributor.totalKreditsEarned,
-        amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
-      })
-    });
-
-    contributorsWithOnlyConfirmed.forEach(c => {
-      kreditsByContributor.push(EmberObject.create({
-        contributor: c,
-        amountUnconfirmed: 0,
-        amountConfirmed: c.totalKreditsEarned,
-        amountTotal: c.totalKreditsEarned
-      }));
-    })
-
-    return kreditsByContributor;
-  }),
-
   init () {
     this._super(...arguments);
     this.set('contributors', []);
@@ -168,6 +124,22 @@ export default Service.extend({
     });
   },
 
+  getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
+    if (isEmpty(this.currentUserAccounts)) {
+      return Promise.resolve();
+    }
+    return this.kredits.Contributor
+      .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
+      .then((id) => {
+        // check if the user is a contributor or not
+        if (id === 0) {
+          return Promise.resolve();
+        } else {
+          return this.kredits.Contributor.getById(id);
+        }
+      });
+  }),
+
   totalSupply: computed(function() {
     return this.kredits.Token.functions.totalSupply().then(total => {
       return formatKredits(total);
@@ -178,6 +150,51 @@ export default Service.extend({
     return this.kredits.Contribution.functions.totalKreditsEarned(true)
       .then(total => total.toNumber());
   }),
+
+  kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
+    const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
+    const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
+    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
+    const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
+
+    const kreditsByContributor = contributionsGrouped.map(c => {
+      const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
+      const contributor = this.contributors.findBy('id', c.value.toString());
+
+      return EmberObject.create({
+        contributor: contributor,
+        amountUnconfirmed: amountUnconfirmed,
+        amountConfirmed: contributor.totalKreditsEarned,
+        amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
+      })
+    });
+
+    contributorsWithOnlyConfirmed.forEach(c => {
+      kreditsByContributor.push(EmberObject.create({
+        contributor: c,
+        amountUnconfirmed: 0,
+        amountConfirmed: c.totalKreditsEarned,
+        amountTotal: c.totalKreditsEarned
+      }));
+    })
+
+    return kreditsByContributor;
+  }),
+
+  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions.filter(contribution => {
+      return contribution.confirmedAt > this.currentBlock;
+    });
+  }),
+
+  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions
+               .filterBy('vetoed', false)
+               .filter(contribution => {
+                 return contribution.confirmedAt <= this.currentBlock;
+               });
+  }),
+
 
   async loadInitialData () {
     const numCachedContributors = await this.browserCache.contributors.length();
@@ -336,7 +353,7 @@ export default Service.extend({
   }).group('contributionTasks'),
 
   fetchNewContributions: task(function * () {
-    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const count = yield this.kredits.Contribution.count();
     const lastKnownContributionId = Math.max.apply(null, this.contributions.mapBy('id'));
     const toFetch = count - lastKnownContributionId;
 
@@ -406,23 +423,10 @@ export default Service.extend({
       });
   },
 
-  getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
-    if (isEmpty(this.currentUserAccounts)) {
-      return Promise.resolve();
-    }
-    return this.kredits.Contributor
-      .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
-      .then((id) => {
-        // check if the user is a contributor or not
-        if (id === 0) {
-          return Promise.resolve();
-        } else {
-          return this.kredits.Contributor.getById(id);
-        }
-      });
-  }),
-
+  //
   // Contract events
+  //
+
   addContractEventHandlers () {
     this.kredits.Contributor
       .on('ContributorProfileUpdated', this.handleContributorChange.bind(this))
