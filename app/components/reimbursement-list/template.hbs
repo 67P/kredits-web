@@ -2,12 +2,12 @@
   {{#each this.itemsSorted as |reimbursement|}}
     <li>
       {{reimbursement.id}}<br>
-      {{reimbursement.amount}} WBTC<br>
+      {{sats-to-btc reimbursement.amount}} WBTC<br>
       vetoed: {{reimbursement.vetoed}}<br>
       pay out to: {{reimbursement.contributor.name}}<br>
 
       {{#each reimbursement.expenses as |expense|}}
-        {{expense.date}}: {{expense.title}}
+        {{expense.date}}: {{expense.title}} - {{fmt-fiat-currency expense.amount expense.currency}}<br>
       {{/each}}
     </li>
   {{/each}}

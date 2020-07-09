@@ -13,14 +13,5 @@ module('Integration | Component | reimbursement-list', function(hooks) {
     await render(hbs`<ReimbursementList />`);
 
     assert.equal(this.element.textContent.trim(), '');
-
-    // Template block usage:
-    await render(hbs`
-      <ReimbursementList>
-        template block text
-      </ReimbursementList>
-    `);
-
-    assert.equal(this.element.textContent.trim(), 'template block text');
   });
 });
