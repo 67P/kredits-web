@@ -10,9 +10,13 @@ module('Integration | Helper | fmt-fiat-currency', function(hooks) {
     this.set('amount', 13.9);
 
     await render(hbs`{{fmt-fiat-currency this.amount}}`);
-    assert.equal(this.element.textContent.trim(), '€13.90', 'using EUR amount by default');
+    assert.ok(this.element.textContent.trim().match(/13.90/),
+              'formats the number with two decimals');
+    assert.ok(this.element.textContent.trim().match(/EUR/),
+              'using EUR by default');
 
     await render(hbs`{{fmt-fiat-currency this.amount 'USD'}}`);
-    assert.equal(this.element.textContent.trim(), '$13.90', 'using the defined currency');
+    assert.ok(this.element.textContent.trim().match(/USD/),
+              'using defined currency when given');
   });
 });
