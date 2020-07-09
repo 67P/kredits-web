@@ -1,55 +1,73 @@
 <main id="budget">
 
-  <section id="main-nav">
-    <header>
-      <h2>Budget</h2>
-    </header>
-    <div class="content">
-      <ul>
-        <li>
-          <LinkTo @route="budget.expenses">Expenses</LinkTo>
-        </li>
-        <li>
-          <a href="#">Rewards</a>
-        </li>
-      </ul>
-    </div>
-  </section>
+  <div id="aside">
+    <section id="main-nav">
+      <header>
+        <h2>Budget</h2>
+      </header>
+      <div class="content">
+        <ul>
+          <li>
+            <LinkTo @route="budget.expenses">Expenses</LinkTo>
+          </li>
+          <li>
+            <a href="#">Rewards</a>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-  <section id="funds">
-    <header>
-      <h2>Community funds</h2>
-    </header>
-    <div class="content">
-      <table>
-        <thead>
-          <tr>
-            <td>Token</td>
-            <td>Amount</td>
-            <td>Fiat value</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>WBTC</td>
-            <td>1.17215</td>
-            <td>11031.15 USD</td>
-          </tr>
-          <tr>
-            <td>ETH</td>
-            <td>0.5</td>
-            <td>115.60 USD</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <section id="funds">
+      <header>
+        <h2>Community funds</h2>
+      </header>
+      <div class="content">
+        <table>
+          <thead>
+            <tr>
+              <td>Token</td>
+              <td>Amount</td>
+              <td>Fiat value</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>WBTC</td>
+              <td>1.17215</td>
+              <td>11031.15 USD</td>
+            </tr>
+            <tr>
+              <td>ETH</td>
+              <td>0.5</td>
+              <td>115.60 USD</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
-  {{!-- TODO #if sub-route (i.e. filtered list) --}}
-  {{!-- {{outlet}} --}}
-  {{!-- {{else}} --}}
+  <div id="content">
+    <section id="expenses-unconfirmed">
+      <header>
+        <h2>Proposed Reimbursements</h2>
+      </header>
+      <div class="content">
+        <ReimbursementList @items={{this.reimbursementsUnconfirmed}} />
+      </div>
+    </section>
 
-  <section id="expenses">
-  </section>
+    <section id="expenses-confirmed">
+      <header>
+        <h2>Confirmed Expenses</h2>
+      </header>
+      <div class="content">
+        <ReimbursementList @items={{this.reimbursementsConfirmed}} />
+      </div>
+    </section>
+  </div>
+
+  <div id="empty">
+  </div>
 
 </main>

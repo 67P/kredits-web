@@ -1,0 +1,14 @@
+<ul class="item-list">
+  {{#each this.itemsSorted as |reimbursement|}}
+    <li>
+      {{reimbursement.id}}<br>
+      {{reimbursement.amount}} WBTC<br>
+      vetoed: {{reimbursement.vetoed}}<br>
+      pay out to: {{reimbursement.contributor.name}}<br>
+
+      {{#each reimbursement.expenses as |expense|}}
+        {{expense.date}}: {{expense.title}}
+      {{/each}}
+    </li>
+  {{/each}}
+</ul>

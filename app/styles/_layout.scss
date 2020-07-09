@@ -14,6 +14,15 @@ main {
       "contributions";
   }
 
+  &#budget {
+    width: 100%;
+    display: grid;
+    grid-row-gap: 2rem;
+    grid-template-areas:
+      "aside"
+      "content";
+  }
+
   &.center-column {
     display: flex;
     flex-direction: column;
@@ -110,6 +119,13 @@ main {
         grid-template-areas:
           "stats contributions details";
       }
+    }
+
+    &#budget {
+      grid-column-gap: 3rem;
+      grid-template-columns: 2fr 4fr 2fr;
+      grid-template-areas:
+        "aside content empty";
     }
   }
 }
