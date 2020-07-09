@@ -16,9 +16,9 @@ section#contribution-details {
     margin: 0 0 1.5rem;
     padding: 2rem 2rem;
 
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    background-color: rgba(255,255,255,0.1);
+    border-top: 1px solid $item-border-color;
+    border-bottom: 1px solid $item-border-color;
+    background-color: $item-background-color;
 
     h3 {
       font-size: 1.5rem;
@@ -67,7 +67,7 @@ section#contribution-details {
     overflow: auto;
     margin-top: 2rem;
     padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,0.2);
+    border-top: 1px solid $item-border-color;
     font-size: 1.2rem;
 
     .icon {

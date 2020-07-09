@@ -1,0 +1,27 @@
+ul.item-list {
+  list-style: none;
+
+  li {
+    background-color: $item-background-color;
+    border-bottom: 1px solid $item-border-color;
+    font-size: 1.2rem;
+
+    &:first-of-type {
+      border-top: 1px solid $item-border-color;
+    }
+
+    &.selected {
+      background-color: $item-highlighted-background-color;
+    }
+  }
+
+  &.loading {
+    @include loading-border-top;
+
+    li {
+      &:first-of-type {
+        border-top: none;
+      }
+    }
+  }
+}

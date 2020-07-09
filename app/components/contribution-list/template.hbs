@@ -29,7 +29,7 @@
   </div>
 {{/if}}
 
-<ul class="contribution-list {{if @loading 'loading'}}">
+<ul class="item-list contribution-list {{if @loading 'loading'}}">
   {{#each this.contributionsFiltered as |contribution|}}
     <li role="button" data-contribution-id={{contribution.id}}
         {{action "openContributionDetails" contribution}}

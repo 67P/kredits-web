@@ -8,7 +8,7 @@ section#contributor-profile {
 
     img {
       margin: 0 auto;
-      border: 3px solid rgba(255,255,255,0.2);
+      border: 3px solid $item-border-color;
     }
   }
 
@@ -18,9 +18,9 @@ section#contributor-profile {
     margin: -7.2rem 0 1.5rem;
     padding: 6rem 1.2rem 2rem;
 
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    background-color: rgba(255,255,255,0.1);
+    border-top: 1px solid $item-border-color;
+    border-bottom: 1px solid $item-border-color;
+    background-color: $item-background-color;
 
     h2 {
       text-align: center;

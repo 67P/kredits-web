@@ -5,16 +5,16 @@ table.contributor-list {
   margin-bottom: 1.5rem;
 
   tr {
-    background-color: rgba(255,255,255,0.1);
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    background-color: $item-background-color;
+    border-bottom: 1px solid $item-border-color;
     cursor: pointer;
 
     &:first-of-type {
-      border-top: 1px solid rgba(255,255,255,0.2);
+      border-top: 1px solid $item-border-color;
     }
 
     &.selected {
-      background-color: rgba(255,255,255,0.2);
+      background-color: $item-highlighted-background-color;
     }
 
     &.current-user {
