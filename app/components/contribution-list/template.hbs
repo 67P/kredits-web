@@ -33,7 +33,7 @@
   {{#each this.contributionsFiltered as |contribution|}}
     <li role="button" data-contribution-id={{contribution.id}}
         {{action "openContributionDetails" contribution}}
-        class="{{contribution-status contribution}}{{if (eq contribution.id @selectedContributionId) " selected"}}">
+        class="{{item-status contribution}}{{if (eq contribution.id @selectedContributionId) " selected"}}">
       <p class="meta">
         <span class="recipient"><UserAvatar @contributor={{contribution.contributor}} /></span>
         <span class="category {{contribution.kind}}">({{contribution.kind}})</span>

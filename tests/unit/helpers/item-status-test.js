@@ -2,11 +2,11 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Contribution from 'kredits-web/models/contribution';
 
-module('Unit | Helper | contribution-status', function (hooks) {
+module('Unit | Helper | item-status', function (hooks) {
   setupTest(hooks);
 
   test('returns the appropriate status', function (assert) {
-    const contributionStatus = this.owner.factoryFor('helper:contribution-status').create();
+    const contributionStatus = this.owner.factoryFor('helper:item-status').create();
     const kredits = this.owner.lookup('service:kredits');
 
     kredits.set('currentBlock', 23000);

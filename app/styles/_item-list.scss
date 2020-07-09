@@ -2,9 +2,10 @@ ul.item-list {
   list-style: none;
 
   li {
+    padding: 0.8rem 1.2rem;
+    font-size: 1.2rem;
     background-color: $item-background-color;
     border-bottom: 1px solid $item-border-color;
-    font-size: 1.2rem;
 
     &:first-of-type {
       border-top: 1px solid $item-border-color;

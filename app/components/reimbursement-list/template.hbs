@@ -1,14 +1,24 @@
-<ul class="item-list">
+<ul class="item-list reimbursement-list {{if @loading 'loading'}}">
   {{#each this.itemsSorted as |reimbursement|}}
-    <li>
-      {{reimbursement.id}}<br>
-      {{sats-to-btc reimbursement.amount}} WBTC<br>
-      vetoed: {{reimbursement.vetoed}}<br>
-      pay out to: {{reimbursement.contributor.name}}<br>
-
-      {{#each reimbursement.expenses as |expense|}}
-        {{expense.date}}: {{expense.title}} - {{fmt-fiat-currency expense.amount expense.currency}}<br>
-      {{/each}}
+    <li data-reimbursement-id={{reimbursement.id}}
+        class="{{item-status reimbursement}}">
+      <p class="meta">
+        <span class="recipient"><UserAvatar @contributor={{reimbursement.contributor}} /></span>
+        <span class="title">Expenses covered by {{reimbursement.contributor.name}}</span>
+      </p>
+      <p class="token-amount">
+        <span class="amount">
+          <!-- <img src="/img/bitcoin.svg" class="currency&#45;logo"> -->
+          {{sats-to-btc reimbursement.amount}}</span>&#8239;<span class="symbol">WBTC</span>
+      </p>
+      <table>
+        {{#each reimbursement.expenses as |expense|}}
+          <tr>
+            <td class="description">{{expense.title}} &ndash; {{expense.description}}</td>
+            <td class="amount">{{fmt-fiat-currency expense.amount expense.currency}}</td>
+          </tr>
+        {{/each}}
+      </table>
     </li>
   {{/each}}
 </ul>

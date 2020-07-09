@@ -24,13 +24,11 @@ main section {
 ul.contribution-list {
   clear: both;
   width: 100%;
-  list-style: none;
 
   li {
     display: grid;
     grid-template-columns: auto 5rem 5rem;
     grid-row-gap: 0.5rem;
-    padding: 0.8rem 1.2rem;
     cursor: pointer;
 
     &.confirmed {

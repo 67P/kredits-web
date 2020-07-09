@@ -1,0 +1,52 @@
+ul.reimbursement-list {
+  width: 100%;
+
+  li {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-row-gap: 0.5rem;
+    padding-top: 1.6rem;
+
+    .token-amount {
+      text-align: right;
+
+      img {
+        height: 1em;
+        vertical-align: middle;
+        margin-top: -2px;
+      }
+
+      .amount {
+        font-weight: 500;
+      }
+
+      .symbol {
+        font-size: 0.8rem;
+        padding-left: 0.2rem;
+      }
+    }
+
+    table {
+      grid-column-start: span 2;
+      width: 100%;
+      margin-top: 0.8rem;
+      border-collapse: collapse;
+
+      tr {
+        border-top: 1px solid $item-border-color;
+      }
+
+      td {
+        padding: 0.8rem 0;
+
+        &.amount {
+          text-align: right;
+        }
+      }
+
+      @include media-max(small) {
+        td.date { display: none; }
+      }
+    }
+  }
+}
