@@ -48,23 +48,27 @@
   </div>
 
   <div id="content">
-    <section id="expenses-unconfirmed">
-      <header>
-        <h2>Proposed Reimbursements</h2>
-      </header>
-      <div class="content">
-        <ReimbursementList @items={{this.reimbursementsUnconfirmed}} />
-      </div>
-    </section>
+    {{#if this.reimbursementsUnconfirmed}}
+      <section id="expenses-unconfirmed">
+        <header>
+          <h2>Proposed Reimbursements</h2>
+        </header>
+        <div class="content">
+          <ReimbursementList @items={{this.reimbursementsUnconfirmed}} />
+        </div>
+      </section>
+    {{/if}}
 
-    <section id="expenses-confirmed">
-      <header>
-        <h2>Confirmed Expenses</h2>
-      </header>
-      <div class="content">
-        <ReimbursementList @items={{this.reimbursementsConfirmed}} />
-      </div>
-    </section>
+    {{#if this.reimbursementsConfirmed}}
+      <section id="expenses-confirmed">
+        <header>
+          <h2>Confirmed Expenses</h2>
+        </header>
+        <div class="content">
+          <ReimbursementList @items={{this.reimbursementsConfirmed}} />
+        </div>
+      </section>
+    {{/if}}
   </div>
 
   <div id="empty">
