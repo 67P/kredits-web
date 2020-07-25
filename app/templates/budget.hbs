@@ -50,8 +50,11 @@
   <div id="content">
     {{#if this.reimbursementsUnconfirmed}}
       <section id="expenses-unconfirmed">
-        <header>
+        <header class="with-nav">
           <h2>Proposed Reimbursements</h2>
+          <nav>
+            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+          </nav>
         </header>
         <div class="content">
           <ReimbursementList @items={{this.reimbursementsUnconfirmed}} />
@@ -61,8 +64,11 @@
 
     {{#if this.reimbursementsConfirmed}}
       <section id="expenses-confirmed">
-        <header>
+        <header class="with-nav">
           <h2>Confirmed Expenses</h2>
+          <nav>
+            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+          </nav>
         </header>
         <div class="content">
           <ReimbursementList @items={{this.reimbursementsConfirmed}} />

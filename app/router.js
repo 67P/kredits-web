@@ -31,5 +31,11 @@ Router.map(function() {
   });
   this.route('budget', function() {
     this.route('expenses');
+
+    this.route('reimbursements', function() {});
+  });
+
+  this.route('reimbursements', function() {
+    this.route('new');
   });
 });
