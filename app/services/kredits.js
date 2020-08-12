@@ -4,7 +4,7 @@ import Kredits from 'kredits-contracts';
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
-import { alias, notEmpty } from '@ember/object/computed';
+import { alias, filterBy, notEmpty, sort } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
@@ -38,6 +38,10 @@ export default Service.extend({
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
+
+  contributorsMined: filterBy('contributors', 'id'),
+  contributorsSorting: Object.freeze(['name:asc']),
+  contributorsSorted: sort('contributorsMined', 'contributorsSorting'),
 
   // When data was loaded from cache, we need to fetch updates from the network
   contributorsNeedSync: false,

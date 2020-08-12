@@ -1,13 +1,15 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { and, notEmpty } from '@ember/object/computed';
+import { alias, and, notEmpty } from '@ember/object/computed';
 import { assign } from '@ember/polyfills';
 import moment from 'moment';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
+  kredits: service(),
 
   attributes: null,
-  contributors: Object.freeze([]),
+  contributors: alias('kredits.contributorsSorted'),
 
   isValidContributor: notEmpty('contributorId'),
   isValidKind: notEmpty('kind'),
@@ -72,7 +74,5 @@ export default Component.extend({
         })
         .finally(() => this.set('inProgress', false));
     }
-
   }
-
 });
