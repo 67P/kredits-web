@@ -3,8 +3,8 @@ import { inject as service } from '@ember/service';
 import { schedule } from '@ember/runloop';
 
 export default class ApplicationRoute extends Route {
-
   @service kredits;
+  @service communityFunds;
 
   beforeModel(/* transition */) {
     const kredits = this.kredits;
@@ -30,6 +30,8 @@ export default class ApplicationRoute extends Route {
       schedule('afterRender', this.kredits.syncContributors,
         this.kredits.syncContributors.perform);
     }
-  }
 
+    schedule('afterRender', this.communityFunds.fetchBalances,
+      this.communityFunds.fetchBalances.perform);
+  }
 }

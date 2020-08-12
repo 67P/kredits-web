@@ -50,6 +50,11 @@ module.exports = function(environment) {
 
     tokens: {
       'WBTC': '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
+    },
+
+    gnosisSafe: {
+      txServiceHost: 'https://safe-transaction.mainnet.gnosis.io',
+      address: '0x9CC29b8373FF92B01C1f09F31B5DD862350c167E'
     }
   };
 

@@ -21,7 +21,7 @@ import Contributor from 'kredits-web/models/contributor';
 import Contribution from 'kredits-web/models/contribution';
 import Reimbursement from 'kredits-web/models/reimbursement';
 // Lets us access the model classes dynamically
-const models = { Contributor, Contribution, Reimbursement }
+const models = { Contributor, Contribution, Reimbursement };
 
 export default Service.extend({
 
