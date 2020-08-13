@@ -1,4 +1,4 @@
-<table class="token-balances">
+<table class="token-balances {{if this.loading 'loading'}}">
   <thead>
     <tr>
       <th>Token</th>
@@ -7,15 +7,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th>ETH</th>
-      <td class="amount">{{fmt-crypto-currency this.communityFunds.balanceETH.balance 'ETH'}}</td>
-      <td class="fiat-amount">{{this.communityFunds.balanceETH.balanceUsd}} USD</td>
-    </tr>
-    <tr>
-      <th>WBTC</th>
-      <td class="amount">{{fmt-crypto-currency this.communityFunds.balanceWBTC.balance 'WBTC'}}</td>
-      <td class="fiat-amount">{{this.communityFunds.balanceWBTC.balanceUsd}} USD</td>
-    </tr>
+    {{#each this.balances as |balance|}}
+      <tr>
+        <th>{{balance.token.symbol}}</th>
+        <td class="amount">{{fmt-crypto-currency balance.balance balance.token.symbol}}</td>
+        <td class="fiat-amount">{{balance.balanceUsd}} USD</td>
+      </tr>
+    {{/each}}
   </tbody>
 </table>

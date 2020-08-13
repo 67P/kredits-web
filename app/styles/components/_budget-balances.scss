@@ -1,5 +1,12 @@
 section#funds {
   table.token-balances {
+    opacity: 1;
+    transition: opacity 0.3s linear;
+
+    &.loading {
+      opacity: 0;
+    }
+
     thead {
       display: none;
     }
