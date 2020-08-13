@@ -1,21 +1,21 @@
-<table>
+<table class="token-balances">
   <thead>
     <tr>
-      <td>Token</td>
-      <td>Amount</td>
-      <td>Fiat value</td>
+      <th>Token</th>
+      <th>Amount</th>
+      <th>Fiat value</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>WBTC</td>
-      <td>{{this.communityFunds.balanceWBTC.balance}}</td>
-      <td>{{this.communityFunds.balanceWBTC.balanceUsd}} USD</td>
+      <th>ETH</th>
+      <td class="amount">{{fmt-crypto-currency this.communityFunds.balanceETH.balance 'ETH'}}</td>
+      <td class="fiat-amount">{{this.communityFunds.balanceETH.balanceUsd}} USD</td>
     </tr>
     <tr>
-      <td>ETH</td>
-      <td>{{this.communityFunds.balanceETH.balance}}</td>
-      <td>{{this.communityFunds.balanceETH.balanceUsd}} USD</td>
+      <th>WBTC</th>
+      <td class="amount">{{fmt-crypto-currency this.communityFunds.balanceWBTC.balance 'WBTC'}}</td>
+      <td class="fiat-amount">{{this.communityFunds.balanceWBTC.balanceUsd}} USD</td>
     </tr>
   </tbody>
 </table>

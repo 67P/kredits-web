@@ -1,0 +1,30 @@
+section#funds {
+  table.token-balances {
+    thead {
+      display: none;
+    }
+
+    th, td {
+      font-size: 1.2rem;
+      vertical-align: text-bottom;
+    }
+
+    th {
+      text-align: left;
+      padding-right: 1.2rem;
+    }
+
+    td {
+      text-align: right;
+
+      &.amount {
+        font-size: 1.6rem;
+        padding-right: 1.2rem;
+      }
+
+      &.fiat-amount {
+        color: rgba(255,255,255,0.8);
+      }
+    }
+  }
+}
