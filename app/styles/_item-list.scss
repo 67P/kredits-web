@@ -25,4 +25,11 @@ ul.item-list {
       }
     }
   }
+
+  &.spaced {
+    li {
+      border-top: 1px solid $item-border-color;
+      margin-bottom: 2rem;
+    }
+  }
 }
