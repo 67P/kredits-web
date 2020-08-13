@@ -1,7 +1,6 @@
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { A } from '@ember/array';
-import { timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
 import config from 'kredits-web/config/environment';
 
@@ -25,6 +24,10 @@ export default class CommunityFundsService extends Service {
 
   processBalances (res) {
     for (const balance of res) {
+      // Format and round the approximate USD value
+      const lang = navigator.language || navigator.userLanguage;
+      balance.balanceUsd = Math.round(balance.balanceUsd).toLocaleString(lang);
+
       if (balance.token) {
         // ERC20 token, has all meta data
         this.balances.pushObject(balance);
