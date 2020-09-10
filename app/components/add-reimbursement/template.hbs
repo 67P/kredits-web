@@ -1,0 +1,71 @@
+<p>
+  Total: {{this.total}}<br>
+  Total type: {{this.typeofTotal}}
+</p>
+
+<form onsubmit={{action "submit"}}>
+  <label>
+    <p class="label">Contributor:</p>
+    <p>
+      <select required onchange={{action (mut this.recipientId) value="target.value"}}>
+        <option value="" selected disabled hidden></option>
+        {{#each this.contributors as |contributor|}}
+          <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
+        {{/each}}
+      </select>
+    </p>
+  </label>
+  <label>
+    <p class="label">Total amount (WBTC):</p>
+    <p>
+      {{input type="text"
+              placeholder="500"
+              value=this.total}}
+    </p>
+  </label>
+
+  <h3>Expense items</h3>
+  {{#each this.expenses as |expense|}}
+    <table class="expense-list">
+      <tr>
+        <td class="description">{{expense.title}} &ndash; {{expense.description}}</td>
+        <td class="amount">{{fmt-fiat-currency expense.amount expense.currency}}</td>
+      </tr>
+    </table>
+    <p>TODO: date, url, tags</p>
+  {{/each}}
+
+  <label>
+    <p class="label">Date:</p>
+    <p>
+      {{ember-flatpickr
+        date=this.date
+        defaultDate=this.defaultDate
+        maxDate=this.defaultDate
+        enableTime=true
+        time_24hr=true
+        onChange=(action (mut this.date))
+      }}
+    </p>
+  </label>
+  <label>
+    <p class="label">Description:</p>
+    <p>
+      {{input type="text"
+              value=this.description
+              class=(if this.isValidDescription "valid" "")}}
+    </p>
+  </label>
+  <label>
+    <p class="label">URL (optional):</p>
+    <p>
+      {{input type="text"
+              value=this.url
+              class=(if this.isValidUrl "valid" "")}}
+    </p>
+  </label>
+
+  <p class="actions">
+    {{input type="submit" value="Submit"}}
+  </p>
+</form>
