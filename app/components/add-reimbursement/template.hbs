@@ -1,8 +1,3 @@
-<p>
-  Total: {{this.total}}<br>
-  Total type: {{this.typeofTotal}}
-</p>
-
 <form onsubmit={{action "submit"}}>
   <label>
     <p class="label">Contributor:</p>
@@ -18,13 +13,13 @@
   <label>
     <p class="label">Total amount (WBTC):</p>
     <p>
-      {{input type="text"
-              placeholder="500"
-              value=this.total}}
+      {{input type="text" placeholder="500" value=this.total}}
     </p>
   </label>
 
-  <h3>Expense items</h3>
+  <h3>
+    Expense items
+  </h3>
   {{#each this.expenses as |expense|}}
     <table class="expense-list">
       <tr>
@@ -33,39 +28,71 @@
       </tr>
     </table>
     <p>TODO: date, url, tags</p>
+  {{else}}
+    <p>No line items yet.</p>
   {{/each}}
 
-  <label>
-    <p class="label">Date:</p>
-    <p>
-      {{ember-flatpickr
-        date=this.date
-        defaultDate=this.defaultDate
-        maxDate=this.defaultDate
-        enableTime=true
-        time_24hr=true
-        onChange=(action (mut this.date))
-      }}
-    </p>
-  </label>
-  <label>
-    <p class="label">Description:</p>
-    <p>
-      {{input type="text"
-              value=this.description
-              class=(if this.isValidDescription "valid" "")}}
-    </p>
-  </label>
-  <label>
-    <p class="label">URL (optional):</p>
-    <p>
-      {{input type="text"
-              value=this.url
-              class=(if this.isValidUrl "valid" "")}}
-    </p>
-  </label>
-
   <p class="actions">
-    {{input type="submit" value="Submit"}}
+    {{input type="submit" value="Submit" disabled=this.submitButtonDisabled
+            title="Submit/propose this reimbursement"}}
   </p>
+
+  <h3>
+    New expense item
+  </h3>
+  <form id="add-expense-item">
+    <fieldset class="horizontal">
+      <label>
+        <p class="label">Amount:</p>
+        <p>
+          {{input type="text" placeholder="10" value=this.newExpense.amount}}
+        </p>
+      </label>
+      <label>
+        <p class="label">Currency:</p>
+        <p>
+          <select required onchange={{action (mut this.newExpense.currency) value="target.value"}}>
+            <option value="" selected disabled hidden></option>
+            {{#each this.currencies as |currency|}}
+              <option value={{currency.code}} selected={{eq this.newExpense.currency currency.code}}>{{currency.code}}</option>
+            {{/each}}
+          </select>
+        </p>
+      </label>
+    </fieldset>
+    <label>
+      <p class="label">Date:</p>
+      <p>
+        {{ember-flatpickr
+          date=this.newExpense.date
+          defaultDate=this.newExpense.defaultDate
+          maxDate=this.newExpense.defaultDate
+          enableTime=false
+          onChange=(action (mut this.newExpense.date))}}
+      </p>
+    </label>
+    <label>
+      <p class="label">Title:</p>
+      <p>
+        {{input type="text" value=this.newExpense.title}}
+      </p>
+    </label>
+    <label>
+      <p class="label">Description (optional):</p>
+      <p>
+        {{input type="text" value=this.newExpense.description}}
+      </p>
+    </label>
+    <label>
+      <p class="label">URL (optional):</p>
+      <p>
+        {{input type="text" value=this.newExpense.url}}
+      </p>
+    </label>
+
+    <p class="actions">
+      {{input type="submit" value="Add" disabled=this.addButtonDisabled
+              class="green" title="Add item to reimbursement"}}
+    </p>
+  </form>
 </form>

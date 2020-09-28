@@ -3,10 +3,16 @@ section#add-contribution,
 section#add-contribution,
 section#add-item, // TODO use for all forms for adding data
 section#signup {
-
   form {
+    h3 {
+      font-size: 1.5rem;
+      font-weight: normal;
+      margin-top: 2em;
+      margin-bottom: 1em;
+    }
 
     p {
+      font-size: 1.2rem;
       margin-bottom: 1.5rem;
 
       &.mg-bottom-md {
@@ -14,6 +20,7 @@ section#signup {
       }
 
       &.label {
+        font-size: 1rem;
         margin-bottom: .5rem;
       }
 
@@ -33,6 +40,19 @@ section#signup {
       opacity: 0.7;
     }
 
+    fieldset {
+      border: none;
+
+      &.horizontal {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 2rem;
+
+        label {
+        }
+      }
+    }
+
     input[type=text], select {
       width: 100%;
       padding: 1rem;
@@ -41,6 +61,7 @@ section#signup {
       background-color: rgba(22, 21, 40, 0.3);
       color: #fff;
       font-size: 1.2rem;
+      font-weight: normal;
       transition: border-color 0.1s linear;
 
       &:focus, &.valid {
@@ -111,7 +132,5 @@ section#signup {
         color: #fff;
       }
     }
-
   }
-
 }

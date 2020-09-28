@@ -26,7 +26,6 @@ export default EmberObject.extend({
 
   init () {
     this._super(...arguments);
-    if (isEmpty(this.details)) this.set('details', {});
   },
 
   iso8601Date: computed('date', 'time', function() {
