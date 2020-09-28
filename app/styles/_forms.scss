@@ -13,18 +13,19 @@ section#signup {
 
     p {
       font-size: 1.2rem;
-      margin-bottom: 1.5rem;
 
       &.mg-bottom-md {
         margin-bottom: 2rem;
       }
 
       &.label {
+        margin-bottom: 1.5rem;
         font-size: 1rem;
         margin-bottom: .5rem;
       }
 
       &.actions {
+        margin-bottom: 1.5rem;
         padding-top: 1.5rem;
         text-align: center;
         a {
@@ -38,6 +39,10 @@ section#signup {
       display: block;
       margin-bottom: 0.5rem;
       opacity: 0.7;
+
+      > p {
+        margin-bottom: 1.5rem;
+      }
     }
 
     fieldset {

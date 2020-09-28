@@ -1,7 +1,7 @@
 ul.item-list {
   list-style: none;
 
-  li {
+  > li {
     padding: 0.8rem 1.2rem;
     font-size: 1.2rem;
     background-color: $item-background-color;
@@ -19,7 +19,7 @@ ul.item-list {
   &.loading {
     @include loading-border-top;
 
-    li {
+    > li {
       &:first-of-type {
         border-top: none;
       }
@@ -27,7 +27,7 @@ ul.item-list {
   }
 
   &.spaced {
-    li {
+    > li {
       border-top: 1px solid $item-border-color;
       margin-bottom: 2rem;
     }

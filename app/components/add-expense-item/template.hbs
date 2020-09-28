@@ -1,0 +1,64 @@
+<form id="add-expense-item" onsubmit={{action "submit"}}>
+  <fieldset class="horizontal">
+    <label>
+      <p class="label">Amount:</p>
+      <p>
+        {{input name="expense-amount" type="text"
+                placeholder="10" value=this.amount}}
+      </p>
+    </label>
+    <label>
+      <p class="label">Currency:</p>
+      <p>
+        <select required name="expense-currency"
+                onchange={{action (mut this.currency)
+                value="target.value"}}>
+          <option value="" selected disabled hidden></option>
+          {{#each this.currencies as |currency|}}
+          <option value={{currency.code}} selected={{eq this.currency currency.code}}>{{currency.code}}</option>
+          {{/each}}
+        </select>
+      </p>
+    </label>
+  </fieldset>
+  <label>
+    <p class="label">Date:</p>
+    <p>
+      {{ember-flatpickr
+      date=this.date
+      defaultDate=this.defaultDate
+      maxDate=this.defaultDate
+      enableTime=false
+      onChange=(action (mut this.date))}}
+    </p>
+  </label>
+  <label>
+    <p class="label">Title:</p>
+    <p>
+      {{input name="expense-title" type="text" value=this.title}}
+    </p>
+  </label>
+  <label>
+    <p class="label">Description (optional):</p>
+    <p>
+      {{input name="expense-description" type="text" value=this.description}}
+    </p>
+  </label>
+  <label>
+    <p class="label">URL (optional):</p>
+    <p>
+      {{input name="expense-url" type="text" value=this.url}}
+    </p>
+  </label>
+  <label>
+    <p class="label">Tags (comma-separated, optional):</p>
+    <p>
+      {{input name="expense-tags" type="text" value=this.tags}}
+    </p>
+  </label>
+
+  <p class="actions">
+    {{input type="submit" value="Add" disabled=this.submitButtonDisabled
+    class="green" title="Add item to reimbursement"}}
+  </p>
+</form>

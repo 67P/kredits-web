@@ -1,0 +1,48 @@
+ul.expense-list {
+  grid-column-start: span 2;
+  width: 100%;
+  margin-top: 0.8rem;
+  border-collapse: collapse;
+
+  li {
+    display: grid;
+    grid-template-columns: auto 10rem;
+    grid-row-gap: 0.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid $item-border-color;
+    font-size: 1.2rem;
+
+    &:not(:last-child) {
+      padding-bottom: 1.2rem;
+    }
+  }
+
+  .description {
+    grid-row-start: 1;
+    grid-row-end: 3;
+  }
+
+  .amount {
+    justify-self: end;
+    // font-weight: normal;
+  }
+
+  .actions {
+    justify-self: end;
+  }
+
+  h4 {
+    font-size: 1.2rem;
+    font-weight: normal;
+    line-height: 2rem;
+  }
+
+  p {
+    line-height: 2rem;
+
+    &.description {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+  }
+}

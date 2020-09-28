@@ -5,40 +5,39 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { A } from '@ember/array';
 import Reimbursement from 'kredits-web/models/reimbursement';
-import Expense from 'kredits-web/models/expense';
 
 export default class AddReimbursementComponent extends Component {
   @service kredits;
 
+  @alias('kredits.contributorsSorted') contributors;
+
   @tracked recipientId = null;
   @tracked title = '';
   @tracked total = '0';
-  @tracked expenses = A([]);;
-  @tracked newExpense = Expense.create();
+  @tracked expenses = A([]);
+  @tracked expenseFormVisible = true;
 
-  // TODO fetch/apply exchange rate to (W)BTC
-  currencies = [
-    { code: 'EUR' },
-    { code: 'USD' },
-    { code: 'GBP' }
-  ];
-
-  get typeofTotal() {
-    return typeof this.total;
-  }
-
-  get submitButtonEnabled() {
+  get submitButtonEnabled () {
     return this.expenses.length > 0;
   }
 
-  get submitButtonDisabled() {
+  get submitButtonDisabled () {
     return !this.submitButtonEnabled;
   }
 
-  @alias('kredits.contributorsSorted') contributors;
+  @action
+  showExpenseForm () {
+    this.expenseFormVisible = true;
+  }
 
   @action
-  submit(e) {
+  addExpenseItem (expenseItem) {
+    this.expenses.pushObject(expenseItem);
+    this.expenseFormVisible = false;
+  }
+
+  @action
+  submit (e) {
     e.preventDefault();
     console.log('submit', e);
     // TODO

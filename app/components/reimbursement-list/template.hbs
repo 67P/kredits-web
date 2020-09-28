@@ -11,14 +11,22 @@
           <!-- <img src="/img/bitcoin.svg" class="currency&#45;logo"> -->
           {{sats-to-btc reimbursement.amount}}</span>&#8239;<span class="symbol">WBTC</span>
       </p>
-      <table>
+      <ul class="expense-list">
         {{#each reimbursement.expenses as |expense|}}
-          <tr>
-            <td class="description">{{expense.title}} &ndash; {{expense.description}}</td>
-            <td class="amount">{{fmt-fiat-currency expense.amount expense.currency}}</td>
-          </tr>
+          <li>
+            <div class="description" rowspan="2">
+              <h4>
+                <span class="date">{{expense.date}}:</span>
+                <span class="title">{{expense.title}}</span>
+              </h4>
+              <p class="description">{{expense.description}}</p>
+            </div>
+            <div class="amount">
+              {{fmt-fiat-currency expense.amount expense.currency}}
+            </div>
+          </li>
         {{/each}}
-      </table>
+      </ul>
     </li>
   {{/each}}
 </ul>
