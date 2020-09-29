@@ -18,8 +18,18 @@ export default class AddReimbursementComponent extends Component {
   @tracked expenses = A([]);
   @tracked expenseFormVisible = true;
 
+  get isValidTotal () {
+    const amount = parseFloat(this.total);
+    if (Number.isNaN(amount)) {
+      return false;
+    } else {
+      return amount > 0;
+    }
+  }
+
   get submitButtonEnabled () {
-    return this.expenses.length > 0;
+    return this.isValidTotal &&
+           (this.expenses.length > 0);
   }
 
   get submitButtonDisabled () {
