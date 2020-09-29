@@ -4,7 +4,6 @@ import { action } from '@ember/object';
 import moment from 'moment';
 
 export default class AddExpenseItemComponent extends Component {
-
   // @tracked newExpense = Expense.create();
   @tracked amount = '0';
   @tracked currency = 'EUR';
@@ -31,9 +30,6 @@ export default class AddExpenseItemComponent extends Component {
     return !this.submitButtonEnabled;
   }
 
-  setDefaultValues () {
-  }
-
   @action
   submit (e) {
     e.preventDefault();
@@ -54,6 +50,5 @@ export default class AddExpenseItemComponent extends Component {
     }
 
     this.args.addExpenseItem(expense);
-    this.resetProperties();
   }
 }

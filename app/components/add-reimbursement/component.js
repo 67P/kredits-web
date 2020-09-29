@@ -4,6 +4,7 @@ import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { A } from '@ember/array';
+import { scheduleOnce } from '@ember/runloop';
 import Reimbursement from 'kredits-web/models/reimbursement';
 
 export default class AddReimbursementComponent extends Component {
@@ -25,9 +26,15 @@ export default class AddReimbursementComponent extends Component {
     return !this.submitButtonEnabled;
   }
 
+  scrollToExpenseItemForm () {
+    const anchor = document.getElementById('new-expense-item');
+    anchor.scrollIntoView();
+  }
+
   @action
   showExpenseForm () {
     this.expenseFormVisible = true;
+    scheduleOnce('afterRender', this, this.scrollToExpenseItemForm);
   }
 
   @action
@@ -48,7 +55,6 @@ export default class AddReimbursementComponent extends Component {
   @action
   submit (e) {
     e.preventDefault();
-    console.log('submit', e);
     // TODO
     // amount = parseFloat(this.total)
     // token = "WBTC" (or token address)
