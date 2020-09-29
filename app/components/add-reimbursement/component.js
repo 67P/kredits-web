@@ -37,6 +37,15 @@ export default class AddReimbursementComponent extends Component {
   }
 
   @action
+  removeExpenseItem (expenseItem) {
+    this.expenses.removeObject(expenseItem);
+
+    if (this.expenses.length === 0) {
+      this.expenseFormVisible = true;
+    }
+  }
+
+  @action
   submit (e) {
     e.preventDefault();
     console.log('submit', e);

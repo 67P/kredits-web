@@ -33,7 +33,7 @@
             {{fmt-fiat-currency expense.amount expense.currency}}
           </div>
           <div class="actions">
-            <button class="danger small">delete</button>
+            <button class="danger small" onclick={{fn this.removeExpenseItem expense}}>delete</button>
           </div>
         </li>
       {{/each}}
