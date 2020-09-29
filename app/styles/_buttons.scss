@@ -20,7 +20,7 @@ button, input[type=submit], .button {
     background-color: rgba(22, 21, 40, 0.8);
   }
 
-  &:active, &.active {
+  &:focus, &:active, &.active {
     border-color: $primary-color;
   }
 
@@ -41,7 +41,7 @@ button, input[type=submit], .button {
     &:hover {
       background-color: rgba(40, 21, 21, 0.8);
     }
-    &:active, &.active {
+    &:focus, &:active, &.active {
       border-color: $red;
     }
   }
@@ -54,7 +54,7 @@ button, input[type=submit], .button {
     &:hover {
       background-color: rgba(21, 40, 21, 0.8);
     }
-    &:active, &.active {
+    &:focus, &:active, &.active {
       border-color: $green;
     }
   }
