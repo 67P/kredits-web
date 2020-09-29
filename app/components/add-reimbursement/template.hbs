@@ -1,4 +1,4 @@
-<form onsubmit={{action "submit"}}>
+<form onsubmit={{action "submit"}} novalidate>
   <label>
     <p class="label">Contributor:</p>
     <p>
@@ -13,7 +13,12 @@
   <label>
     <p class="label">Total amount (WBTC):</p>
     <p>
-      {{input type="text" placeholder="500" value=this.total}}
+      {{input type="text"
+              placeholder="500"
+              value=this.total
+              required=true
+              pattern="([0-9]*[.])?[0-9]+"
+              class=this.totalInputClass}}
     </p>
   </label>
 

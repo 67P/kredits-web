@@ -58,7 +58,7 @@ section#signup {
       }
     }
 
-    input[type=text], select {
+    input[type=text], input[type=url], select {
       width: 100%;
       padding: 1rem;
       border: none;
@@ -72,11 +72,14 @@ section#signup {
       &:focus, &.valid {
         background-color: rgba(22, 21, 40, 0.6);
       }
-      &:focus {
+      &:focus :not(:invalid) {
         border-color: $blue;
       }
       &::placeholder {
         color: rgba(238, 238, 238, 0.5);
+      }
+      &.invalid {
+        border-color: $red;
       }
     }
 

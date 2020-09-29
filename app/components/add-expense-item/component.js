@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import moment from 'moment';
+import isValidAmount from 'kredits-web/utils/is-valid-amount';
 
 export default class AddExpenseItemComponent extends Component {
   // @tracked newExpense = Expense.create();
@@ -22,12 +23,41 @@ export default class AddExpenseItemComponent extends Component {
     { code: 'GBP' }
   ];
 
+  get isValidAmount () {
+    return isValidAmount(this.amount);
+  }
+
+  get amountInputClass () {
+    return this.isValidTotal ? 'valid' : '';
+  }
+
   get submitButtonEnabled () {
     return true;
   }
 
   get submitButtonDisabled () {
     return !this.submitButtonEnabled;
+  }
+
+  validateForm () {
+    const formEl = document.querySelector('form#add-expense-item');
+    let validity = true;
+
+    if (!this.isValidAmount) {
+      document.querySelector('input[name=expense-amount]').classList.add('invalid');
+      validity = false;
+    }
+
+    if (!formEl.checkValidity()) {
+      document.querySelectorAll('form#add-expense-item input').forEach(i => {
+        if (!i.validity.valid) {
+          i.classList.add('invalid');
+          validity = false;
+        }
+      })
+    }
+
+    return validity;
   }
 
   @action
@@ -38,17 +68,21 @@ export default class AddExpenseItemComponent extends Component {
       this.date[0] : this.date;
     const [ date ] = dateInput.toISOString().split('T');
 
-    // TODO validate form
-    const expense = {
-      amount: parseFloat(this.amount),
-      currency: this.currency,
-      date: date,
-      title: this.title,
-      description: this.description,
-      url: this.url,
-      tags: this.tags.split(',').map(t => t.trim())
-    }
+    const isValid = this.validateForm();
 
-    this.args.addExpenseItem(expense);
+    if (isValid) {
+      const expense = {
+        amount: parseFloat(this.amount),
+        currency: this.currency,
+        date: date,
+        title: this.title,
+        description: this.description,
+        url: this.url,
+        tags: this.tags.split(',').map(t => t.trim())
+      }
+      this.args.addExpenseItem(expense);
+    } else {
+      return false;
+    }
   }
 }

@@ -6,6 +6,7 @@ import { action } from '@ember/object';
 import { A } from '@ember/array';
 import { scheduleOnce } from '@ember/runloop';
 import Reimbursement from 'kredits-web/models/reimbursement';
+import isValidAmount from 'kredits-web/utils/is-valid-amount';
 
 export default class AddReimbursementComponent extends Component {
   @service kredits;
@@ -19,12 +20,11 @@ export default class AddReimbursementComponent extends Component {
   @tracked expenseFormVisible = true;
 
   get isValidTotal () {
-    const amount = parseFloat(this.total);
-    if (Number.isNaN(amount)) {
-      return false;
-    } else {
-      return amount > 0;
-    }
+    return isValidAmount(this.total);
+  }
+
+  get totalInputClass () {
+    return this.isValidTotal ? 'valid' : '';
   }
 
   get submitButtonEnabled () {

@@ -1,10 +1,15 @@
-<form id="add-expense-item" onsubmit={{action "submit"}}>
+<form id="add-expense-item" onsubmit={{action "submit"}} novalidate>
   <fieldset class="horizontal">
     <label>
       <p class="label">Amount:</p>
       <p>
-        {{input name="expense-amount" type="text"
-                placeholder="10" value=this.amount}}
+        {{input name="expense-amount"
+                type="text"
+                placeholder="10"
+                value=this.amount
+                required=true
+                pattern="([0-9]*[.])?[0-9]+"
+                class=this.amountInputClass}}
       </p>
     </label>
     <label>
@@ -35,7 +40,10 @@
   <label>
     <p class="label">Title:</p>
     <p>
-      {{input name="expense-title" type="text" value=this.title}}
+      {{input name="expense-title"
+              type="text"
+              value=this.title
+              required=true}}
     </p>
   </label>
   <label>
@@ -47,7 +55,7 @@
   <label>
     <p class="label">URL (optional):</p>
     <p>
-      {{input name="expense-url" type="text" value=this.url}}
+      {{input name="expense-url" type="url" value=this.url}}
     </p>
   </label>
   <label>
