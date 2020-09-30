@@ -10,6 +10,7 @@ import isValidAmount from 'kredits-web/utils/is-valid-amount';
 
 export default class AddReimbursementComponent extends Component {
   @service kredits;
+  @service exchangeRates;
 
   @alias('kredits.contributorsSorted') contributors;
 
@@ -18,6 +19,11 @@ export default class AddReimbursementComponent extends Component {
   @tracked total = '0';
   @tracked expenses = A([]);
   @tracked expenseFormVisible = true;
+
+  constructor() {
+    super(...arguments);
+    this.exchangeRates.fetchRates();
+  }
 
   get isValidTotal () {
     return isValidAmount(this.total);

@@ -55,7 +55,9 @@ module.exports = function(environment) {
     gnosisSafe: {
       txServiceHost: 'https://safe-transaction.mainnet.gnosis.io',
       address: '0x9CC29b8373FF92B01C1f09F31B5DD862350c167E'
-    }
+    },
+
+    corsProxy: 'https://cors.5apps.com/?uri='
   };
 
   if (environment === 'development') {
@@ -75,6 +77,8 @@ module.exports = function(environment) {
       protocol: 'http',
       gatewayUrl: 'http://localhost:8080/ipfs'
     };
+
+    ENV.corsProxy = 'https://cors-anywhere.herokuapp.com/';
   }
 
   if (environment === 'test') {
