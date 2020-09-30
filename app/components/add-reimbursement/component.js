@@ -33,6 +33,26 @@ export default class AddReimbursementComponent extends Component {
     return this.isValidTotal ? 'valid' : '';
   }
 
+  get totalEUR () {
+    const expenses = this.expenses.filterBy('currency', 'EUR');
+    if (expenses.length > 0) {
+      return expenses.mapBy('amount')
+                     .reduce((summation, current) => summation + current);
+    } else {
+      return 0;
+    }
+  }
+
+  get totalUSD () {
+    const expenses = this.expenses.filterBy('currency', 'USD');
+    if (expenses.length > 0) {
+      return expenses.mapBy('amount')
+                     .reduce((summation, current) => summation + current);
+    } else {
+      return 0;
+    }
+  }
+
   get submitButtonEnabled () {
     return this.isValidTotal &&
            (this.expenses.length > 0);

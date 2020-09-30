@@ -13,17 +13,37 @@
       </select>
     </p>
   </label>
-  <label>
-    <p class="label">Total amount (WBTC):</p>
-    <p>
-      {{input type="text"
-              placeholder="500"
-              value=this.total
-              required=true
-              pattern="([0-9]*[.])?[0-9]+"
-              class=this.totalInputClass}}
-    </p>
-  </label>
+  <fieldset class="horizontal thirds total-amounts">
+    <label>
+      <p class="label">Total amount (WBTC):</p>
+      <p>
+        {{input type="text"
+                placeholder="0.0015"
+                value=this.total
+                required=true
+                pattern="([0-9]*[.])?[0-9]+"
+                class=this.totalInputClass}}
+      </p>
+    </label>
+    <label>
+      <p class="label">EUR total</p>
+      <p>
+        {{input type="text"
+                name="total-eur"
+                value=this.totalEUR
+                disabled=true}}
+      </p>
+    </label>
+    <label>
+      <p class="label">USD total</p>
+      <p>
+        {{input type="text"
+                name="total-usd"
+                value=this.totalUSD
+                disabled=true}}
+      </p>
+    </label>
+  </fieldset>
 
   <h3>Expense items</h3>
   {{#if this.expenses}}
