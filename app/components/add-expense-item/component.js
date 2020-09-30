@@ -39,6 +39,8 @@ export default class AddExpenseItemComponent extends Component {
 
   validateForm () {
     const formEl = document.querySelector('form#add-expense-item');
+    const inputFields = formEl.querySelectorAll('input');
+    inputFields.forEach(i => i.classList.remove('invalid'));
     let validity = true;
 
     if (!this.isValidAmount) {
@@ -47,7 +49,7 @@ export default class AddExpenseItemComponent extends Component {
     }
 
     if (!formEl.checkValidity()) {
-      document.querySelectorAll('form#add-expense-item input').forEach(i => {
+      inputFields.forEach(i => {
         if (!i.validity.valid) {
           i.classList.add('invalid');
           validity = false;
