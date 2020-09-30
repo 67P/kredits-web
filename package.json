@@ -67,6 +67,7 @@
     "eslint-plugin-ember": "^8.5.2",
     "eslint-plugin-node": "^11.1.0",
     "ethers": "^4.0.47",
+    "fetch-mock": "^9.10.7",
     "kredits-contracts": "github:67P/kredits-contracts#feature/expenses",
     "loader.js": "^4.7.0",
     "localforage": "^1.7.3",
