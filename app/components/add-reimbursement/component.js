@@ -67,6 +67,19 @@ export default class AddReimbursementComponent extends Component {
     anchor.scrollIntoView();
   }
 
+  updateTotalAmountFromFiat() {
+    let btcAmount = parseFloat(this.total);
+
+    if (this.exchangeRates.btceur > 0 && this.totalEUR > 0) {
+      btcAmount += (this.totalEUR / this.exchangeRates.btceur);
+    }
+    if (this.exchangeRates.btcusd > 0 && this.totalUSD > 0) {
+      btcAmount += (this.totalUSD / this.exchangeRates.btcusd);
+    }
+
+    this.total = btcAmount.toFixed(8);
+  }
+
   @action
   showExpenseForm () {
     this.expenseFormVisible = true;
@@ -76,12 +89,14 @@ export default class AddReimbursementComponent extends Component {
   @action
   addExpenseItem (expenseItem) {
     this.expenses.pushObject(expenseItem);
+    this.updateTotalAmountFromFiat();
     this.expenseFormVisible = false;
   }
 
   @action
   removeExpenseItem (expenseItem) {
     this.expenses.removeObject(expenseItem);
+    this.updateTotalAmountFromFiat();
 
     if (this.expenses.length === 0) {
       this.expenseFormVisible = true;

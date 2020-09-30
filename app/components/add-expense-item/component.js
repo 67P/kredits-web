@@ -16,11 +16,9 @@ export default class AddExpenseItemComponent extends Component {
 
   defaultDate = moment().startOf('hour').toDate();
 
-  // TODO fetch/apply exchange rate to (W)BTC
   currencies = [
     { code: 'EUR' },
-    { code: 'USD' },
-    { code: 'GBP' }
+    { code: 'USD' }
   ];
 
   get isValidAmount () {
