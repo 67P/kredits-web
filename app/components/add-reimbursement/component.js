@@ -5,16 +5,17 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { A } from '@ember/array';
 import { scheduleOnce } from '@ember/runloop';
-import Reimbursement from 'kredits-web/models/reimbursement';
 import isValidAmount from 'kredits-web/utils/is-valid-amount';
+import config from 'kredits-web/config/environment';
 
 export default class AddReimbursementComponent extends Component {
+  @service router;
   @service kredits;
   @service exchangeRates;
 
   @alias('kredits.contributorsSorted') contributors;
 
-  @tracked recipientId = null;
+  @tracked contributorId = null;
   @tracked title = '';
   @tracked total = '0';
   @tracked expenses = A([]);
@@ -106,9 +107,30 @@ export default class AddReimbursementComponent extends Component {
   @action
   submit (e) {
     e.preventDefault();
-    // TODO
-    // amount = parseFloat(this.total)
-    // token = "WBTC" (or token address)
-    // title = "Expenses covered by contributor.name"
+    const contributor = this.contributors.findBy('id', this.contributorId);
+
+    const attributes = {
+      amount: parseInt(parseFloat(this.total) * 100000000), // convert to sats
+      token: config.tokens['WBTC'],
+      contributorId: parseInt(this.contributorId),
+      title: `Expenses covered by ${contributor.name}`,
+      description: this.description,
+      url: this.url,
+      expenses: JSON.parse(JSON.stringify((this.expenses)))
+    }
+
+    this.inProgress = true;
+
+    this.kredits.addReimbursement(attributes)
+      .then((/* reimbursement */) => {
+        this.router.transitionTo('budget');
+      })
+      .catch(e => {
+        console.error('Could not add reimbursement:', e);
+        window.alert('Something went wrong. Please check the browser console.')
+      })
+      .finally(() => {
+        this.inProgress = false;
+      });
   }
 }

@@ -1,12 +1,12 @@
 import EmberObject, { computed } from '@ember/object';
-import { isEmpty, isPresent } from '@ember/utils';
+import { isPresent } from '@ember/utils';
 import moment from 'moment';
 
 export default EmberObject.extend({
 
   // Contract
   id: null,
-  contributorId: null,
+  recipientId: null,
   token: null,
   amount: null,
   confirmedAt: null,
@@ -14,7 +14,7 @@ export default EmberObject.extend({
   ipfsHash: null,
 
   // contributor model instance
-  contributor: null,
+  recipient: null,
 
   // TODO contributor who submitted the reimbursement
   // recordedBy: null,
@@ -23,10 +23,6 @@ export default EmberObject.extend({
   expenses: null, // Array of expense objects
 
   pendingTx: null,
-
-  init () {
-    this._super(...arguments);
-  },
 
   iso8601Date: computed('date', 'time', function() {
     return this.time ? `${this.date}T${this.time}` : this.date;

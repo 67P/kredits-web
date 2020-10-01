@@ -577,6 +577,23 @@ export default Service.extend({
     return obj;
   },
 
+  addReimbursement (attributes) {
+    console.debug('[kredits] add reimbursement', attributes);
+
+    return this.kredits.Reimbursement.add(attributes, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] add reimbursement response', data);
+        const reimbursement = Reimbursement.create(processReimbursementData(data));
+        reimbursement.setProperties({
+          contributor: this.contributors.findBy('id', attributes.contributorId),
+          pendingTx: data,
+          confirmedAtBlock: this.currentBlock + 40320
+        });
+        this.reimbursements.pushObject(reimbursement);
+        return reimbursement;
+      });
+  },
+
   //
   // Contract events
   //

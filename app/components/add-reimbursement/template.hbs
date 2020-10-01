@@ -2,7 +2,7 @@
   <label>
     <p class="label">Contributor:</p>
     <p>
-      <select required onchange={{action (mut this.recipientId) value="target.value"}}>
+      <select required onchange={{action (mut this.contributorId) value="target.value"}}>
         <option value="" selected disabled hidden></option>
         {{#each this.contributors as |contributor|}}
           <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
@@ -71,8 +71,13 @@
   {{/if}}
 
   <p class="actions">
-    {{input type="submit" value="Submit" disabled=this.submitButtonDisabled
-            title="Submit/propose this reimbursement"}}
+    {{#if this.inProgress}}
+      {{input type="submit" value="Submitting..." disabled=true
+              title="Submit/propose this reimbursement"}}
+    {{else}}
+      {{input type="submit" value="Submit" disabled=this.submitButtonDisabled
+              title="Submit/propose this reimbursement"}}
+    {{/if}}
   </p>
 
   {{#if this.expenseFormVisible}}

@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import moment from 'moment';
 import isValidAmount from 'kredits-web/utils/is-valid-amount';
+import { isPresent } from '@ember/utils';
 
 export default class AddExpenseItemComponent extends Component {
   // @tracked newExpense = Expense.create();
@@ -69,20 +70,21 @@ export default class AddExpenseItemComponent extends Component {
     const [ date ] = dateInput.toISOString().split('T');
 
     const isValid = this.validateForm();
+    if (!isValid) return false;
 
-    if (isValid) {
-      const expense = {
-        amount: parseFloat(this.amount),
-        currency: this.currency,
-        date: date,
-        title: this.title,
-        description: this.description,
-        url: this.url,
-        tags: this.tags.split(',').map(t => t.trim())
-      }
-      this.args.addExpenseItem(expense);
-    } else {
-      return false;
+    const expense = {
+      amount: parseFloat(this.amount),
+      currency: this.currency,
+      date: date,
+      title: this.title,
+      description: isPresent(this.description) ? this.description : undefined,
+      url: isPresent(this.url) ? this.url : undefined,
     }
+
+    if (isPresent(this.tags)) {
+      expense.tags = this.tags.split(',').map(t => t.trim());
+    }
+
+    this.args.addExpenseItem(expense);
   }
 }
