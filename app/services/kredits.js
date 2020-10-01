@@ -313,7 +313,7 @@ export default Service.extend({
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
         const contribution = Contribution.create(attributes);
         contribution.set('pendingTx', data);
-        contribution.set('confirmedAtBlock', data.blockNumber + 40320);
+        contribution.set('confirmedAtBlock', this.currentBlock + 40320);
         this.contributions.pushObject(contribution);
         return contribution;
       });
