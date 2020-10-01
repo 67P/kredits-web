@@ -6,7 +6,6 @@ import isValidAmount from 'kredits-web/utils/is-valid-amount';
 import { isPresent } from '@ember/utils';
 
 export default class AddExpenseItemComponent extends Component {
-  // @tracked newExpense = Expense.create();
   @tracked amount = '0';
   @tracked currency = 'EUR';
   @tracked date = moment().startOf('hour').toDate();
