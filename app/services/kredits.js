@@ -583,11 +583,11 @@ export default Service.extend({
     return this.kredits.Reimbursement.add(attributes, { gasLimit: 300000 })
       .then(data => {
         console.debug('[kredits] add reimbursement response', data);
-        const reimbursement = Reimbursement.create(processReimbursementData(data));
+        const reimbursement = Reimbursement.create(attributes);
         reimbursement.setProperties({
-          contributor: this.contributors.findBy('id', attributes.contributorId),
+          contributor: this.contributors.findBy('id', attributes.contributorId.toString()),
           pendingTx: data,
-          confirmedAtBlock: this.currentBlock + 40320
+          confirmedAt: this.currentBlock + 40320
         });
         this.reimbursements.pushObject(reimbursement);
         return reimbursement;
