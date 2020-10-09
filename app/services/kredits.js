@@ -214,6 +214,10 @@ export default Service.extend({
                .filter(r => r.confirmedAt <= this.currentBlock);
   }),
 
+  reimbursementsPending: computed('reimbursements.[]', 'pendingTx', function() {
+    return this.reimbursements.filter(r => !r.id);
+  }),
+
   async loadInitialData () {
     const numCachedContributors = await this.browserCache.contributors.length();
     if (numCachedContributors > 0) {
@@ -676,9 +680,8 @@ export default Service.extend({
   async handleReimbursementAdded (id, addedByAccount, amount) {
     console.debug('[kredits] ReimbursementAdded event received', { id, addedByAccount, amount });
 
-    const pendingReimbursement = this.reimbursements.find(r => {
-      return (r.id === null) &&
-             (this.currentUserAccounts.includes(addedByAccount)) &&
+    const pendingReimbursement = this.reimbursementsPending.find(r => {
+      return (this.currentUserAccounts.includes(addedByAccount)) &&
              (r.amount.toString() === amount.toString());
     });
 
