@@ -590,6 +590,12 @@ export default Service.extend({
           confirmedAt: this.currentBlock + 40320
         });
         this.reimbursements.pushObject(reimbursement);
+
+        // Listen to tx mining/execution status
+        data.wait()
+            .then(d => console.debug('[kredits] tx successful', d))
+            .catch(e => console.log('[kredits] tx error', e));
+
         return reimbursement;
       });
   },
