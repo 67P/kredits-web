@@ -107,6 +107,9 @@ export default class AddReimbursementComponent extends Component {
   @action
   submit (e) {
     e.preventDefault();
+    if (!this.kredits.currentUser) { window.alert('You need to connect your Ethereum account first.'); return false }
+    if (!this.kredits.currentUserIsCore) { window.alert('Only core contributors can submit reimbursements.'); return false }
+
     const contributor = this.contributors.findBy('id', this.contributorId);
 
     const attributes = {

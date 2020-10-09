@@ -594,7 +594,10 @@ export default Service.extend({
         // Listen to tx mining/execution status
         data.wait()
             .then(d => console.debug('[kredits] tx successful', d))
-            .catch(e => console.log('[kredits] tx error', e));
+            .catch(e => {
+              window.alert('The transaction failed to execute. Please check the browser console.');
+              console.log('[kredits] tx error', e);
+            });
 
         return reimbursement;
       });
