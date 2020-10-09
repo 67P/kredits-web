@@ -617,6 +617,10 @@ export default Service.extend({
       .on('ContributionAdded', this.handleContributionAdded.bind(this))
       .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
 
+    this.kredits.Reimbursement
+      .on('ReimbursementAdded', this.handleReimbursementAdded.bind(this))
+      .on('ReimbursementVetoed', this.handleReimbursementVetoed.bind(this))
+
     this.kredits.Token
       .on('Transfer', this.handleTransfer.bind(this));
   },
@@ -663,6 +667,41 @@ export default Service.extend({
     if (contribution) {
       contribution.set('vetoed', true);
       contribution.set('pendingTx', null);
+    }
+  },
+
+  //
+  // TODO test when reimbursement txs are successful
+  //
+  async handleReimbursementAdded (id, addedByAccount, amount) {
+    console.debug('[kredits] ReimbursementAdded event received', { id, addedByAccount, amount });
+
+    const pendingReimbursement = this.reimbursements.find(r => {
+      return (r.id === null) &&
+             (this.currentUserAccounts.includes(addedByAccount)) &&
+             (r.amount.toString() === amount.toString());
+    });
+
+    // debugger;
+
+    if (pendingReimbursement) {
+      const data = await this.kredits.Reimbursement.getById(id);
+      this.reimbursements.removeObject(pendingReimbursement);
+      this.loadReimbursementFromData(data);
+    }
+  },
+
+  //
+  // TODO test when reimbursement txs are successful and veto is implemented
+  //
+  handleReimbursementVetoed (id) {
+    console.debug('[kredits] ReimbursementVetoed received for ', id);
+    const reimbursement = this.reimbursements.findBy('id', id);
+    console.debug('[kredits] reimbursement', this.reimbursement);
+
+    if (reimbursement) {
+      reimbursement.set('vetoed', true);
+      reimbursement.set('pendingTx', null);
     }
   },
 
