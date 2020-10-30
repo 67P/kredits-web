@@ -10,24 +10,25 @@ export default class BudgetRoute extends Route {
   async model () {
     if (isPresent(this.kredits.reimbursements) &&
         isEmpty(this.kredits.reimbursementsPending)) {
-      // reimbursements loaded before, no need to sync or load
+      console.debug('[route:budget] Reimbursements loaded before, no need to sync or load');
       return;
-    }
-
-    const numCachedReimbursements = await this.browserCache.reimbursements.length();
-    if (numCachedReimbursements > 0) {
-      await this.kredits.loadObjectsFromCache('Reimbursement');
-      this.kredits.set('reimbursementsNeedSync', true);
     } else {
-      await this.kredits.fetchObjects('Reimbursement', { page: { size: 10 } });
+      const numCachedReimbursements = await this.browserCache.reimbursements.length();
+      if (numCachedReimbursements > 0) {
+        await this.kredits.loadObjectsFromCache('Reimbursement');
+        this.kredits.set('reimbursementsNeedSync', true);
+      } else {
+        await this.kredits.fetchObjects('Reimbursement', { page: { size: 10 } });
+      }
     }
   }
 
   afterModel() {
-    // TODO implement syncReimbursements
-    // if (this.kredits.reimbursementsNeedSync) {
-    //   schedule('afterRender', this.kredits.syncReimbursements,
-    //     this.kredits.syncReimbursements.perform);
-    // }
+    if (this.kredits.reimbursementsNeedSync) {
+      schedule('afterRender', this.kredits.syncReimbursements,
+        this.kredits.syncReimbursements.perform);
+    }
+    schedule('afterRender', this.kredits.fetchMissingReimbursements,
+      this.kredits.fetchMissingReimbursements.perform);
   }
 }

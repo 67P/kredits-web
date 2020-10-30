@@ -1,6 +1,7 @@
 import EmberObject, { computed } from '@ember/object';
-import { isPresent } from '@ember/utils';
 import moment from 'moment';
+import { notEmpty } from '@ember/object/computed';
+import { isPresent } from '@ember/utils';
 
 export default EmberObject.extend({
 
@@ -34,6 +35,10 @@ export default EmberObject.extend({
 
   hasPendingChanges: computed('pendingTx', function() {
     return isPresent(this.pendingTx);
+  }),
+
+  pendingStatus: computed('pendingTx', function() {
+    return isPresent(this.pendingTx) ? 'isPending' : 'notPending';
   }),
 
   serialize () {

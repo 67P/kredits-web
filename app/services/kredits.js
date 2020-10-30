@@ -306,6 +306,7 @@ export default Service.extend({
 
   syncContributors: task(function * () {
     yield this.fetchContributors();
+    this.set('contributorsNeedSync', false);
   }),
 
   addContribution (attributes) {
@@ -372,6 +373,7 @@ export default Service.extend({
   syncContributions: task(function * () {
     yield this.fetchNewContributions.perform();
     yield this.syncUnconfirmedContributions.perform();
+    this.set('contributionsNeedSync', false);
   }).group('contributionTasks'),
 
   fetchNewContributions: task(function * () {
@@ -487,11 +489,14 @@ export default Service.extend({
     const collection = objectClass.toLowerCase()+'s';
     return this.browserCache[collection].iterate((value/*, key , iterationNumber */) => {
       const obj = models[objectClass].create(JSON.parse(value));
+      this.removeObjectFromCollectionIfLoaded(collection, obj.id)
       this[collection].pushObject(obj);
     }).then((/* result */) => {
       console.debug(`[kredits] Loaded ${this[collection].length} ${collection} from cache`);
     });
   },
+
+  syncTaskGroup: taskGroup().enqueue(),
 
   fetchNewObjects: task(function * (objectClass) {
     const collection = objectClass.toLowerCase()+'s';
@@ -513,7 +518,7 @@ export default Service.extend({
 
   fetchMissingObjects: task(function * (objectClass) {
     const collection = objectClass.toLowerCase()+'s';
-    const count = yield this.kredits[objectClass].count();
+    const count = yield this.kredits[objectClass].functions[`${collection}Count`]();
     const allIds = [...Array(count+1).keys()];
     allIds.shift(); // remove first item, which is 0
     const loadedObjects = new Set(this[collection].mapBy('id'));
@@ -530,7 +535,7 @@ export default Service.extend({
         continue;
       } else {
         const data = yield this.kredits[objectClass].getById(id);
-        const o = this[`load${objectClass}fromData`](data);
+        const o = this[`load${objectClass}FromData`](data);
         yield this.browserCache[collection].setItem(o.id.toString(), o.serialize());
         countFetched++;
         if (countFetched % 20 === 0) {
@@ -539,13 +544,14 @@ export default Service.extend({
       }
     }
     console.debug(`[kredits] Cached ${countFetched} past ${collection}`);
-  }).group('syncTaskGroup'),
+  }),
 
   syncUnconfirmedObjects: task(function * (objectClass) {
     const collection = objectClass.toLowerCase()+'s';
-    if (this`${collection}Unconfirmed`.length > 0) {
+    if (this.get(`${collection}Unconfirmed`).length > 0) {
       console.debug(`[kredits] Syncing unconfirmed ${collection}`);
       for (const o of this[`${collection}Unconfirmed`]) {
+        if (isEmpty(o.id)) return;
         const data = yield this.kredits[objectClass].getById(o.id);
         const object = this[`load${objectClass}FromData`](data);
         yield this.browserCache[collection]
@@ -606,6 +612,16 @@ export default Service.extend({
         return reimbursement;
       });
   },
+
+  syncReimbursements: task(function * () {
+    yield this.fetchNewObjects.perform('Reimbursement');
+    yield this.syncUnconfirmedObjects.perform('Reimbursement');
+    this.set('reimbursementsNeedSync', false);
+  }).group('syncTaskGroup'),
+
+  fetchMissingReimbursements: task(function * () {
+    yield this.fetchMissingObjects.perform('Reimbursement');
+  }).group('syncTaskGroup'),
 
   //
   // Contract events
@@ -681,17 +697,16 @@ export default Service.extend({
     console.debug('[kredits] ReimbursementAdded event received', { id, addedByAccount, amount });
 
     const pendingReimbursement = this.reimbursementsPending.find(r => {
-      return (this.currentUserAccounts.includes(addedByAccount)) &&
-             (r.amount.toString() === amount.toString());
+      return r.amount.toString() === amount.toString();
     });
 
-    // debugger;
-
     if (pendingReimbursement) {
-      const data = await this.kredits.Reimbursement.getById(id);
+      console.debug('[kredits] Found a pending reimbursement matching the event. Replacing it with the final record...');
       this.reimbursements.removeObject(pendingReimbursement);
-      this.loadReimbursementFromData(data);
     }
+
+    const data = await this.kredits.Reimbursement.getById(id);
+    this.loadReimbursementFromData(data);
   },
 
   //
