@@ -61,6 +61,11 @@ export default class AddExpenseItemComponent extends Component {
   }
 
   @action
+  updateCurrency(event) {
+    this.currency = event.target.value;
+  }
+
+  @action
   submit (e) {
     e.preventDefault();
 
