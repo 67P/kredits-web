@@ -77,6 +77,9 @@ export default class AddReimbursementComponent extends Component {
     if (this.exchangeRates.btcusd > 0 && this.totalUSD > 0) {
       btcAmount += (this.totalUSD / this.exchangeRates.btcusd);
     }
+    if (this.totalUSD === 0 && this.totalEUR === 0) {
+      btcAmount = 0;
+    }
 
     this.total = btcAmount.toFixed(8);
   }
