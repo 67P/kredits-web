@@ -1,6 +1,5 @@
 import EmberObject, { computed } from '@ember/object';
 import moment from 'moment';
-import { notEmpty } from '@ember/object/computed';
 import { isPresent } from '@ember/utils';
 
 export default EmberObject.extend({
