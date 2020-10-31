@@ -1,4 +1,8 @@
 section#funds {
+  @include media-max(small) {
+    margin-bottom: 2rem;
+  }
+
   table.token-balances {
     opacity: 1;
     transition: opacity 0.3s linear;

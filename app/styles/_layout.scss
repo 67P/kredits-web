@@ -38,6 +38,16 @@ main {
     }
   }
 
+  div#content {
+    section {
+      &:first-of-type {
+        @include media-max(small) {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+
   section {
     .content {
       a {
