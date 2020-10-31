@@ -85,6 +85,11 @@ export default class AddReimbursementComponent extends Component {
   }
 
   @action
+  updateContributor(event) {
+    this.contributorId = event.target.value;
+  }
+
+  @action
   showExpenseForm () {
     this.expenseFormVisible = true;
     scheduleOnce('afterRender', this, this.scrollToExpenseItemForm);

@@ -1,8 +1,8 @@
-<form onsubmit={{action "submit"}} novalidate>
+<form {{on "submit" this.submit}} novalidate>
   <label>
     <p class="label">Contributor:</p>
     <p>
-      <select required onchange={{action (mut this.contributorId) value="target.value"}}>
+      <select required {{on "change" this.updateContributor}}>
         <option value="" selected disabled hidden></option>
         {{#each this.contributors as |contributor|}}
           <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
@@ -14,30 +14,30 @@
     <label>
       <p class="label">Total amount (WBTC):</p>
       <p>
-        {{input type="text"
-                placeholder="0.0015"
-                value=this.total
-                required=true
-                pattern="([0-9]*[.])?[0-9]+"
-                class=this.totalInputClass}}
+        <Input @type="text"
+               @placeholder="0.0015"
+               @value={{this.total}}
+               @required={{true}}
+               @pattern="([0-9]*[.])?[0-9]+"
+               @class={{this.totalInputClass}} />
       </p>
     </label>
     <label>
       <p class="label">EUR total</p>
       <p>
-        {{input type="text"
-                name="total-eur"
-                value=this.totalEUR
-                disabled=true}}
+        <Input @type="text"
+               @name="total-eur"
+               @value={{this.totalEUR}}
+               @disabled={{true}} />
       </p>
     </label>
     <label>
       <p class="label">USD total</p>
       <p>
-        {{input type="text"
-                name="total-usd"
-                value=this.totalUSD
-                disabled=true}}
+        <Input @type="text"
+               @name="total-usd"
+               @value={{this.totalUSD}}
+               @disabled={{true}} />
       </p>
     </label>
   </fieldset>
@@ -58,13 +58,15 @@
             {{fmt-fiat-currency expense.amount expense.currency}}
           </div>
           <div class="actions">
-            <button class="danger small" onclick={{fn this.removeExpenseItem expense}}>delete</button>
+            <button {{on "click" (fn this.removeExpenseItem expense)}}
+              class="danger small" type="button">delete</button>
           </div>
         </li>
       {{/each}}
     </ul>
     <p class="actions">
-      <button onclick={{fn this.showExpenseForm}} class="green small">+ Add another item</button>
+      <button {{on "click" this.showExpenseForm}}
+        class="green small" type="button">+ Add another item</button>
     </p>
   {{else}}
     <p>No line items yet.</p>
@@ -72,11 +74,11 @@
 
   <p class="actions">
     {{#if this.inProgress}}
-      {{input type="submit" value="Submitting..." disabled=true
-              title="Submit/propose this reimbursement"}}
+      <Input @type="submit" @value="Submitting..." @disabled={{true}}
+             @title="Submit/propose this reimbursement" />
     {{else}}
-      {{input type="submit" value="Submit" disabled=this.submitButtonDisabled
-              title="Submit/propose this reimbursement"}}
+      <Input @type="submit" @value="Submit" @disabled={{this.submitButtonDisabled}}
+             @title="Submit/propose this reimbursement" />
     {{/if}}
   </p>
 
