@@ -482,7 +482,6 @@ export default Service.extend({
       await this.browserCache[collection].setItem(o.id, o.serialize());
     }
     console.debug(`[kredits] Cached ${this[collection].length} ${collection} in browser storage`);
-    return Promise.resolve();
   },
 
   async loadObjectsFromCache (objectClass) {
