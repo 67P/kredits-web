@@ -29,14 +29,6 @@ export default class AddExpenseItemComponent extends Component {
     return this.isValidTotal ? 'valid' : '';
   }
 
-  get submitButtonEnabled () {
-    return true;
-  }
-
-  get submitButtonDisabled () {
-    return !this.submitButtonEnabled;
-  }
-
   validateForm () {
     const formEl = document.querySelector('form#add-expense-item');
     const inputFields = formEl.querySelectorAll('input');
