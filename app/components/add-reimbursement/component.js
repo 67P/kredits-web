@@ -15,7 +15,7 @@ export default class AddReimbursementComponent extends Component {
 
   @alias('kredits.contributorsSorted') contributors;
 
-  @tracked contributorId = null;
+  @tracked recipientId = null;
   @tracked title = '';
   @tracked total = '0';
   @tracked expenses = A([]);
@@ -86,7 +86,7 @@ export default class AddReimbursementComponent extends Component {
 
   @action
   updateContributor(event) {
-    this.contributorId = event.target.value;
+    this.recipientId = event.target.value;
   }
 
   @action
@@ -118,12 +118,12 @@ export default class AddReimbursementComponent extends Component {
     if (!this.kredits.currentUser) { window.alert('You need to connect your Ethereum account first.'); return false }
     if (!this.kredits.currentUserIsCore) { window.alert('Only core contributors can submit reimbursements.'); return false }
 
-    const contributor = this.contributors.findBy('id', this.contributorId);
+    const contributor = this.contributors.findBy('id', this.recipientId);
 
     const attributes = {
       amount: parseInt(parseFloat(this.total) * 100000000), // convert to sats
       token: config.tokens['WBTC'],
-      contributorId: parseInt(this.contributorId),
+      recipientId: parseInt(this.recipientId),
       title: `Expenses covered by ${contributor.name}`,
       description: this.description,
       url: this.url,
