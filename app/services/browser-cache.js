@@ -13,7 +13,8 @@ export default class BrowserCacheService extends Service {
     super(...arguments);
     this.stores = {
       contributors:  createStore('contributors'),
-      contributions: createStore('contributions')
+      contributions: createStore('contributions'),
+      reimbursements: createStore('reimbursements')
     }
   }
 
@@ -23,5 +24,9 @@ export default class BrowserCacheService extends Service {
 
   get contributions() {
     return this.stores.contributions;
+  }
+
+  get reimbursements() {
+    return this.stores.reimbursements;
   }
 }

@@ -24,21 +24,12 @@ main section {
 ul.contribution-list {
   clear: both;
   width: 100%;
-  list-style: none;
 
   li {
     display: grid;
     grid-template-columns: auto 5rem 5rem;
     grid-row-gap: 0.5rem;
-    padding: 0.8rem 1.2rem;
-    background-color: rgba(255,255,255,0.1);
-    font-size: 1.2rem;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
     cursor: pointer;
-
-    &:first-of-type {
-      border-top: 1px solid rgba(255,255,255,0.2);
-    }
 
     &.confirmed {
       grid-template-columns: auto 5rem;
@@ -48,10 +39,6 @@ ul.contribution-list {
       grid-template-columns: auto 5rem;
       text-decoration: line-through;
       opacity: 0.6;
-    }
-
-    &.selected {
-      background-color: rgba(255,255,255,0.2);
     }
 
     p {
@@ -111,16 +98,6 @@ ul.contribution-list {
       font-size: 1rem;
       color: $primary-color;
       margin-right: 0.5rem;
-    }
-  }
-
-  &.loading {
-    @include loading-border-top;
-
-    li {
-      &:first-of-type {
-        border-top: none;
-      }
     }
   }
 }

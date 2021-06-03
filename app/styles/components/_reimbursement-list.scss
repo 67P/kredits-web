@@ -1,0 +1,29 @@
+ul.reimbursement-list {
+  width: 100%;
+
+  > li {
+    display: grid;
+    grid-template-columns: auto 12rem;
+    grid-row-gap: 0.5rem;
+    padding-top: 1.6rem;
+
+    .token-amount {
+      text-align: right;
+
+      img {
+        height: 1em;
+        vertical-align: middle;
+        margin-top: -2px;
+      }
+
+      .amount {
+        font-size: 1.5rem;
+      }
+
+      .symbol {
+        font-size: 1rem;
+        padding-left: 0.2rem;
+      }
+    }
+  }
+}

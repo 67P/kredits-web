@@ -49,4 +49,12 @@ module('Unit | Service | kredits', function(hooks) {
     assert.equal(c3.amountUnconfirmed, 5000, 'correct amount unconfirmed');
     assert.equal(c3.amountTotal, 5000, 'correct amount total');
   });
+
+  test('#contributorsSorted', function(assert) {
+    let service = this.owner.lookup('service:kredits');
+    service.set('contributors', contributors);
+
+    assert.ok(service.contributorsSorted instanceof Array, 'is an array');
+    assert.equal(service.contributorsSorted[1].name, 'Manuel', 'sorts by name');
+  });
 });

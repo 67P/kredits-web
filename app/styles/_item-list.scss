@@ -1,0 +1,35 @@
+ul.item-list {
+  list-style: none;
+
+  > li {
+    padding: 0.8rem 1.2rem;
+    font-size: 1.2rem;
+    background-color: $item-background-color;
+    border-bottom: 1px solid $item-border-color;
+
+    &:first-of-type {
+      border-top: 1px solid $item-border-color;
+    }
+
+    &.selected {
+      background-color: $item-highlighted-background-color;
+    }
+  }
+
+  &.loading {
+    @include loading-border-top;
+
+    > li {
+      &:first-of-type {
+        border-top: none;
+      }
+    }
+  }
+
+  &.spaced {
+    > li {
+      border-top: 1px solid $item-border-color;
+      margin-bottom: 2rem;
+    }
+  }
+}

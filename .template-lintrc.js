@@ -5,7 +5,8 @@ module.exports = {
 
   rules: {
     'simple-unless': false,
-    'no-nested-interactive': false
+    'no-nested-interactive': false,
+    'no-html-comments': false
   },
 
   ignore: [

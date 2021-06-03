@@ -4,7 +4,7 @@ import Kredits from 'kredits-contracts';
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
-import { alias, notEmpty } from '@ember/object/computed';
+import { alias, filterBy, notEmpty, sort } from '@ember/object/computed';
 import { isEmpty, isPresent } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
@@ -13,11 +13,15 @@ import { task, taskGroup } from 'ember-concurrency';
 import groupBy from 'kredits-web/utils/group-by';
 import processContributorData from 'kredits-web/utils/process-contributor-data';
 import processContributionData from 'kredits-web/utils/process-contribution-data';
+import processReimbursementData from 'kredits-web/utils/process-reimbursement-data';
 import formatKredits from 'kredits-web/utils/format-kredits';
 
 import config from 'kredits-web/config/environment';
-import Contributor from 'kredits-web/models/contributor'
-import Contribution from 'kredits-web/models/contribution'
+import Contributor from 'kredits-web/models/contributor';
+import Contribution from 'kredits-web/models/contribution';
+import Reimbursement from 'kredits-web/models/reimbursement';
+// Lets us access the model classes dynamically
+const models = { Contributor, Contribution, Reimbursement };
 
 export default Service.extend({
 
@@ -28,64 +32,27 @@ export default Service.extend({
   currentUser: null,
   contributors: null,
   contributions: null,
+  reimbursements: null,
   githubAccessToken: null,
 
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
 
+  contributorsMined: filterBy('contributors', 'id'),
+  contributorsSorting: Object.freeze(['name:asc']),
+  contributorsSorted: sort('contributorsMined', 'contributorsSorting'),
+
   // When data was loaded from cache, we need to fetch updates from the network
   contributorsNeedSync: false,
   contributionsNeedSync: false,
-
-  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions.filter(contribution => {
-      return contribution.confirmedAt > this.currentBlock;
-    });
-  }),
-
-  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
-    return this.contributions
-               .filterBy('vetoed', false)
-               .filter(contribution => {
-                 return contribution.confirmedAt <= this.currentBlock;
-               });
-  }),
-
-  kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
-    const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
-    const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
-    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
-    const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
-
-    const kreditsByContributor = contributionsGrouped.map(c => {
-      const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
-      const contributor = this.contributors.findBy('id', c.value.toString());
-
-      return EmberObject.create({
-        contributor: contributor,
-        amountUnconfirmed: amountUnconfirmed,
-        amountConfirmed: contributor.totalKreditsEarned,
-        amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
-      })
-    });
-
-    contributorsWithOnlyConfirmed.forEach(c => {
-      kreditsByContributor.push(EmberObject.create({
-        contributor: c,
-        amountUnconfirmed: 0,
-        amountConfirmed: c.totalKreditsEarned,
-        amountTotal: c.totalKreditsEarned
-      }));
-    })
-
-    return kreditsByContributor;
-  }),
+  reimbursementsNeedSync: false,
 
   init () {
     this._super(...arguments);
     this.set('contributors', []);
     this.set('contributions', []);
+    this.set('reimbursements', []);
   },
 
   // This is called in the application route's beforeModel(). So it is
@@ -168,6 +135,22 @@ export default Service.extend({
     });
   },
 
+  getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
+    if (isEmpty(this.currentUserAccounts)) {
+      return Promise.resolve();
+    }
+    return this.kredits.Contributor
+      .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
+      .then((id) => {
+        // check if the user is a contributor or not
+        if (id === 0) {
+          return Promise.resolve();
+        } else {
+          return this.kredits.Contributor.getById(id);
+        }
+      });
+  }),
+
   totalSupply: computed(function() {
     return this.kredits.Token.functions.totalSupply().then(total => {
       return formatKredits(total);
@@ -179,10 +162,66 @@ export default Service.extend({
       .then(total => total.toNumber());
   }),
 
+  kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
+    const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
+    const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
+    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
+    const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
+
+    const kreditsByContributor = contributionsGrouped.map(c => {
+      const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
+      const contributor = this.contributors.findBy('id', c.value.toString());
+
+      return EmberObject.create({
+        contributor: contributor,
+        amountUnconfirmed: amountUnconfirmed,
+        amountConfirmed: contributor.totalKreditsEarned,
+        amountTotal: contributor.totalKreditsEarned + amountUnconfirmed
+      })
+    });
+
+    contributorsWithOnlyConfirmed.forEach(c => {
+      kreditsByContributor.push(EmberObject.create({
+        contributor: c,
+        amountUnconfirmed: 0,
+        amountConfirmed: c.totalKreditsEarned,
+        amountTotal: c.totalKreditsEarned
+      }));
+    })
+
+    return kreditsByContributor;
+  }),
+
+  contributionsUnconfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions
+               .filter(c => c.confirmedAt > this.currentBlock);
+  }),
+
+  contributionsConfirmed: computed('contributions.[]', 'currentBlock', function() {
+    return this.contributions
+               .filterBy('vetoed', false)
+               .filter(c => c.confirmedAt <= this.currentBlock);
+  }),
+
+  reimbursementsUnconfirmed: computed('reimbursements.[]', 'currentBlock', function() {
+    return this.reimbursements
+               .filter(r => r.confirmedAt > this.currentBlock);
+  }),
+
+  reimbursementsConfirmed: computed('reimbursements.[]', 'currentBlock', function() {
+    return this.reimbursements
+               .filterBy('vetoed', false)
+               .filter(r => r.confirmedAt <= this.currentBlock);
+  }),
+
+  reimbursementsPending: computed('reimbursements.[]', 'pendingTx', function() {
+    return this.reimbursements.filter(r => !r.id);
+  }),
+
   async loadInitialData () {
     const numCachedContributors = await this.browserCache.contributors.length();
     if (numCachedContributors > 0) {
-      await this.loadContributorsFromCache();
+      await this.loadObjectsFromCache('Contributor');
       this.set('contributorsNeedSync', true);
     } else {
       await this.fetchContributors();
@@ -190,7 +229,7 @@ export default Service.extend({
 
     const numCachedContributions = await this.browserCache.contributions.length();
     if (numCachedContributions > 0) {
-      await this.loadContributionsFromCache();
+      await this.loadObjectsFromCache('Contribution');
       this.set('contributionsNeedSync', true);
     } else {
       await this.fetchContributions({ page: { size: 30 } });
@@ -267,6 +306,7 @@ export default Service.extend({
 
   syncContributors: task(function * () {
     yield this.fetchContributors();
+    this.set('contributorsNeedSync', false);
   }),
 
   addContribution (attributes) {
@@ -278,7 +318,7 @@ export default Service.extend({
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
         const contribution = Contribution.create(attributes);
         contribution.set('pendingTx', data);
-        contribution.set('confirmedAtBlock', data.blockNumber + 40320);
+        contribution.set('confirmedAtBlock', this.currentBlock + 40320);
         this.contributions.pushObject(contribution);
         return contribution;
       });
@@ -333,6 +373,7 @@ export default Service.extend({
   syncContributions: task(function * () {
     yield this.fetchNewContributions.perform();
     yield this.syncUnconfirmedContributions.perform();
+    this.set('contributionsNeedSync', false);
   }).group('contributionTasks'),
 
   fetchNewContributions: task(function * () {
@@ -406,23 +447,185 @@ export default Service.extend({
       });
   },
 
-  getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
-    if (isEmpty(this.currentUserAccounts)) {
-      return Promise.resolve();
-    }
-    return this.kredits.Contributor
-      .functions.getContributorIdByAddress(this.currentUserAccounts.firstObject)
-      .then((id) => {
-        // check if the user is a contributor or not
-        if (id === 0) {
-          return Promise.resolve();
-        } else {
-          return this.kredits.Contributor.getById(id);
-        }
+  //
+  // Generic data handling (for objects that can be vetoed)
+  //
+
+  fetchObjects(objectClass, options = { page: { size: 200 } }) {
+    const objectClassLowerCase = objectClass.toLowerCase();
+    console.debug(`[kredits] Fetching ${objectClassLowerCase}s from the network`);
+    return this.kredits[objectClass].all(options)
+      .then(objects => {
+        return objects.map(data => {
+          const classInstance = this[`load${objectClass}FromData`](data);
+          return classInstance;
+        });
+      })
+      .then(objects => {
+        const cacheWrites = objects.map(o => {
+          return this.browserCache[objectClassLowerCase+'s']
+                     .setItem(o.id.toString(), o.serialize());
+        });
+        return Promise.all(cacheWrites).then(() => {
+          console.debug(`[kredits] Cached ${objects.length} ${objectClassLowerCase+'s'} in browser storage`);
+        });
       });
+  },
+
+  removeObjectFromCollectionIfLoaded (collection, objectId) {
+    const loadedObj = this[collection].findBy('id', objectId);
+    if (loadedObj) { this[collection].removeObject(loadedObj); }
+  },
+
+  async cacheLoadedObjects (collection) {
+    for (const o of this[collection]) {
+      await this.browserCache[collection].setItem(o.id, o.serialize());
+    }
+    console.debug(`[kredits] Cached ${this[collection].length} ${collection} in browser storage`);
+  },
+
+  async loadObjectsFromCache (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    return this.browserCache[collection].iterate((value/*, key , iterationNumber */) => {
+      const obj = models[objectClass].create(JSON.parse(value));
+      this.removeObjectFromCollectionIfLoaded(collection, obj.id)
+      this[collection].pushObject(obj);
+    }).then((/* result */) => {
+      console.debug(`[kredits] Loaded ${this[collection].length} ${collection} from cache`);
+    });
+  },
+
+  syncTaskGroup: taskGroup().enqueue(),
+
+  fetchNewObjects: task(function * (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    const count = yield this.kredits[objectClass].functions[`${collection}Count`]();
+    const lastKnownObjectId = Math.max.apply(null, this[collection].mapBy('id'));
+    const toFetch = count - lastKnownObjectId;
+
+    if (toFetch > 0) {
+      console.debug(`[kredits] Fetching ${toFetch} new ${collection}`);
+      for (let id = lastKnownObjectId; id <= count; id++) {
+        const data = yield this.kredits[objectClass].getById(id);
+        const o = this[`load${objectClass}FromData`](data);
+        yield this.browserCache[collection].setItem(o.id.toString(), o.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No new ${collection} to fetch`);
+    }
   }),
 
+  fetchMissingObjects: task(function * (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    const count = yield this.kredits[objectClass].functions[`${collection}Count`]();
+    const allIds = [...Array(count+1).keys()];
+    allIds.shift(); // remove first item, which is 0
+    const loadedObjects = new Set(this[collection].mapBy('id'));
+    const toFetch = allIds.filter(id => !loadedObjects.has(id));
+    if (toFetch.length === 0) {
+      console.debug(`[kredits] No ${collection} left to fetch`);
+      return;
+    }
+    console.debug(`[kredits] Fetching ${toFetch.length} past ${collection}`);
+    let countFetched = 0;
+
+    for (let id = count; id > 0; id--) {
+      if (loadedObjects.has(id)) {
+        continue;
+      } else {
+        const data = yield this.kredits[objectClass].getById(id);
+        const o = this[`load${objectClass}FromData`](data);
+        yield this.browserCache[collection].setItem(o.id.toString(), o.serialize());
+        countFetched++;
+        if (countFetched % 20 === 0) {
+          console.debug(`[kredits] Fetched ${countFetched} more ${collection}`);
+        }
+      }
+    }
+    console.debug(`[kredits] Cached ${countFetched} past ${collection}`);
+  }),
+
+  syncUnconfirmedObjects: task(function * (objectClass) {
+    const collection = objectClass.toLowerCase()+'s';
+    if (this.get(`${collection}Unconfirmed`).length > 0) {
+      console.debug(`[kredits] Syncing unconfirmed ${collection}`);
+      for (const o of this[`${collection}Unconfirmed`]) {
+        if (isEmpty(o.id)) return;
+        const data = yield this.kredits[objectClass].getById(o.id);
+        const object = this[`load${objectClass}FromData`](data);
+        yield this.browserCache[collection]
+                  .setItem(o.id.toString(), object.serialize());
+      }
+    } else {
+      console.debug(`[kredits] No unconfirmed ${collection} to sync`);
+    }
+  }),
+
+  vetoAgainstObject (objectClass, objectId) {
+    console.debug(`[kredits] veto against ${objectClass.toLowerCase()}`, objectId);
+    const collection = objectClass.toLowerCase()+'s';
+    const object = this[collection].findBy('id', objectId);
+
+    return this.kredits[objectClass].functions.veto(objectId, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] veto response', data);
+        object.set('pendingTx', data);
+        return data;
+      });
+  },
+
+  //
+  // Reimbursements
+  //
+
+  loadReimbursementFromData(data) {
+    const obj = Reimbursement.create(processReimbursementData(data));
+    obj.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    this.removeObjectFromCollectionIfLoaded('reimbursements', obj.id);
+    this.reimbursements.pushObject(obj);
+    return obj;
+  },
+
+  addReimbursement (attributes) {
+    console.debug('[kredits] add reimbursement', attributes);
+
+    return this.kredits.Reimbursement.add(attributes, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] add reimbursement response', data);
+        const reimbursement = Reimbursement.create(attributes);
+        reimbursement.setProperties({
+          contributor: this.contributors.findBy('id', attributes.contributorId.toString()),
+          pendingTx: data,
+          confirmedAt: this.currentBlock + 40320
+        });
+        this.reimbursements.pushObject(reimbursement);
+
+        // Listen to tx mining/execution status
+        data.wait()
+            .then(d => console.debug('[kredits] tx successful', d))
+            .catch(e => {
+              window.alert('The transaction failed to execute. Please check the browser console.');
+              console.log('[kredits] tx error', e);
+            });
+
+        return reimbursement;
+      });
+  },
+
+  syncReimbursements: task(function * () {
+    yield this.fetchNewObjects.perform('Reimbursement');
+    yield this.syncUnconfirmedObjects.perform('Reimbursement');
+    this.set('reimbursementsNeedSync', false);
+  }).group('syncTaskGroup'),
+
+  fetchMissingReimbursements: task(function * () {
+    yield this.fetchMissingObjects.perform('Reimbursement');
+  }).group('syncTaskGroup'),
+
+  //
   // Contract events
+  //
+
   addContractEventHandlers () {
     this.kredits.Contributor
       .on('ContributorProfileUpdated', this.handleContributorChange.bind(this))
@@ -432,6 +635,10 @@ export default Service.extend({
     this.kredits.Contribution
       .on('ContributionAdded', this.handleContributionAdded.bind(this))
       .on('ContributionVetoed', this.handleContributionVetoed.bind(this))
+
+    this.kredits.Reimbursement
+      .on('ReimbursementAdded', this.handleReimbursementAdded.bind(this))
+      .on('ReimbursementVetoed', this.handleReimbursementVetoed.bind(this))
 
     this.kredits.Token
       .on('Transfer', this.handleTransfer.bind(this));
@@ -479,6 +686,39 @@ export default Service.extend({
     if (contribution) {
       contribution.set('vetoed', true);
       contribution.set('pendingTx', null);
+    }
+  },
+
+  //
+  // TODO test when reimbursement txs are successful
+  //
+  async handleReimbursementAdded (id, addedByAccount, amount) {
+    console.debug('[kredits] ReimbursementAdded event received', { id, addedByAccount, amount });
+
+    const pendingReimbursement = this.reimbursementsPending.find(r => {
+      return r.amount.toString() === amount.toString();
+    });
+
+    if (pendingReimbursement) {
+      console.debug('[kredits] Found a pending reimbursement matching the event. Replacing it with the final record...');
+      this.reimbursements.removeObject(pendingReimbursement);
+    }
+
+    const data = await this.kredits.Reimbursement.getById(id);
+    this.loadReimbursementFromData(data);
+  },
+
+  //
+  // TODO test when reimbursement txs are successful and veto is implemented
+  //
+  handleReimbursementVetoed (id) {
+    console.debug('[kredits] ReimbursementVetoed received for ', id);
+    const reimbursement = this.reimbursements.findBy('id', id);
+    console.debug('[kredits] reimbursement', this.reimbursement);
+
+    if (reimbursement) {
+      reimbursement.set('vetoed', true);
+      reimbursement.set('pendingTx', null);
     }
   },
 

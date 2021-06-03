@@ -1,21 +1,31 @@
 section#add-contributor,
 section#add-contribution,
+section#add-contribution,
+section#add-item, // TODO use for all forms for adding data
 section#signup {
-
   form {
+    h3 {
+      font-size: 1.5rem;
+      font-weight: normal;
+      margin-top: 2em;
+      margin-bottom: 1em;
+    }
 
     p {
-      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
 
       &.mg-bottom-md {
         margin-bottom: 2rem;
       }
 
       &.label {
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
         margin-bottom: .5rem;
       }
 
       &.actions {
+        margin-bottom: 1.5rem;
         padding-top: 1.5rem;
         text-align: center;
         a {
@@ -29,9 +39,34 @@ section#signup {
       display: block;
       margin-bottom: 0.5rem;
       opacity: 0.7;
+
+      > p {
+        margin-bottom: 1.5rem;
+      }
     }
 
-    input[type=text], select {
+    fieldset {
+      border: none;
+
+      &.horizontal {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 2rem;
+
+        &.thirds {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        &.total-amounts {
+          grid-template-columns: 2fr 1fr 1fr;
+        }
+
+        label {
+        }
+      }
+    }
+
+    input[type=text], input[type=url], select {
       width: 100%;
       padding: 1rem;
       border: none;
@@ -39,16 +74,23 @@ section#signup {
       background-color: rgba(22, 21, 40, 0.3);
       color: #fff;
       font-size: 1.2rem;
+      font-weight: normal;
       transition: border-color 0.1s linear;
 
       &:focus, &.valid {
         background-color: rgba(22, 21, 40, 0.6);
       }
-      &:focus {
+      &:focus :not(:invalid) {
         border-color: $blue;
       }
       &::placeholder {
         color: rgba(238, 238, 238, 0.5);
+      }
+      &.invalid {
+        border-color: $red;
+      }
+      &:disabled {
+        color: rgba(255, 255, 255, 0.6);
       }
     }
 
@@ -109,7 +151,5 @@ section#signup {
         color: #fff;
       }
     }
-
   }
-
 }

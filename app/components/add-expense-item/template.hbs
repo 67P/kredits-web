@@ -1,0 +1,69 @@
+<form id="add-expense-item" {{on "submit" this.submit}} novalidate>
+  <fieldset class="horizontal">
+    <label>
+      <p class="label">Amount:</p>
+      <p>
+        <Input @name="expense-amount"
+               @type="text"
+               @placeholder="10"
+               @value={{this.amount}}
+               @required={{true}}
+               @pattern="([0-9]*[.])?[0-9]+"
+               @class={{this.amountInputClass}} />
+      </p>
+    </label>
+    <label>
+      <p class="label">Currency:</p>
+      <p>
+        <select required name="expense-currency" {{on "change" this.updateCurrency}}>
+          <option value="" selected disabled hidden></option>
+          {{#each this.currencies as |currency|}}
+          <option value={{currency.code}} selected={{eq this.currency currency.code}}>{{currency.code}}</option>
+          {{/each}}
+        </select>
+      </p>
+    </label>
+  </fieldset>
+  <label>
+    <p class="label">Date:</p>
+    <p>
+      <EmberFlatpickr @date={{this.date}}
+                      @defaultDate={{this.defaultDate}}
+                      @maxDate={{this.defaultDate}}
+                      @enableTime={{false}}
+                      @onChange={{fn (mut this.date)}} />
+    </p>
+  </label>
+  <label>
+    <p class="label">Title:</p>
+    <p>
+      <Input @name="expense-title"
+             @type="text"
+             @value={{this.title}}
+             @required={{true}} />
+    </p>
+  </label>
+  <label>
+    <p class="label">Description (optional):</p>
+    <p>
+      <Input @name="expense-description" @type="text" @value={{this.description}} />
+    </p>
+  </label>
+  <label>
+    <p class="label">URL (optional):</p>
+    <p>
+      <Input @name="expense-url" @type="url" @value={{this.url}} />
+    </p>
+  </label>
+  <label>
+    <p class="label">Tags (comma-separated, optional):</p>
+    <p>
+      <Input @name="expense-tags" @type="text" @value={{this.tags}} />
+    </p>
+  </label>
+
+  <p class="actions">
+    <Input @type="submit" @value="Add" @class="green"
+           @title="Add item to reimbursement" />
+  </p>
+</form>

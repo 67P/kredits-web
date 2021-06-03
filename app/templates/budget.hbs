@@ -1,0 +1,63 @@
+<main id="budget">
+
+  <div id="aside">
+    <!-- <section id="main&#45;nav"> -->
+    <!--   <header> -->
+    <!--     <h2>Budget</h2> -->
+    <!--   </header> -->
+    <!--   <div class="content"> -->
+    <!--     <ul> -->
+    <!--       <li> -->
+    <!--         <LinkTo @route="budget.expenses">Expenses</LinkTo> -->
+    <!--       </li> -->
+    <!--       <li> -->
+    <!--         <a href="#">Rewards</a> -->
+    <!--       </li> -->
+    <!--     </ul> -->
+    <!--   </div> -->
+    <!-- </section> -->
+
+    <section id="funds">
+      <header>
+        <h2>Community funds</h2>
+      </header>
+      <div class="content">
+        <BudgetBalances />
+      </div>
+    </section>
+  </div>
+
+  <div id="content">
+    {{#if this.reimbursementsUnconfirmed}}
+      <section id="expenses-unconfirmed">
+        <header class="with-nav">
+          <h2>Proposed Reimbursements</h2>
+          <nav>
+            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+          </nav>
+        </header>
+        <div class="content">
+          <ReimbursementList @items={{this.reimbursementsUnconfirmed}} />
+        </div>
+      </section>
+    {{/if}}
+
+    {{#if this.reimbursementsConfirmed}}
+      <section id="expenses-confirmed">
+        <header class="with-nav">
+          <h2>Confirmed Expenses</h2>
+          <nav>
+            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+          </nav>
+        </header>
+        <div class="content">
+          <ReimbursementList @items={{this.reimbursementsConfirmed}} />
+        </div>
+      </section>
+    {{/if}}
+  </div>
+
+  <div id="empty">
+  </div>
+
+</main>

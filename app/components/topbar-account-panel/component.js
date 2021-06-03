@@ -34,7 +34,6 @@ export default Component.extend({
         this.set('setupInProgress', true);
         await this.kredits.setup();
         this.set('setupInProgress', false);
-        this.router.transitionTo('dashboard');
       } catch (error) {
         this.set('setupInProgress', false);
         console.log('Opening Ethereum wallet failed:', error);

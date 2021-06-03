@@ -1,0 +1,31 @@
+<ul class="item-list spaced reimbursement-list {{if @loading 'loading'}}">
+  {{#each this.itemsSorted as |reimbursement|}}
+    <li data-reimbursement-id={{reimbursement.id}}
+        class="{{item-status reimbursement}}">
+      <p class="meta">
+        <span class="recipient"><UserAvatar @contributor={{reimbursement.contributor}} /></span>
+        <span class="title">Expenses covered by {{reimbursement.contributor.name}}</span>
+      </p>
+      <p class="token-amount">
+        <span class="amount">
+          {{sats-to-btc reimbursement.amount}}</span>&#8239;<span class="symbol">WBTC</span>
+      </p>
+      <ul class="expense-list">
+        {{#each reimbursement.expenses as |expense|}}
+          <li>
+            <div class="description" rowspan="2">
+              <h4>
+                <span class="date">{{expense.date}}:</span>
+                <span class="title">{{expense.title}}</span>
+              </h4>
+              <p class="description">{{expense.description}}</p>
+            </div>
+            <div class="amount">
+              {{fmt-fiat-currency expense.amount expense.currency}}
+            </div>
+          </li>
+        {{/each}}
+      </ul>
+    </li>
+  {{/each}}
+</ul>

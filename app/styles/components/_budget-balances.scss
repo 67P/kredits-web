@@ -1,0 +1,41 @@
+section#funds {
+  @include media-max(small) {
+    margin-bottom: 2rem;
+  }
+
+  table.token-balances {
+    opacity: 1;
+    transition: opacity 0.3s linear;
+
+    &.loading {
+      opacity: 0;
+    }
+
+    thead {
+      display: none;
+    }
+
+    th, td {
+      font-size: 1.2rem;
+      vertical-align: text-bottom;
+    }
+
+    th {
+      text-align: left;
+      padding-right: 1.2rem;
+    }
+
+    td {
+      text-align: right;
+
+      &.amount {
+        font-size: 1.5rem;
+        padding-right: 1.2rem;
+      }
+
+      &.fiat-amount {
+        color: rgba(255,255,255,0.8);
+      }
+    }
+  }
+}

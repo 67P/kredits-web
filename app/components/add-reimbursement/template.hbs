@@ -1,0 +1,89 @@
+<form {{on "submit" this.submit}} novalidate>
+  <label>
+    <p class="label">Contributor:</p>
+    <p>
+      <select required {{on "change" this.updateContributor}}>
+        <option value="" selected disabled hidden></option>
+        {{#each this.contributors as |contributor|}}
+          <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
+        {{/each}}
+      </select>
+    </p>
+  </label>
+  <fieldset class="horizontal thirds total-amounts">
+    <label>
+      <p class="label">Total amount (WBTC):</p>
+      <p>
+        <Input @type="text"
+               @placeholder="0.0015"
+               @value={{this.total}}
+               @required={{true}}
+               @pattern="([0-9]*[.])?[0-9]+"
+               @class={{this.totalInputClass}} />
+      </p>
+    </label>
+    <label>
+      <p class="label">EUR total</p>
+      <p>
+        <Input @type="text"
+               @name="total-eur"
+               @value={{this.totalEUR}}
+               @disabled={{true}} />
+      </p>
+    </label>
+    <label>
+      <p class="label">USD total</p>
+      <p>
+        <Input @type="text"
+               @name="total-usd"
+               @value={{this.totalUSD}}
+               @disabled={{true}} />
+      </p>
+    </label>
+  </fieldset>
+
+  <h3>Expense items</h3>
+  {{#if this.expenses}}
+    <ul class="expense-list">
+      {{#each this.expenses as |expense|}}
+        <li>
+          <div class="description" rowspan="2">
+            <h4>
+              <span class="date">{{expense.date}}:</span>
+              <span class="title">{{expense.title}}</span>
+            </h4>
+            <p class="description">{{expense.description}}</p>
+          </div>
+          <div class="amount">
+            {{fmt-fiat-currency expense.amount expense.currency}}
+          </div>
+          <div class="actions">
+            <button {{on "click" (fn this.removeExpenseItem expense)}}
+              class="danger small" type="button">delete</button>
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+    <p class="actions">
+      <button {{on "click" this.showExpenseForm}}
+        class="green small" type="button">+ Add another item</button>
+    </p>
+  {{else}}
+    <p>No line items yet.</p>
+  {{/if}}
+
+  <p class="actions">
+    {{#if this.inProgress}}
+      <Input @type="submit" @value="Submitting..." @disabled={{true}}
+             @title="Submit/propose this reimbursement" />
+    {{else}}
+      <Input @type="submit" @value="Submit" @disabled={{this.submitButtonDisabled}}
+             @title="Submit/propose this reimbursement" />
+    {{/if}}
+  </p>
+
+  {{#if this.expenseFormVisible}}
+    <h3 id="new-expense-item">New expense item</h3>
+    <AddExpenseItem @addExpenseItem={{fn this.addExpenseItem}} />
+  {{/if}}
+</form>
