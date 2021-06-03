@@ -575,7 +575,7 @@ export default Service.extend({
 
   loadReimbursementFromData(data) {
     const obj = Reimbursement.create(processReimbursementData(data));
-    obj.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    obj.set('contributor', this.contributors.findBy('id', data.recipientId.toString()));
     this.removeObjectFromCollectionIfLoaded('reimbursements', obj.id);
     this.reimbursements.pushObject(obj);
     return obj;
@@ -589,7 +589,7 @@ export default Service.extend({
         console.debug('[kredits] add reimbursement response', data);
         const reimbursement = Reimbursement.create(attributes);
         reimbursement.setProperties({
-          contributor: this.contributors.findBy('id', attributes.contributorId.toString()),
+          contributor: this.contributors.findBy('id', attributes.recipientId.toString()),
           pendingTx: data,
           confirmedAt: this.currentBlock + 40320
         });

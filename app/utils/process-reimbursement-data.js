@@ -10,7 +10,7 @@ export default function processReimbursementData(data) {
   }
 
   const otherProperties = [
-    'id', 'contributorId', 'token', 'vetoed', 'ipfsHash',
+    'id', 'recipientId', 'token', 'vetoed', 'ipfsHash',
     'expenses', 'pendingTx'
   ];
 
