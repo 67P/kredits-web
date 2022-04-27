@@ -92,17 +92,11 @@ for details.
 With IPFS and Ethereum/ganache running, you can now start this Ember app.
 
   * `npm link kredits-contracts` - link the local `kredits-contracts` package
-  * `npm run start:local` - WEB3_PROVIDER_URL=http://localhost:7545 must be set for local settings
-
-If you restart the devchain your network ID changes. So kredits-contracts does not find the correct DAO address.
-If that is the case the DAO address must be provided as `KREDITS_DAO_ADDRESS` environment variable.
-
-  * `npm run dao:address` in the kredits-contracts repo to find your address
-  * `KREDITS_DAO_ADDRESS=<0xYOURADDRESS> npm run start:local`
+  * `npm run start:local` - WEB3_PROVIDER_URL=http://localhost:8545 must be set for local settings
 
 #### 4. Metamask network
 
-Switch the network in Metamask to "Custom RPC" with the RPC URL `http://localhost:7545`.
+Switch the network in Metamask to "Custom RPC" with the RPC URL `http://localhost:8545`.
 
 #### IPFS
 

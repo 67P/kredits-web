@@ -25,16 +25,6 @@ module.exports = function(environment) {
       // when it is created
     },
 
-    browserify: {
-      tests: true,
-      transform: [
-        ["babelify", {
-          presets: ["es2015"],
-          global: true
-        }]
-      ]
-    },
-
     web3ProviderUrl: 'https://rinkeby.infura.io/v3/d4f788b7a6584f7db2fc3c268d4d09e9',
     web3RequiredNetwork: 'rinkeby',
 
