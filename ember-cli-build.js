@@ -17,12 +17,12 @@ module.exports = function(defaults) {
       webpack: {
         module: {
           rules: [
-            {
-              // inline json files instead of using fs.readFileSync
-              enforce: 'post',
-              test: /kosmos-schemas\/index\.js$/,
-              loader: 'transform-loader?brfs'
-            }
+            // {
+            //   // inline json files instead of using fs.readFileSync
+            //   enforce: 'post',
+            //   test: /kosmos-schemas\/index\.js$/,
+            //   loader: 'transform-loader?brfs'
+            // }
           ]
         },
         node: {

@@ -7,14 +7,12 @@ export default class ApplicationRoute extends Route {
   @service communityFunds;
 
   beforeModel(/* transition */) {
-    const kredits = this.kredits;
-
-    return kredits.setup().then(() => {
-      kredits.kredits.preflightChecks().catch((error) => {
+    return this.kredits.setup().then(() => {
+      this.kredits.kredits.preflightChecks().catch(error => {
         console.error('Kredits preflight check failed!');
         console.error(error);
       });
-    }).catch((error) => {
+    }).catch(error => {
       console.log('Error initializing Kredits', error);
     });
   }
