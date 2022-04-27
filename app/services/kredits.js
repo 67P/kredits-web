@@ -111,28 +111,23 @@ export default Service.extend({
     });
   },
 
-  setup () {
-    return this.getEthProvider().then((providerAndSigner) => {
-      let kredits = new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
-        addresses: { Kernel: config.kreditsKernelAddress },
-        apm: config.kreditsApmDomain,
+  async setup () {
+    const kredits = await this.getEthProvider().then((providerAndSigner) => {
+      return new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
         ipfsConfig: config.ipfs
-      });
-      return kredits
-        .init()
-        .then(async (kredits) => {
-          this.set('kredits', kredits);
-          this.set('currentBlock', await kredits.provider.getBlockNumber());
-
-          if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
-            this.getCurrentUser.then((contributorData) => {
-              this.set('currentUser', contributorData);
-            });
-          }
-
-          return kredits;
-        });
+      }).init();
     });
+
+    this.set('kredits', kredits);
+    this.set('currentBlock', await kredits.provider.getBlockNumber());
+
+    if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
+      this.getCurrentUser.then(contributorData => {
+        this.set('currentUser', contributorData);
+      });
+    }
+
+    return kredits;
   },
 
   getCurrentUser: computed('kredits.provider', 'currentUserAccounts.[]', function() {
