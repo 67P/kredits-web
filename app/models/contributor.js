@@ -22,5 +22,4 @@ export default EmberObject.extend({
   serialize () {
     return JSON.stringify(this);
   }
-
 });

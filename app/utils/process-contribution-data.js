@@ -8,9 +8,8 @@ export default function processContributionData(data) {
   }
 
   const otherProperties = [
-    'id', 'contributorId', 'amount', 'vetoed',
-    'ipfsHash', 'kind', 'description', 'details',
-    'url', 'date', 'time', 'pendingTx'
+    'id', 'contributorId', 'amount', 'vetoed', 'ipfsHash', 'kind',
+    'description', 'details', 'url', 'date', 'time', 'pendingTx'
   ];
 
   otherProperties.forEach(prop => {

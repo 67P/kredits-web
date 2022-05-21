@@ -18,7 +18,7 @@ const data = [
 
 data.forEach(attrs => {
   const c = Model.create(processContributionData(attrs));
-  c.set('contributor', contributors.findBy('id', attrs.contributorId.toString()));
+  c.set('contributor', contributors.findBy('id', attrs.contributorId));
   items.push(c);
 });
 

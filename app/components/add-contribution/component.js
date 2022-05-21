@@ -9,7 +9,15 @@ export default Component.extend({
   kredits: service(),
 
   attributes: null,
-  contributors: alias('kredits.contributorsSorted'),
+
+  contributors: computed('kredits.contributorsSorted.[]', function() {
+    return this.kredits.contributorsSorted.map(c => {
+      return {
+        id: c.id.toString(),
+        name: c.name
+      }
+    })
+  }),
 
   isValidContributor: notEmpty('contributorId'),
   isValidKind: notEmpty('kind'),
@@ -56,6 +64,8 @@ export default Component.extend({
       }
 
       const attributes = this.getProperties(Object.keys(this.attributes));
+
+      attributes.contributorId = parseInt(this.contributorId);
 
       let dateInput = (attributes.date instanceof Array) ?
         attributes.date[0] : attributes.date;

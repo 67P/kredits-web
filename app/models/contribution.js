@@ -3,7 +3,6 @@ import { isEmpty, isPresent } from '@ember/utils';
 import moment from 'moment';
 
 export default EmberObject.extend({
-
   // Contract
   id: null,
   contributorId: null,
@@ -48,5 +47,4 @@ export default EmberObject.extend({
   serialize () {
     return JSON.stringify(this);
   }
-
 });
