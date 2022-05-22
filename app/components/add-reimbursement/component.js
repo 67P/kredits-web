@@ -118,7 +118,7 @@ export default class AddReimbursementComponent extends Component {
     if (!this.kredits.currentUser) { window.alert('You need to connect your Ethereum account first.'); return false }
     if (!this.kredits.currentUserIsCore) { window.alert('Only core contributors can submit reimbursements.'); return false }
 
-    const contributor = this.contributors.findBy('id', this.recipientId);
+    const contributor = this.contributors.findBy('id', parseInt(this.recipientId));
 
     const attributes = {
       amount: parseInt(parseFloat(this.total) * 100000000), // convert to sats
