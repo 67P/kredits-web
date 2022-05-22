@@ -32,10 +32,10 @@ export default class CommunityFundsService extends Service {
         // ERC20 token, has all meta data
         this.balances.pushObject(balance);
       } else {
-        // ETH, missing meta data
+        // RBTC, missing meta data
         this.balances.pushObject({
           ...balance,
-          ...{ token: { name: 'Ether', symbol: 'ETH'} }
+          ...{ token: { name: 'RBTC', symbol: 'RBTC'} }
         });
       }
     }

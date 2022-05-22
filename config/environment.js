@@ -39,7 +39,9 @@ module.exports = function(environment) {
     },
 
     tokens: {
-      'WBTC': '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
+      // TODO this is still the WBTC address, since contracts currently
+      // requires a token address for reimbursements
+      'BTC': '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
     },
 
     gnosisSafe: {
@@ -67,8 +69,6 @@ module.exports = function(environment) {
       protocol: 'http',
       gatewayUrl: 'http://localhost:8080/ipfs'
     };
-
-    ENV.corsProxy = 'https://cors-anywhere.herokuapp.com/';
   }
 
   if (environment === 'test') {
