@@ -160,12 +160,12 @@ export default Service.extend({
   kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
     const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
     const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
-    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value.toString());
+    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value);
     const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
 
     const kreditsByContributor = contributionsGrouped.map(c => {
       const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
-      const contributor = this.contributors.findBy('id', c.value.toString());
+      const contributor = this.contributors.findBy('id', c.value);
 
       return EmberObject.create({
         contributor: contributor,
@@ -275,7 +275,7 @@ export default Service.extend({
       });
   },
 
-  loadContributorFromData(data) {
+  loadContributorFromData (data) {
     const contributor = Contributor.create(processContributorData(data));
     const loadedContributor = this.contributors.findBy('id', contributor.id);
     if (loadedContributor) { this.contributors.removeObject(loadedContributor); }
@@ -285,7 +285,7 @@ export default Service.extend({
 
   async cacheLoadedContributors () {
     for (const c of this.contributors) {
-      await this.browserCache.contributors.setItem(c.id, c.serialize());
+      await this.browserCache.contributors.setItem(c.id.toString(), c.serialize());
     }
     console.debug(`[kredits] Cached ${this.contributors.length} contributors in browser storage`);
     return Promise.resolve();
@@ -340,7 +340,7 @@ export default Service.extend({
 
   loadContributionFromData(data) {
     const contribution = Contribution.create(processContributionData(data));
-    contribution.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    contribution.set('contributor', this.contributors.findBy('id', data.contributorId));
     const loadedContribution = this.contributions.findBy('id', contribution.id);
     if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
     this.contributions.pushObject(contribution);
@@ -349,7 +349,7 @@ export default Service.extend({
 
   async cacheLoadedContributions () {
     for (const c of this.contributions) {
-      await this.browserCache.contributions.setItem(c.id, c.serialize());
+      await this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
     }
     console.debug(`[kredits] Cached ${this.contributions.length} contributions in browser storage`);
     return Promise.resolve();
@@ -575,7 +575,7 @@ export default Service.extend({
 
   loadReimbursementFromData(data) {
     const obj = Reimbursement.create(processReimbursementData(data));
-    obj.set('contributor', this.contributors.findBy('id', data.contributorId.toString()));
+    obj.set('contributor', this.contributors.findBy('id', data.recipientId));
     this.removeObjectFromCollectionIfLoaded('reimbursements', obj.id);
     this.reimbursements.pushObject(obj);
     return obj;
@@ -589,7 +589,7 @@ export default Service.extend({
         console.debug('[kredits] add reimbursement response', data);
         const reimbursement = Reimbursement.create(attributes);
         reimbursement.setProperties({
-          contributor: this.contributors.findBy('id', attributes.contributorId.toString()),
+          contributor: this.contributors.findBy('id', attributes.recipientId),
           pendingTx: data,
           confirmedAt: this.currentBlock + 40320
         });
@@ -645,13 +645,15 @@ export default Service.extend({
     const contributorData = await this.kredits.Contributor.getById(contributorId);
     const newContributor = Contributor.create(contributorData);
 
-    const oldContributor = this.contributors.findBy('id', contributorId.toString());
+    // TODO check for actual differences in the contributor data first
+
+    const oldContributor = this.contributors.findBy('id', contributorId);
     if (oldContributor) {
-      console.debug('[kredits] old contributor', oldContributor);
+      // console.debug('[kredits] cached contributor', oldContributor);
       this.contributors.removeObject(oldContributor);
     }
 
-    console.debug('[kredits] new contributor', newContributor);
+    // console.debug('[kredits] incoming contributor data', newContributor);
     this.contributors.pushObject(newContributor);
   },
 
@@ -660,13 +662,13 @@ export default Service.extend({
 
     const pendingContribution = this.contributions.find(c => {
       return (c.id === null) &&
-             (c.contributorId.toString() === contributorId.toString()) &&
+             (c.contributorId === contributorId) &&
              (c.amount.toString() === amount.toString());
     });
 
     if (pendingContribution) {
       const attributes = await this.kredits.Contribution.getById(id);
-      attributes.contributor = this.contributors.findBy('id', attributes.contributorId.toString());
+      attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
       const newContribution = Contribution.create(attributes);
       this.contributions.addObject(newContribution);
       this.contributions.removeObject(pendingContribution);

@@ -24,10 +24,9 @@ export default Component.extend({
   contributors: sort('kredits.contributors', 'contributorsSorting'),
 
   contributorsActive: computed('contributors.[]', 'contributions', function() {
-    const activeIds = new Set(this.contributions.mapBy('contributorId')
-                                                .map(id => id.toString()));
+    const activeIds = new Set(this.contributions.mapBy('contributorId'));
 
-    return this.contributors.filter(c => activeIds.has(c.id.toString()));
+    return this.contributors.filter(c => activeIds.has(c.id));
   }),
 
   contributionKinds: computed('contributions.[]', function() {
@@ -42,7 +41,7 @@ export default Component.extend({
           c.amount <= 500) { included = false; }
 
       if (isPresent(this.contributorId) &&
-          c.contributorId.toString() !== this.contributorId.toString()) { included = false; }
+          c.contributorId !== parseInt(this.contributorId)) { included = false; }
 
       if (isPresent(this.contributionKind) &&
           c.kind !== this.contributionKind) { included = false; }

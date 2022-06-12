@@ -8,7 +8,7 @@ module('Unit | Utility | process-contributor-data', function() {
 
   test('formats the data correctly', function(assert) {
     // TODO use integers everywhere for IDs
-    assert.ok(typeof result.id === 'string');
+    assert.ok(typeof result.id === 'number');
     assert.ok(typeof result.balance === 'number');
     assert.ok(typeof result.totalKreditsEarned === 'number');
     assert.ok(typeof result.contributionsCount === 'number');

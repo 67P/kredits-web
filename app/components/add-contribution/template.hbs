@@ -4,7 +4,7 @@
     <p>
       <select required onchange={{action (mut this.contributorId) value="target.value"}}>
         <option value="" selected disabled hidden></option>
-        {{#each @contributors as |contributor|}}
+        {{#each this.contributors as |contributor|}}
           <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
         {{/each}}
       </select>
