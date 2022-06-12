@@ -21,15 +21,16 @@ section#funds {
     }
 
     th {
+      font-size: 1.5rem;
       text-align: left;
-      padding-right: 1.2rem;
+      padding-right: 1rem;
     }
 
     td {
       text-align: right;
 
       &.amount {
-        font-size: 1.5rem;
+        font-size: 2rem;
         padding-right: 1.2rem;
       }
 

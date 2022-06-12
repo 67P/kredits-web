@@ -115,14 +115,14 @@ export default class AddReimbursementComponent extends Component {
   @action
   submit (e) {
     e.preventDefault();
-    if (!this.kredits.currentUser) { window.alert('You need to connect your Ethereum account first.'); return false }
+    if (!this.kredits.currentUser) { window.alert('You need to connect your RSK account first.'); return false }
     if (!this.kredits.currentUserIsCore) { window.alert('Only core contributors can submit reimbursements.'); return false }
 
     const contributor = this.contributors.findBy('id', parseInt(this.recipientId));
 
     const attributes = {
       amount: parseInt(parseFloat(this.total) * 100000000), // convert to sats
-      token: config.tokens['WBTC'],
+      token: config.tokens['BTC'],
       recipientId: parseInt(this.recipientId),
       title: `Expenses covered by ${contributor.name}`,
       description: this.description,

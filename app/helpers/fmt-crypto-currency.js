@@ -6,10 +6,10 @@ export default helper(function fmtCryptoCurrency(params/*, hash*/) {
   const code = params[1];
 
   switch(code) {
-    case 'ETH':
+    case 'RBTC':
       fmtAmount = amount / 1000000000000000000;
       break;
-    case 'WBTC':
+    case 'BTC':
       fmtAmount = amount / 100000000;
       break;
   }

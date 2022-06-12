@@ -39,13 +39,12 @@ module.exports = function(environment) {
     },
 
     tokens: {
-      'WBTC': '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
+      // TODO this is still the WBTC address, since contracts currently
+      // requires a token address for reimbursements
+      'BTC': '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
     },
 
-    gnosisSafe: {
-      txServiceHost: 'https://safe-transaction.mainnet.gnosis.io',
-      address: '0x9CC29b8373FF92B01C1f09F31B5DD862350c167E'
-    },
+    btcBalanceAPI: 'https://api.kosmos.org/kredits/onchain_btc_balance',
 
     corsProxy: 'https://cors.5apps.com/?uri='
   };
@@ -67,8 +66,6 @@ module.exports = function(environment) {
       protocol: 'http',
       gatewayUrl: 'http://localhost:8080/ipfs'
     };
-
-    ENV.corsProxy = 'https://cors-anywhere.herokuapp.com/';
   }
 
   if (environment === 'test') {

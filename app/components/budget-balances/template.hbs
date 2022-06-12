@@ -10,8 +10,8 @@
     {{#each this.balances as |balance|}}
       <tr>
         <th>{{balance.token.symbol}}</th>
-        <td class="amount">{{fmt-crypto-currency balance.balance balance.token.symbol}}</td>
-        <td class="fiat-amount">~{{balance.balanceUsd}} USD</td>
+        <td class="amount">{{balance.confirmed_balance}}</td>
+        <td class="fiat-amount">~{{balance.balanceUSD}} USD</td>
       </tr>
     {{/each}}
   </tbody>
