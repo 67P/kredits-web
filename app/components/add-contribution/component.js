@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { alias, and, notEmpty } from '@ember/object/computed';
+import { and, notEmpty } from '@ember/object/computed';
 import { assign } from '@ember/polyfills';
 import moment from 'moment';
 import { inject as service } from '@ember/service';
