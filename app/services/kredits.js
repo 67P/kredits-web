@@ -119,6 +119,7 @@ export default Service.extend({
     });
 
     this.set('kredits', kredits);
+    console.log(kredits.Contributor.contract.address);
     this.set('currentBlock', await kredits.provider.getBlockNumber());
 
     if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
@@ -153,8 +154,7 @@ export default Service.extend({
   }),
 
   totalKreditsEarned: computed(function() {
-    return this.kredits.Contribution.functions.totalKreditsEarned(true)
-      .then(total => total.toNumber());
+    return this.kredits.Contribution.functions.totalKreditsEarned(true);
   }),
 
   kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
