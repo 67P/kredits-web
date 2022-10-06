@@ -119,7 +119,6 @@ export default Service.extend({
     });
 
     this.set('kredits', kredits);
-    console.log(kredits.Contributor.contract.address);
     this.set('currentBlock', await kredits.provider.getBlockNumber());
 
     if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
