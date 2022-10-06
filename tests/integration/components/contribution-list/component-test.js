@@ -19,8 +19,6 @@ module('Integration | Component | contribution-list', function(hooks) {
     let kredits = this.owner.lookup('service:kredits');
     kredits.set('contributors', contributors);
 
-    debugger;
-
     this.set('fixtures', contributions);
     await render(hbs`{{contribution-list contributions=fixtures showQuickFilter=true}}`);
 

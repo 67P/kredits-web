@@ -2,13 +2,21 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
-    ecmaVersion: 2018,
+    requireConfigFile: false,
+    ecmaVersion: 2020,
     sourceType: 'module',
     ecmaFeatures: {
       legacyDecorators: true
-    }
+    },
+    babelOptions: {
+      babelrc: false,
+      configFile: false,
+      plugins: [
+        ['@babel/plugin-proposal-decorators', { legacy: true }],
+      ],
+    },
   },
   globals: {
     console: true
@@ -28,7 +36,13 @@ module.exports = {
     'no-console': 'off',
     'ember/no-jquery': 'error',
     'ember/require-computed-property-dependencies': 'warn',
-    'ember/no-observers': 'warn'
+    'ember/no-computed-properties-in-native-classes': 'warn',
+    'ember/no-observers': 'warn',
+    'ember/no-classic-classes': 'warn',
+    'ember/no-classic-components': 'warn',
+    'ember/no-controller-access-in-routes': 'warn',
+    'ember/no-actions-hash': 'warn',
+    'ember/require-tagless-components': 'warn'
   },
   overrides: [
     // node files
