@@ -82,13 +82,7 @@ module.exports = function(environment) {
 
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
-    ENV.web3RequiredNetwork = null;
-  }
-  if (process.env.KREDITS_DAO_ADDRESS) {
-    ENV.kreditsKernelAddress = process.env.KREDITS_DAO_ADDRESS;
-  }
-  if (process.env.KREDITS_APM_DOMAIN) {
-    ENV.kreditsApmDomain = process.env.KREDITS_APM_DOMAIN;
+    ENV.web3RequiredChainId = null;
   }
 
   return ENV;

@@ -77,7 +77,7 @@ export default Service.extend({
         ethProvider = new ethers.providers.Web3Provider(web3Provider);
 
         const network = await ethProvider.getNetwork();
-        if (isPresent(config.web3RequiredNetwork) &&
+        if (isPresent(config.web3RequiredChainId) &&
             network.chainId !== config.web3RequiredChainId) {
           return instantiateWithoutAccount();
         }
