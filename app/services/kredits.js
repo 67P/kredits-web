@@ -73,13 +73,12 @@ export default Service.extend({
       }
 
       async function instantiateWithAccount (web3Provider, context) {
-        console.debug('[kredits] Using user-provided instance, e.g. from Mist browser or Metamask');
+        console.debug('[kredits] Using user-provided Web3 instance, e.g. from Metamask');
         ethProvider = new ethers.providers.Web3Provider(web3Provider);
 
         const network = await ethProvider.getNetwork();
         if (isPresent(config.web3RequiredNetwork) &&
-            network.name !== config.web3RequiredNetwork) {
-          window.alert(`Please switch your Ethereum wallet to the "${config.web3RequiredNetwork}" network before connecting your account.`);
+            network.chainId !== config.web3RequiredChainId) {
           return instantiateWithoutAccount();
         }
 
@@ -112,11 +111,13 @@ export default Service.extend({
   },
 
   async setup () {
-    const kredits = await this.getEthProvider().then((providerAndSigner) => {
+    const kredits = await this.getEthProvider().then(providerAndSigner => {
       return new Kredits(providerAndSigner.ethProvider, providerAndSigner.ethSigner, {
         ipfsConfig: config.ipfs
-      }).init();
+      });
     });
+
+    await kredits.init();
 
     this.set('kredits', kredits);
     this.set('currentBlock', await kredits.provider.getBlockNumber());
