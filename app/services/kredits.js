@@ -1,5 +1,5 @@
 import ethers from 'ethers';
-import Kredits from 'kredits-contracts';
+import Kredits from '@kredits/contracts';
 
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
