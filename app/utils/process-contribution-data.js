@@ -1,4 +1,4 @@
-export default function processContributionData(data) {
+export default function processContributionData(data, options={}) {
   const processed = {}
 
   if (data.confirmedAtBlock && (typeof data.confirmedAtBlock.toNumber === 'function')) {
@@ -9,12 +9,16 @@ export default function processContributionData(data) {
 
   const otherProperties = [
     'id', 'contributorId', 'amount', 'vetoed', 'ipfsHash', 'kind',
-    'description', 'details', 'url', 'date', 'time', 'pendingTx'
+    'description', 'url', 'date', 'time', 'pendingTx'
   ];
 
   otherProperties.forEach(prop => {
     processed[prop] = data[prop];
   });
+
+  if (options.includeDetails) {
+    processed.details = data.details;
+  }
 
   return processed;
 }
