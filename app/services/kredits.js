@@ -675,14 +675,15 @@ export default Service.extend({
     await this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
   },
 
-  handleContributionVetoed (contributionId) {
+  async handleContributionVetoed (contributionId) {
     console.debug('[kredits] ContributionVetoed event received for ', contributionId);
-    const contribution = this.contributions.findBy('id', contributionId);
-    console.debug('[kredits] contribution', contribution);
+    const c = this.contributions.findBy('id', contributionId);
 
-    if (contribution) {
-      contribution.set('vetoed', true);
-      contribution.set('pendingTx', null);
+    if (c) {
+      console.debug('[kredits] Updating contribution', c);
+      c.set('vetoed', true);
+      c.set('pendingTx', null);
+      await this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
     }
   },
 
