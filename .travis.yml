@@ -1,27 +1,21 @@
 ---
 language: node_js
 node_js:
-  - "10"
+  - "14"
+  - "16"
 
 sudo: false
-dist: xenial
+dist: precise
 
 notifications:
-  email:
-    on_success: never
-    on_failure: always
+  email: false
 
 addons:
   chrome: stable
 
-env:
-  global:
-    # See https://git.io/vdao3 for details.
-    - JOBS=1
+cache:
+  npm: false
 
 branches:
   only:
     - master
-
-script:
-  - npm test

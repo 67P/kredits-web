@@ -3,7 +3,12 @@ import * as localforage from 'localforage';
 import config from 'kredits-web/config/environment';
 
 function createStore(name) {
-  const networkName = config.web3RequiredNetwork || 'custom';
+  let networkName;
+  if (config.web3RequiredNetworkName) {
+    networkName = config.web3RequiredNetworkName.toLocaleLowerCase().replace(' ', '-');
+  } else {
+    networkName = 'custom';
+  }
   return localforage.createInstance({ name: `kredits:${networkName}:${name}` });
 }
 
