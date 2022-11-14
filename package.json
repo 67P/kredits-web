@@ -1,6 +1,6 @@
 {
   "name": "kredits-web",
-  "version": "1.17.0",
+  "version": "2.0.0-beta.1",
   "private": true,
   "description": "Contribution dashboard of the Kosmos project",
   "repository": "https://github.com/67P/kredits-web",
