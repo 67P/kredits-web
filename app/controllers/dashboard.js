@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
 import { computed } from '@ember/object';
-import { alias, not, sort } from '@ember/object/computed';
+import { alias, gt, not, sort } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
 export default Controller.extend({
@@ -32,6 +32,8 @@ export default Controller.extend({
 
   showQuickFilterUnconfirmed: false,
   showQuickFilterConfirmed: false,
+
+  showFullContributionSync: gt('kredits.missingHistoricContributionsCount', 0),
 
   showIntroText: computed('kredits.{hasAccounts,currentUser}', function(){
     return (!this.kredits.hasAccounts || !this.kredits.currentUser);

@@ -48,6 +48,8 @@ export default Service.extend({
   contributionsNeedSync: false,
   reimbursementsNeedSync: false,
 
+  missingHistoricContributionsCount: 0,
+
   init () {
     this._super(...arguments);
     this.set('contributors', []);
@@ -227,10 +229,18 @@ export default Service.extend({
       await this.loadObjectsFromCache('Contribution');
       this.set('contributionsNeedSync', true);
     } else {
-      await this.fetchContributions({ page: { size: 30 } });
+      await this.fetchContributions({ page: { size: 40 } });
     }
 
+    await this.updateMissingHistoricContributionsCount();
+
     return Promise.resolve();
+  },
+
+  async updateMissingHistoricContributionsCount () {
+    const contributionsCount = await this.kredits.Contribution.count;
+    this.set('missingHistoricContributionsCount', contributionsCount - this.contributions.length);
+    console.debug(`Missing ${this.missingHistoricContributionsCount} historic contributions (out of ${contributionsCount} overall)`)
   },
 
   addContributor (attributes) {
@@ -368,11 +378,12 @@ export default Service.extend({
   syncContributions: task(function * () {
     yield this.fetchNewContributions.perform();
     yield this.syncUnconfirmedContributions.perform();
+    yield this.updateMissingHistoricContributionsCount();
     this.set('contributionsNeedSync', false);
   }).group('contributionTasks'),
 
   fetchNewContributions: task(function * () {
-    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const count = yield this.kredits.Contribution.count;
     const lastKnownContributionId = Math.max.apply(null, this.contributions.mapBy('id'));
     const toFetch = count - lastKnownContributionId;
 
@@ -389,7 +400,7 @@ export default Service.extend({
   }),
 
   fetchMissingContributions: task(function * () {
-    const count = yield this.kredits.Contribution.functions.contributionsCount();
+    const count = yield this.kredits.Contribution.count;
     const allIds = [...Array(count+1).keys()];
     allIds.shift(); // remove first item, which is 0
     const loadedContributions = new Set(this.contributions.mapBy('id'));
