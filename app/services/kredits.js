@@ -305,11 +305,11 @@ export default Service.extend({
   }),
 
   addContribution (attributes) {
-    console.debug('[kredits] add contribution', attributes);
+    console.debug('[kredits] Adding contribution', attributes);
 
-    return this.kredits.Contribution.addContribution(attributes, { gasLimit: 300000 })
+    return this.kredits.Contribution.add(attributes, { gasLimit: 300000 })
       .then(data => {
-        console.debug('[kredits] add contribution response', data);
+        console.debug('[kredits] Contribution.add response', data);
         attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
         const contribution = Contribution.create(attributes);
         contribution.set('pendingTx', data);
@@ -667,22 +667,23 @@ export default Service.extend({
     });
 
     if (pendingContribution) {
-      const attributes = await this.kredits.Contribution.getById(id);
-      attributes.contributor = this.contributors.findBy('id', attributes.contributorId);
-      const newContribution = Contribution.create(attributes);
-      this.contributions.addObject(newContribution);
       this.contributions.removeObject(pendingContribution);
     }
+
+    const data = await this.kredits.Contribution.getById(id);
+    const c = this.loadContributionFromData(data);
+    await this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
   },
 
-  handleContributionVetoed (contributionId) {
+  async handleContributionVetoed (contributionId) {
     console.debug('[kredits] ContributionVetoed event received for ', contributionId);
-    const contribution = this.contributions.findBy('id', contributionId);
-    console.debug('[kredits] contribution', contribution);
+    const c = this.contributions.findBy('id', contributionId);
 
-    if (contribution) {
-      contribution.set('vetoed', true);
-      contribution.set('pendingTx', null);
+    if (c) {
+      console.debug('[kredits] Updating contribution', c);
+      c.set('vetoed', true);
+      c.set('pendingTx', null);
+      await this.browserCache.contributions.setItem(c.id.toString(), c.serialize());
     }
   },
 

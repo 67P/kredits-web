@@ -41,7 +41,7 @@ export default Controller.extend({
 
     vetoContribution (contributionId) {
       this.kredits.veto(contributionId).then(transaction => {
-        console.debug('[controllers:index] Veto submitted to Ethereum blockhain: '+transaction.hash);
+        console.debug('[controllers:index] Veto submitted to chain: '+transaction.hash);
       });
     },
 
