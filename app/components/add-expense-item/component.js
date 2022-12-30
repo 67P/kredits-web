@@ -63,7 +63,10 @@ export default class AddExpenseItemComponent extends Component {
 
     let dateInput = (this.date instanceof Array) ?
       this.date[0] : this.date;
-    const [ date ] = dateInput.toISOString().split('T');
+
+    const [ date ] = moment(dateInput).utcOffset(0, true)
+                                      .toISOString()
+                                      .split('T');
 
     const isValid = this.validateForm();
     if (!isValid) return false;
