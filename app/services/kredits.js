@@ -617,6 +617,18 @@ export default Service.extend({
     yield this.fetchMissingObjects.perform('Reimbursement');
   }).group('syncTaskGroup'),
 
+  vetoReimbursement (id) {
+    console.debug('[kredits] veto against reimbursement', id);
+    const reimbursement = this.reimbursements.findBy('id', id);
+
+    return this.kredits.Reimbursement.functions.veto(id, { gasLimit: 300000 })
+      .then(data => {
+        console.debug('[kredits] veto response', data);
+        reimbursement.set('pendingTx', data);
+        return data;
+      });
+  },
+
   //
   // Contract events
   //
@@ -676,7 +688,7 @@ export default Service.extend({
   },
 
   async handleContributionVetoed (contributionId) {
-    console.debug('[kredits] ContributionVetoed event received for ', contributionId);
+    console.debug('[kredits] ContributionVetoed event received for #', contributionId);
     const c = this.contributions.findBy('id', contributionId);
 
     if (c) {
@@ -709,14 +721,15 @@ export default Service.extend({
   //
   // TODO test when reimbursement txs are successful and veto is implemented
   //
-  handleReimbursementVetoed (id) {
-    console.debug('[kredits] ReimbursementVetoed received for ', id);
-    const reimbursement = this.reimbursements.findBy('id', id);
-    console.debug('[kredits] reimbursement', this.reimbursement);
+  async handleReimbursementVetoed (id) {
+    console.debug(`[kredits] ReimbursementVetoed received for #${id}`);
+    const r = this.reimbursements.findBy('id', id);
+    console.debug('[kredits] reimbursement', r);
 
-    if (reimbursement) {
-      reimbursement.set('vetoed', true);
-      reimbursement.set('pendingTx', null);
+    if (r) {
+      r.set('vetoed', true);
+      r.set('pendingTx', null);
+      await this.browserCache.reimbursements.setItem(r.id.toString(), r.serialize());
     }
   },
 

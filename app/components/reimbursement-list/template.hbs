@@ -3,8 +3,12 @@
     <li data-reimbursement-id={{reimbursement.id}}
         class="{{item-status reimbursement}}">
       <p class="meta">
-        <span class="recipient"><UserAvatar @contributor={{reimbursement.contributor}} /></span>
-        <span class="title">Expenses covered by {{reimbursement.contributor.name}}</span>
+        <span class="title">
+          Expenses covered by {{reimbursement.contributor.name}}
+        </span>
+        <span class="recipient">
+          <UserAvatar @contributor={{reimbursement.contributor}} />
+        </span>
       </p>
       <p class="token-amount">
         <span class="amount">
@@ -26,6 +30,13 @@
           </li>
         {{/each}}
       </ul>
+      {{#if this.kredits.currentUserIsCore}}
+        <p>
+          <button {{on "click" (fn this.veto reimbursement.id)}}
+                  disabled={{reimbursement.vetoed}}
+                  class="button small danger">veto</button>
+        </p>
+      {{/if}}
     </li>
   {{/each}}
 </ul>
