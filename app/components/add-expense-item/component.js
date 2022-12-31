@@ -81,7 +81,9 @@ export default class AddExpenseItemComponent extends Component {
     }
 
     if (isPresent(this.tags)) {
-      expense.tags = this.tags.split(',').map(t => t.trim());
+      expense.tags = this.tags.split(',')
+                              .map(t => t.trim())
+                              .filter(t => t.length > 0);
     }
 
     this.args.addExpenseItem(expense);
