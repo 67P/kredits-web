@@ -87,3 +87,9 @@
     <AddExpenseItem @addExpenseItem={{fn this.addExpenseItem}} />
   {{/if}}
 </form>
+<form id="add-expenses-from-file">
+  <h3>Add expense items from file</h3>
+  <input type="file" multiple="false"
+         onchange={{fn this.addExpensesFromFile}}
+         accept="application/json" />
+</form>

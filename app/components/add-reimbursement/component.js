@@ -6,6 +6,7 @@ import { action } from '@ember/object';
 import { A } from '@ember/array';
 import { scheduleOnce } from '@ember/runloop';
 import isValidAmount from 'kredits-web/utils/is-valid-amount';
+import readFileContent from 'kredits-web/utils/read-file-content';
 import config from 'kredits-web/config/environment';
 
 export default class AddReimbursementComponent extends Component {
@@ -85,7 +86,22 @@ export default class AddReimbursementComponent extends Component {
   }
 
   @action
-  updateContributor(event) {
+  async addExpensesFromFile (evt) {
+    const content = await readFileContent(evt.target.files[0]);
+    const expenses = JSON.parse(content);
+
+    if (expenses instanceof Array) {
+      for (const item of expenses) {
+        this.addExpenseItem(item);
+      }
+    } else {
+      console.warn("Expenses in file must be a list of items:");
+      console.debug(content);
+    }
+  }
+
+  @action
+  updateContributor (event) {
     this.recipientId = event.target.value;
   }
 
