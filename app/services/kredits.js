@@ -699,9 +699,6 @@ export default Service.extend({
     }
   },
 
-  //
-  // TODO test when reimbursement txs are successful
-  //
   async handleReimbursementAdded (id, addedByAccount, amount) {
     console.debug('[kredits] ReimbursementAdded event received', { id, addedByAccount, amount });
 
@@ -715,12 +712,10 @@ export default Service.extend({
     }
 
     const data = await this.kredits.Reimbursement.getById(id);
-    this.loadReimbursementFromData(data);
+    const r = this.loadReimbursementFromData(data);
+    this.browserCache.reimbursements.setItem(r.id.toString(), r.serialize());
   },
 
-  //
-  // TODO test when reimbursement txs are successful and veto is implemented
-  //
   async handleReimbursementVetoed (id) {
     console.debug(`[kredits] ReimbursementVetoed received for #${id}`);
     const r = this.reimbursements.findBy('id', id);
@@ -729,7 +724,7 @@ export default Service.extend({
     if (r) {
       r.set('vetoed', true);
       r.set('pendingTx', null);
-      await this.browserCache.reimbursements.setItem(r.id.toString(), r.serialize());
+      this.browserCache.reimbursements.setItem(r.id.toString(), r.serialize());
     }
   },
 
