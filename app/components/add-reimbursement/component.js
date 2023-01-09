@@ -85,6 +85,8 @@ export default class AddReimbursementComponent extends Component {
     this.total = btcAmount.toFixed(8);
   }
 
+  // TODO use ember-concurrency here
+  // https://github.com/67P/kredits-web/pull/209#discussion_r1064234421
   @action
   async addExpensesFromFile (evt) {
     const content = await readFileContent(evt.target.files[0]);
