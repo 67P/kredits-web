@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { alias } from '@ember/object/computed';
 
 export default class BudgetBalancesComponent extends Component {
-  @service communityFunds
+  @service communityFunds;
   @alias('communityFunds.balances') balances;
 
   get loading () {

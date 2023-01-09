@@ -7,6 +7,11 @@ ul.reimbursement-list {
     grid-row-gap: 0.5rem;
     padding-top: 1.6rem;
 
+    &.vetoed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
     .token-amount {
       text-align: right;
 
