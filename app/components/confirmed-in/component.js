@@ -1,20 +1,12 @@
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import moment from 'moment';
 
 export default class ConfirmedInComponent extends Component {
   @service kredits;
 
-  @tracked confirmedAtBlock = null;
-
-  constructor(confirmedAtBlock) {
-    super(...arguments);
-    this.confirmedAtBlock = confirmedAtBlock;
-  }
-
   get confirmedInBlocks () {
-    return this.confirmedAtBlock - this.kredits.currentBlock;
+    return this.args.confirmedAtBlock - this.kredits.currentBlock;
   }
 
   get confirmedInSeconds () {
