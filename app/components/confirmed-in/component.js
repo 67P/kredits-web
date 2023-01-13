@@ -15,8 +15,6 @@ export default class ConfirmedInComponent extends Component {
   }
 
   get confirmedInHumanTime () {
-    console.debug(this.confirmedInBlocks);
-    console.debug(this.confirmedInSeconds);
     return moment.duration(this.confirmedInSeconds, "seconds").humanize();
   }
 }
