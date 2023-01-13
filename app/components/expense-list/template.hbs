@@ -2,7 +2,7 @@
   {{#each @expenses as |expense|}}
     <li class="expense-item">
       <h4>
-        <span class="date">{{expense.date}}:</span>
+        <span class="date">{{fmt-date-localized expense.date}}:</span>
         <span class="title">{{expense.title}}</span>
       </h4>
       <div class="amount">
