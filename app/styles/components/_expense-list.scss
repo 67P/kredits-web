@@ -17,32 +17,30 @@ ul.expense-list {
     }
   }
 
-  .description {
-    grid-row-start: 1;
-    grid-row-end: 3;
-  }
-
-  .amount {
-    justify-self: end;
-    // font-weight: normal;
-  }
-
-  .actions {
-    justify-self: end;
-  }
-
   h4 {
     font-size: 1.2rem;
     font-weight: normal;
     line-height: 2rem;
   }
 
-  p {
-    line-height: 2rem;
+  .amount {
+    justify-self: end;
+  }
 
-    &.description {
-      font-size: 1rem;
-      opacity: 0.7;
+  .description {
+    font-size: 1rem;
+    opacity: 0.7;
+    grid-column-start: span 2;
+  }
+
+  .tags {
+    button {
+      margin-left: 0;
     }
   }
+
+  .actions {
+    justify-self: end;
+  }
+
 }

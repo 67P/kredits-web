@@ -14,22 +14,9 @@
         <span class="amount">
           {{sats-to-btc reimbursement.amount}}</span>&#8239;<span class="symbol">BTC</span>
       </p>
-      <ul class="expense-list">
-        {{#each reimbursement.expenses as |expense|}}
-          <li>
-            <div class="description" rowspan="2">
-              <h4>
-                <span class="date">{{expense.date}}:</span>
-                <span class="title">{{expense.title}}</span>
-              </h4>
-              <p class="description">{{expense.description}}</p>
-            </div>
-            <div class="amount">
-              {{fmt-fiat-currency expense.amount expense.currency}}
-            </div>
-          </li>
-        {{/each}}
-      </ul>
+
+      <ExpenseList @expenses={{reimbursement.expenses}} />
+
       <div class="meta">
         <p class="confirmation-eta">
           <ConfirmedIn @confirmedAtBlock={{reimbursement.confirmedAt}} />
