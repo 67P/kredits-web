@@ -15,7 +15,7 @@ module('Unit | Component | confirmed-in', function(hooks) {
     const kredits = this.owner.lookup('service:kredits');
     kredits.set('currentBlock', 419550);
     let component = createComponent('component:confirmed-in');
-    component.confirmedAtBlock = 420000;
+    component.args.confirmedAtBlock = 420000;
 
     assert.equal(component.confirmedInBlocks, 450);
   })
@@ -24,7 +24,7 @@ module('Unit | Component | confirmed-in', function(hooks) {
     const kredits = this.owner.lookup('service:kredits');
     kredits.set('currentBlock', 419550);
     let component = createComponent('component:confirmed-in');
-    component.confirmedAtBlock = 420000;
+    component.args.confirmedAtBlock = 420000;
 
     assert.equal(component.confirmedInSeconds, 13500);
   })
@@ -33,7 +33,7 @@ module('Unit | Component | confirmed-in', function(hooks) {
     const kredits = this.owner.lookup('service:kredits');
     kredits.set('currentBlock', 419550);
     let component = createComponent('component:confirmed-in');
-    component.confirmedAtBlock = 420000;
+    component.args.confirmedAtBlock = 420000;
 
     assert.equal(component.confirmedInHumanTime, '4 hours');
   })
