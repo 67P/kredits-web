@@ -13,7 +13,9 @@
       </p>
       <p class="tags">
         {{#each expense.tags as |tag|}}
-          <button class="small" role="none">{{tag}}</button>
+          <button class="small yellow" role="none">
+            <IconTag />{{tag}}
+          </button>
         {{/each}}
       </p>
       {{#if this.showDeleteButton}}
