@@ -6,10 +6,10 @@ This is the main Web UI for Kosmos [Kredits](https://wiki.kosmos.org/Kredits).
 It provides an overview of contributors and contributions, as well as the
 community's budget, expenses, and reimbursements.
 
-It is an unhosted Web app, fetching all data from Rootstock and IPFS, and
-caching it in the browser's local database. As such, you can run the app
-directly from the `/release` directory on any Web server that can serve static
-assets.
+It is an unhosted Web app, fetching all data from
+[Rootstock](https://rootstock.io/) and [IPFS](https://ipfs.tech/), and caching
+it in the browser's local database. As such, you can run the app directly from
+the `/release` directory on any Web server that can serve static assets.
 
 ## Development
 
