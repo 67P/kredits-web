@@ -1,9 +1,14 @@
 [![Build Status](https://github.com/67P/kredits-web/actions/workflows/ci.yml/badge.svg)](https://github.com/67P/kredits-web/actions/workflows/ci.yml?query=branch%3Amaster)
 
-# kredits-web
+# Kredits Web
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+This is the main Web UI for Kosmos [Kredits](https://wiki.kosmos.org/Kredits).
+It provides an overview of contributors and contributions, as well as the
+community's budget, expenses, and reimbursements.
+
+It is an unhosted Web app, fetching all data from RSK and IPFS, and caching it
+in the browser's local database. As such, you can run the app directly from the
+`/release` directory on any Web server that can serve static assets.
 
 ## Development
 
