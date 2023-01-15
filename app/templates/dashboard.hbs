@@ -105,6 +105,32 @@
                           @showQuickFilter={{this.showQuickFilterConfirmed}} />
       </div>
     </section>
+
+    {{#if this.showFullContributionSync}}
+    <section id="sync-all-contributions">
+      {{#if this.kredits.fetchMissingContributions.isIdle}}
+        <p style="margin-bottom: 1rem;">
+          There are
+          <strong>{{this.kredits.missingHistoricContributionsCount}}</strong>
+          contributions, which are not currently loaded/displayed.
+        </p>
+        <p>
+          You can fetch all historic data in one go, and have it stored locally in
+          your browser:
+          <button type="button" {{on "click" (perform this.kredits.fetchMissingContributions)}} class="small">
+            fetch all data
+          </button>
+        </p>
+      {{else}}
+        <p style="margin-bottom: 1rem;">
+          Syncing data. Please be patient...
+        </p>
+        <p>
+          (You can leave this website anytime and sync missing data when you come back.)
+        </p>
+      {{/if}}
+    </section>
+    {{/if}}
   </div>
 
   <div id="details">

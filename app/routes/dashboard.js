@@ -11,8 +11,11 @@ export default class DashboardRoute extends Route {
       schedule('afterRender', this.kredits.syncContributions,
         this.kredits.syncContributions.perform);
     }
-    schedule('afterRender', this.kredits.fetchMissingContributions,
-      this.kredits.fetchMissingContributions.perform);
+    // TODO fetch automatically under a certain threshold
+    // The browser might delete cached data and we don't need manual re-syncs
+    // depending on how little is missing
+    // schedule('afterRender', this.kredits.fetchMissingContributions,
+    //   this.kredits.fetchMissingContributions.perform);
   }
 
 }
