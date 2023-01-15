@@ -49,6 +49,12 @@ module.exports = {
 			]
 		},
 		{
+			"moduleId": "app/components/expense-list/template",
+			"only": [
+				"no-invalid-role"
+			]
+		},
+		{
 			"moduleId": "app/components/topbar-account-panel/template",
 			"only": [
 				"no-action"

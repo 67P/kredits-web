@@ -109,10 +109,10 @@
     {{#if this.showFullContributionSync}}
     <section id="sync-all-contributions">
       {{#if this.kredits.fetchMissingContributions.isIdle}}
-        <p style="margin-bottom: 1rem;">
+        <p class="mb-4">
           There are
           <strong>{{this.kredits.missingHistoricContributionsCount}}</strong>
-          contributions, which are not currently loaded/displayed.
+          earlier contributions, which are not currently loaded/displayed.
         </p>
         <p>
           You can fetch all historic data in one go, and have it stored locally in
@@ -122,7 +122,7 @@
           </button>
         </p>
       {{else}}
-        <p style="margin-bottom: 1rem;">
+        <p class="mb-4">
           Syncing data. Please be patient...
         </p>
         <p>
