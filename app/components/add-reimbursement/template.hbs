@@ -46,7 +46,7 @@
   {{#if this.expenses}}
      <ExpenseList @expenses={{this.expenses}}
                   @removeExpenseItem={{this.removeExpenseItem}}
-                  @deletable=yes />
+                  @deletable={{true}} />
 
     <p class="actions">
       <button {{on "click" this.showExpenseForm}}
