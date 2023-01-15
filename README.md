@@ -30,7 +30,7 @@ You will need the following things properly installed on your computer.
 
 ### Building/running for development
 
-* `ember serve` - by default kredits-web connects to the Ethreum Kovan network
+* `npm start` - by default Kredits Web connects to the Rootstock testnet network
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 * Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
 
@@ -54,7 +54,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 ### Building
 
 * `ember build` (development)
-* `ember build --environment production` (production)
+* `npm run build` (production)
 
 ### Deploying
 
