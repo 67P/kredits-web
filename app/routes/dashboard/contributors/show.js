@@ -8,7 +8,13 @@ export default Route.extend({
   contributors: alias('kredits.contributors'),
 
   model (params) {
-    return this.contributors.findBy('id', params.id);
+    const contributor = this.contributors.findBy('id', params.id);
+
+    if (contributor) {
+      return contributor;
+    } else {
+      return this.kredits.fetchContributor(params.id);
+    }
   },
 
   setupController (controller, model) {

@@ -274,6 +274,12 @@ export default Service.extend({
       });
   },
 
+  async fetchContributor (id) {
+    console.debug(`[kredits] Fetching contributor from the network`);
+    return this.kredits.Contributor.getById(id)
+      .then(data => this.loadContributorFromData(data))
+  },
+
   fetchContributors () {
     console.debug(`[kredits] Fetching all contributors from the network`);
     return this.kredits.Contributor.all()
