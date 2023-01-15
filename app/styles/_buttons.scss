@@ -31,32 +31,53 @@ button, input[type=submit], .button {
   &.small {
     font-size: 0.86rem;
     padding: 0.2rem 0.8rem;
+
+    svg {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
   }
 
   &.danger:not(:disabled) {
     color: $red;
     background-color: rgba(40, 21, 21, 0.6);
     border-color: rgba(40, 21, 21, 1);
-
-    &:hover {
-      background-color: rgba(40, 21, 21, 0.8);
-    }
-    &:focus, &:active, &.active {
-      border-color: $red;
-    }
+    &:hover { background-color: rgba(40, 21, 21, 0.8); }
+    &:focus, &:active, &.active { border-color: $red; }
   }
 
   &.green:not(:disabled) {
     color: $green;
     background-color: rgba(21, 40, 21, 0.6);
     border-color: rgba(21, 40, 21, 1);
+    &:hover { background-color: rgba(21, 40, 21, 0.8); }
+    &:focus, &:active, &.active { border-color: $green; }
+  }
 
-    &:hover {
-      background-color: rgba(21, 40, 21, 0.8);
-    }
-    &:focus, &:active, &.active {
-      border-color: $green;
-    }
+  &.pink:not(:disabled) {
+    color: $pink;
+    background-color: rgba(40, 21, 40, 0.6);
+    border-color: rgba(40, 21, 40, 1);
+    &:hover { background-color: rgba(40, 21, 40, 0.8); }
+    &:focus, &:active, &.active { border-color: $pink; }
+  }
+
+  &.purple:not(:disabled) {
+    color: $purple;
+    background-color: rgba(24, 21, 40, 0.6);
+    border-color: rgba(24, 21, 40, 1);
+    &:hover { background-color: rgba(24, 21, 40, 0.8); }
+    &:focus, &:active, &.active { border-color: $purple; }
+  }
+
+  &.yellow:not(:disabled) {
+    color: $yellow;
+    background-color: rgba(40, 40, 21, 0.6);
+    border-color: rgba(40, 40, 21, 1);
+    &:hover { background-color: rgba(40, 40, 21, 0.8); }
+    &:focus, &:active, &.active { border-color: $yellow; }
   }
 
   &.icon {

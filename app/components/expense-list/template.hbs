@@ -1,0 +1,29 @@
+<ul class="expense-list">
+  {{#each @expenses as |expense|}}
+    <li class="expense-item">
+      <h4>
+        <span class="date">{{fmt-date-localized expense.date}}:</span>
+        <span class="title">{{expense.title}}</span>
+      </h4>
+      <div class="amount">
+        {{fmt-fiat-currency expense.amount expense.currency}}
+      </div>
+      <p class="description">
+        {{expense.description}}
+      </p>
+      <p class="tags">
+        {{#each expense.tags as |tag|}}
+          <button class="small yellow" role="none">
+            <IconTag />{{tag}}
+          </button>
+        {{/each}}
+      </p>
+      {{#if this.showDeleteButton}}
+        <div class="actions">
+          <button {{on "click" (fn @removeExpenseItem expense)}}
+            class="danger small" type="button">delete</button>
+        </div>
+      {{/if}}
+    </li>
+  {{/each}}
+</ul>
