@@ -44,26 +44,10 @@
 
   <h3>Expense items</h3>
   {{#if this.expenses}}
-    <ul class="expense-list">
-      {{#each this.expenses as |expense|}}
-        <li>
-          <div class="description" rowspan="2">
-            <h4>
-              <span class="date">{{expense.date}}:</span>
-              <span class="title">{{expense.title}}</span>
-            </h4>
-            <p class="description">{{expense.description}}</p>
-          </div>
-          <div class="amount">
-            {{fmt-fiat-currency expense.amount expense.currency}}
-          </div>
-          <div class="actions">
-            <button {{on "click" (fn this.removeExpenseItem expense)}}
-              class="danger small" type="button">delete</button>
-          </div>
-        </li>
-      {{/each}}
-    </ul>
+     <ExpenseList @expenses={{this.expenses}}
+                  @removeExpenseItem={{this.removeExpenseItem}}
+                  @deletable={{true}} />
+
     <p class="actions">
       <button {{on "click" this.showExpenseForm}}
         class="green small" type="button">+ Add another item</button>

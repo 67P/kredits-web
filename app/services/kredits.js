@@ -118,9 +118,12 @@ export default Service.extend({
     });
 
     await kredits.init();
-
     this.set('kredits', kredits);
-    this.set('currentBlock', await kredits.provider.getBlockNumber());
+    this.set('currentBlock', await this.kredits.provider.getBlockNumber());
+    this.kredits.provider.on('block', blockNumber => {
+      console.debug('[kredits] New block mined:', blockNumber);
+      this.set('currentBlock', blockNumber)
+    });
 
     if (this.currentUserAccounts && this.currentUserAccounts.length > 0) {
       this.getCurrentUser.then(contributorData => {
@@ -738,5 +741,5 @@ export default Service.extend({
     this.contributors
         .findBy('address', to)
         .incrementProperty('balance', value);
-  },
+  }
 });
