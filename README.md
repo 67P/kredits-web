@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/67P/kredits-web.svg?branch=master)](https://travis-ci.org/67P/kredits-web)
+[![Build Status](https://github.com/67P/kredits-web/actions/workflows/ci.yml/badge.svg)](https://github.com/67P/kredits-web/actions/workflows/ci.yml?query=branch%3Amaster)
 
 # kredits-web
 
