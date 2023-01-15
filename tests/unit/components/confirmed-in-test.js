@@ -37,4 +37,13 @@ module('Unit | Component | confirmed-in', function(hooks) {
 
     assert.equal(component.confirmedInHumanTime, '4 hours');
   })
+
+  test('#isConfirmed', function(assert) {
+    const kredits = this.owner.lookup('service:kredits');
+    kredits.set('currentBlock', 430000);
+    let component = createComponent('component:confirmed-in');
+    component.args.confirmedAtBlock = 420000;
+
+    assert.ok(component.isConfirmed);
+  })
 });
