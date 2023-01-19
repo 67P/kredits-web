@@ -9,11 +9,11 @@ export default Controller.extend({
 
   kredits: service(),
 
-  ethAddress: null,
+  accountAddress: null,
   githubAccessToken: alias('kredits.githubAccessToken'),
 
-  isValidEthAccount: computed('ethAddress', function() {
-    return isAddress(this.ethAddress);
+  isValidEthAccount: computed('accountAddress', function() {
+    return isAddress(this.accountAddress);
   }),
 
   signupButtonDisabled: not('isValidEthAccount'),
@@ -23,7 +23,7 @@ export default Controller.extend({
     completeSignup () {
       const payload = {
         accessToken: this.githubAccessToken,
-        account: this.ethAddress
+        account: this.accountAddress
       }
 
       fetch(config.githubSignupUrl, {
@@ -37,7 +37,7 @@ export default Controller.extend({
 
         this.setProperties({
           githubAccessToken: null,
-          ethAddress: null
+          accountAddress: null
         });
 
         this.transitionToRoute('signup.complete');

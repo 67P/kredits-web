@@ -26,7 +26,7 @@ Router.map(function() {
   });
   this.route('signup', function() {
     this.route('github');
-    this.route('eth-account');
+    this.route('account');
     this.route('complete');
   });
   this.route('budget', function() {

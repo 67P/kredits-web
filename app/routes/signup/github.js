@@ -22,7 +22,7 @@ export default Route.extend({
 
     this.kredits.set('githubAccessToken', accessToken);
 
-    this.transitionTo('signup.eth-account');
+    this.transitionTo('signup.account');
   }
 
 });
