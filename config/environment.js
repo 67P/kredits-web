@@ -26,8 +26,8 @@ module.exports = function(environment) {
     },
 
     web3ProviderUrl: 'https://rsk-testnet.kosmos.org',
-    web3RequiredChainId: 31,
-    web3RequiredNetworkName: 'RSK Testnet',
+    web3ChainId: 31,
+    web3NetworkName: 'RSK Testnet',
 
     githubConnectUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/connect/github',
     githubSignupUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/github',
@@ -82,7 +82,12 @@ module.exports = function(environment) {
 
   if (process.env.WEB3_PROVIDER_URL) {
     ENV.web3ProviderUrl = process.env.WEB3_PROVIDER_URL;
-    ENV.web3RequiredChainId = null;
+  }
+  if (process.env.WEB3_CHAIN_ID) {
+    ENV.web3ChainId = parseInt(process.env.WEB3_CHAIN_ID);
+  }
+  if (process.env.WEB3_NETWORK_NAME) {
+    ENV.web3NetworkName = process.env.WEB3_NETWORK_NAME;
   }
 
   return ENV;

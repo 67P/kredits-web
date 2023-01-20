@@ -2,16 +2,15 @@
   {{#if this.setupInProgress}}
     Connecting account...
   {{else}}
-    {{#if (and this.kredits.hasAccounts this.kredits.currentUser)}}
+    {{#if (and this.walletConnected this.kredits.currentUser)}}
       {{this.kredits.currentUser.name}}
-      {{#if this.kredits.currentUserIsCore}}
-        <span class="core-flag">(core)</span>
-      {{/if}}
     {{else}}
       <span class="anonymous">Anonymous</span>
-      <button onclick={{action "signup"}} class="small" type="button">Sign up</button>
-      {{#if this.showConnectButton}}
-        <button onclick={{action "connectAccount"}} class="small green" type="button">Connect account</button>
+      <button onclick={{action "signup"}} id="signup"
+              class="small" type="button">Sign up</button>
+      {{#if this.walletDisconnected}}
+        <button onclick={{action "connectWallet"}} id="connect"
+                class="small green" type="button">Connect wallet</button>
       {{/if}}
     {{/if}}
   {{/if}}

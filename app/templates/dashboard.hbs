@@ -45,14 +45,16 @@
       </div>
     </section>
 
-    <section id="contributions-by-type">
-      <header>
-        <h2>Contributions by type</h2>
-      </header>
-      <div class="content">
-        <ChartContributionsByType @contributions={{this.contributions}} />
-      </div>
-    </section>
+    {{#if this.contributionsConfirmed}}
+      <section id="contributions-by-type">
+        <header>
+          <h2>Contributions by type</h2>
+        </header>
+        <div class="content">
+          <ChartContributionsByType @contributions={{this.contributions}} />
+        </div>
+      </section>
+    {{/if}}
   </div>
 
   <div id="contributions">
@@ -87,24 +89,26 @@
       </section>
     {{/if}}
 
-    <section id="contributions-confirmed">
-      <header class="with-nav">
-        <h2>Confirmed Contributions</h2>
-        <nav>
-          <button type="button"
-                  onclick={{action "toggleQuickFilterConfirmed"}}
-                  class="small {{if this.showQuickFilterConfirmed "active"}}">
-            filter
-          </button>
-        </nav>
-      </header>
-      <div class="content">
-        <ContributionList @contributions={{this.contributionsConfirmedSorted}}
-                          @vetoContribution={{action "vetoContribution"}}
-                          @selectedContributionId={{this.selectedContributionId}}
-                          @showQuickFilter={{this.showQuickFilterConfirmed}} />
-      </div>
-    </section>
+    {{#if this.contributionsConfirmed}}
+      <section id="contributions-confirmed">
+        <header class="with-nav">
+          <h2>Confirmed Contributions</h2>
+          <nav>
+            <button type="button"
+                    onclick={{action "toggleQuickFilterConfirmed"}}
+                    class="small {{if this.showQuickFilterConfirmed "active"}}">
+              filter
+            </button>
+          </nav>
+        </header>
+        <div class="content">
+          <ContributionList @contributions={{this.contributionsConfirmedSorted}}
+                            @vetoContribution={{action "vetoContribution"}}
+                            @selectedContributionId={{this.selectedContributionId}}
+                            @showQuickFilter={{this.showQuickFilterConfirmed}} />
+        </div>
+      </section>
+    {{/if}}
 
     {{#if this.showFullContributionSync}}
     <section id="sync-all-contributions">
