@@ -2,16 +2,22 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 
-export default Route.extend({
+export default class SignupAccountRoute extends Route {
+  @service kredits;
 
-  kredits: service(),
+  async setupController (controller) {
+    if (!window.ethereum) return;
+
+    if (this.kredits.hasAccounts) {
+      controller.accountAddress = this.kredits.currentUserAccounts.firstObject;
+    } else {
+      return this.kredits.connectWallet();
+    }
+  }
 
   redirect () {
-    this._super(...arguments);
-
     if (isEmpty(this.kredits.githubAccessToken)) {
       this.transitionTo('signup.index');
     }
   }
-
-});
+}
