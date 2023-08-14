@@ -1,0 +1,30 @@
+<header>
+  <h2>Complete your contributor profile</h2>
+</header>
+<div class="content text-lg">
+  <p class="mb-8">
+    Kredits allow you to to earn rewards for your contributions, in the form of
+    dynamic open-source grants. As a regular contributor, you can also take
+    part in the community's project governance and finances.
+  </p>
+  <p>
+    In order to interact with the system you will need a
+    <a href="https://rootstock.io" target="_blank" rel="noopener noreferrer">Rootstock</a>
+    wallet/account.
+  </p>
+  <form>
+    <p>
+      <label>
+        Rootstock address:<br>
+        <Input @type="text" @value={{this.accountAddress}} placeholder="0xF18E631Ea191aE4ebE70046Fcb01a436554421BA4" class={{if this.isValidEthAccount "valid" ""}} />
+      </label>
+    </p>
+  </form>
+  <p class="actions">
+    <button {{on "click" (fn this.completeSignup)}}
+            disabled={{this.signupButtonDisabled}}
+            type="button">
+      Complete my profile
+    </button>
+  </p>
+</div>

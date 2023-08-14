@@ -1,45 +1,37 @@
-import Component from '@ember/component';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
+import { action } from '@ember/object';
 import { isPresent } from '@ember/utils';
 
-export default Component.extend({
+export default class TopbarAccountPanelComponent extends Component {
+  @service router;
+  @service kredits;
 
-  tagName: '',
+  @tracked setupInProgress = false;
 
-  kredits: service(),
-  router: service(),
-
-  setupInProgress: false,
-
-  userHasEthereumWallet: computed(function() {
+  get userHasWallet () {
     return isPresent(window.ethereum);
-  }),
-
-  showConnectButton: computed('userHasEthereumWallet',
-                              'kredits.hasAccounts', function() {
-    return this.userHasEthereumWallet &&
-           !this.kredits.hasAccounts;
-  }),
-
-  actions: {
-
-    signup() {
-      this.router.transitionTo('signup');
-    },
-
-    async connectAccount() {
-      try {
-        await window.ethereum.enable();
-        this.set('setupInProgress', true);
-        await this.kredits.setup();
-        this.set('setupInProgress', false);
-      } catch (error) {
-        this.set('setupInProgress', false);
-        console.log('Opening Ethereum wallet failed:', error);
-      }
-    }
-
   }
 
-});
+  get walletConnected () {
+    return this.userHasWallet && this.kredits.hasAccounts;
+  }
+
+  get walletDisconnected () {
+    return this.userHasWallet && !this.kredits.hasAccounts;
+  }
+
+  @action
+  signup () {
+    this.router.transitionTo('signup');
+  }
+
+  @action
+  async connectWallet () {
+    this.setupInProgress = true;
+    await this.kredits.connectWallet();
+    this.setupInProgress = false;
+  }
+
+}

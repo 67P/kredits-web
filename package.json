@@ -17,7 +17,7 @@
     "start": "ember serve",
     "test": "npm-run-all lint:* test:*",
     "test:ember": "ember test",
-    "start:local": "WEB3_PROVIDER_URL=http://localhost:8545 ember serve",
+    "start:local": "WEB3_PROVIDER_URL=http://localhost:8545 WEB3_CHAIN_ID=1337 WEB3_NETWORK_NAME='Hardhat Devchain' ember serve",
     "build": "ember build --environment=production",
     "build-prod": "rm -rf release/* && ember build -prod --output-path release",
     "preversion": "npm test",

@@ -4,8 +4,8 @@ import config from 'kredits-web/config/environment';
 
 function createStore(name) {
   let networkName;
-  if (config.web3RequiredNetworkName) {
-    networkName = config.web3RequiredNetworkName.toLocaleLowerCase().replace(' ', '-');
+  if (config.web3NetworkName) {
+    networkName = config.web3NetworkName.toLocaleLowerCase().replace(' ', '-');
   } else {
     networkName = 'custom';
   }

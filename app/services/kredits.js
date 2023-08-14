@@ -5,7 +5,7 @@ import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { alias, filterBy, notEmpty, sort } from '@ember/object/computed';
-import { isEmpty, isPresent } from '@ember/utils';
+import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
 
 import { task, taskGroup } from 'ember-concurrency';
@@ -15,6 +15,7 @@ import processContributorData from 'kredits-web/utils/process-contributor-data';
 import processContributionData from 'kredits-web/utils/process-contribution-data';
 import processReimbursementData from 'kredits-web/utils/process-reimbursement-data';
 import formatKredits from 'kredits-web/utils/format-kredits';
+import switchNetwork from 'kredits-web/utils/switch-network';
 
 import config from 'kredits-web/config/environment';
 import Contributor from 'kredits-web/models/contributor';
@@ -55,6 +56,21 @@ export default Service.extend({
     this.set('contributors', []);
     this.set('contributions', []);
     this.set('reimbursements', []);
+
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', this.handleUserChainChanged);
+      window.ethereum.on('accountsChanged', this.handleAccountsChanged);
+    }
+  },
+
+  handleUserChainChanged (chainId) {
+    console.log('User-provided chain ID changed to', chainId);
+    window.location.reload();
+  },
+
+  handleAccountsChanged (accounts) {
+    console.log('User-provided accounts changed to', accounts);
+    window.location.reload();
   },
 
   // This is called in the application route's beforeModel(). So it is
@@ -64,7 +80,7 @@ export default Service.extend({
     let ethProvider;
 
     return new Promise(resolve => {
-      function instantiateWithoutAccount () {
+      function instantiateWithoutWallet () {
         console.debug('[kredits] Creating new instance from npm module class');
         console.debug(`[kredits] providerURL: ${config.web3ProviderUrl}`);
         ethProvider = new ethers.providers.JsonRpcProvider(config.web3ProviderUrl);
@@ -74,42 +90,48 @@ export default Service.extend({
         });
       }
 
-      async function instantiateWithAccount (web3Provider, context) {
+      async function instantiateWithWallet (web3Provider, context) {
         console.debug('[kredits] Using user-provided Web3 instance, e.g. from Metamask');
-        ethProvider = new ethers.providers.Web3Provider(web3Provider);
+        ethProvider       = new ethers.providers.Web3Provider(web3Provider);
+        const network     = await ethProvider.getNetwork();
+        const accounts    = await ethProvider.listAccounts();
+        const chainId     = config.web3ChainId;
 
-        const network = await ethProvider.getNetwork();
-        if (isPresent(config.web3RequiredChainId) &&
-            network.chainId !== config.web3RequiredChainId) {
-          return instantiateWithoutAccount();
-        }
+        if (isEmpty(accounts)) return instantiateWithoutWallet();
 
-        ethProvider.listAccounts().then(accounts => {
+        if (network.chainId !== chainId) {
+          return switchNetwork();
+        } else {
           context.set('currentUserAccounts', accounts);
           const ethSigner = accounts.length === 0 ? null : ethProvider.getSigner();
           resolve({
             ethProvider,
             ethSigner
           });
-        });
+        }
       }
 
       if (window.ethereum) {
-        if (window.ethereum.isConnected()) {
-          instantiateWithAccount(window.ethereum, this);
-        } else {
-          instantiateWithoutAccount();
-        }
-      }
-      // Legacy dapp browsers...
-      else if (window.web3) {
-        instantiateWithAccount(window.web3.currentProvider, this);
-      }
-      // Non-dapp browsers...
-      else {
-        instantiateWithoutAccount();
+        instantiateWithWallet(window.ethereum, this);
+      } else {
+        instantiateWithoutWallet();
       }
     });
+  },
+
+  async connectWallet () {
+    const provider    = new ethers.providers.Web3Provider(window.ethereum);
+    const network     = await provider.getNetwork();
+    const chainId     = config.web3ChainId;
+    const chainIdHex  = `0x${Number(chainId).toString(16)}`;
+
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      if (network.chainId !== chainId) await switchNetwork(chainIdHex);
+    } catch (err) {
+      console.log('Connecting wallet failed:', err);
+      return false;
+    }
   },
 
   async setup () {
