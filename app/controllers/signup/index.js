@@ -1,14 +1,12 @@
 import Controller from '@ember/controller';
+import { action } from '@ember/object';
 import config from 'kredits-web/config/environment';
 
-export default Controller.extend({
+export default class IndexController extends Controller {
 
-  actions: {
-
-    connectGithub () {
-      window.location = config.githubConnectUrl;
-    }
-
+  @action
+  connectGithub () {
+    window.location = config.githubConnectUrl;
   }
 
-});
+}

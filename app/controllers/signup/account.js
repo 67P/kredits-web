@@ -1,17 +1,14 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import { alias } from '@ember/object/computed';
 import { tracked } from '@glimmer/tracking';
 import config from 'kredits-web/config/environment';
 import { isAddress } from 'web3-utils';
 
-export default class BudgetController extends Controller {
+export default class AccountController extends Controller {
   @service kredits;
 
   @tracked accountAddress = null;
-
-  @alias('kredits.githubAccessToken') githubAccessToken;
 
   get isValidEthAccount () {
     return isAddress(this.accountAddress);
@@ -24,7 +21,7 @@ export default class BudgetController extends Controller {
   @action
   completeSignup () {
     const payload = {
-      accessToken: this.githubAccessToken,
+      accessToken: this.kredits.githubAccessToken,
       account: this.accountAddress
     }
 
@@ -43,7 +40,7 @@ export default class BudgetController extends Controller {
       } else {
         console.log('[signup/account] Created contributor:', data);
 
-        this.githubAccessToken = null;
+        this.kredits.githubAccessToken = null;
         this.accountAddress = null;
 
         this.transitionToRoute('signup.complete');
