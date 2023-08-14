@@ -29,8 +29,8 @@ module.exports = function(environment) {
     web3ChainId: 31,
     web3NetworkName: 'RSK Testnet',
 
-    githubConnectUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/connect/github',
-    githubSignupUrl: 'https://hal8000.chat.kosmos.org/kredits/signup/github',
+    githubConnectUrl: 'https://hal8000.kosmos.chat/kredits/signup/connect/github',
+    githubSignupUrl: 'https://hal8000.kosmos.chat/kredits/signup/github',
 
     ipfs: {
       host: 'ipfs.kosmos.org',
