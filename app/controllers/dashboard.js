@@ -35,10 +35,6 @@ export default Controller.extend({
 
   showFullContributionSync: gt('kredits.missingHistoricContributionsCount', 0),
 
-  showIntroText: computed('kredits.{hasAccounts,currentUser}', function(){
-    return (!this.kredits.hasAccounts || !this.kredits.currentUser);
-  }),
-
   actions: {
 
     vetoContribution (contributionId) {
