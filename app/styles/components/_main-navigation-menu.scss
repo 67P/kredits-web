@@ -1,0 +1,30 @@
+nav#main-menu {
+  padding: 2rem;
+  background-color: rgba(0,0,0,.2);
+
+  ul {
+    list-style: none;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3rem;
+    font-size: 1.5rem;
+
+    @include media-max(small) {
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+  }
+
+  li {
+    a {
+      text-decoration: none;
+      color: #fff;
+
+      &.active, &:hover {
+        color: $yellow;
+      }
+    }
+  }
+}
