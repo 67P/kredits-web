@@ -7,11 +7,19 @@
     </tr>
   </thead>
   <tbody>
-    {{#each this.balances as |balance|}}
+    {{#each this.balancesSorted as |balance|}}
       <tr>
-        <th>{{balance.token.symbol}}</th>
-        <td class="amount">{{balance.confirmed_balance}}</td>
-        <td class="fiat-amount">~{{balance.balanceUSD}} USD</td>
+        <th>
+          <img src={{balance.token.icon}}
+               alt={{balance.token.description}}
+               title={{balance.token.description}} />
+        </th>
+        <td class="amount">
+          {{fmt-number balance.confirmed_balance}} <span class="unit">sats</span>
+        </td>
+        <td class="fiat-amount">
+          ~{{balance.balanceUSD}} USD
+        </td>
       </tr>
     {{/each}}
   </tbody>

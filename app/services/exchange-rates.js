@@ -19,7 +19,13 @@ export default class ExchangeRatesService extends Service {
   @tracked btceur = 0;
   @tracked btcusd = 0;
 
+  get exchangeRatesLoaded () {
+    return (this.btceur !== 0) && (this.btcusd !== 0);
+  }
+
   async fetchRates (source='bitstamp') {
+    if (this.exchangeRatesLoaded) return;
+
     switch(source) {
       case 'bitstamp':
         this.btceur = await fetchFromBitstamp('btceur');

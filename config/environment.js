@@ -45,7 +45,22 @@ module.exports = function(environment) {
       'BTC': '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
     },
 
-    btcBalanceAPI: 'https://api.kosmos.org/kredits/onchain_btc_balance',
+    communityFundsAPI: {
+      balances: {
+        onchain: {
+          icon: 'icon-btc.png',
+          symbol: 'BTC',
+          description: 'BTC on chain',
+          url: 'https://api.kosmos.org/btcpay/onchain_btc_balance'
+        },
+        lightning: {
+          icon: 'icon-btc-lightning.png',
+          symbol: 'BTC',
+          description: 'BTC on Lightning Network',
+          url: 'https://api.kosmos.org/btcpay/lightning_btc_balance'
+        }
+      }
+    },
 
     corsProxy: 'https://cors.5apps.com/?uri='
   };
@@ -66,6 +81,9 @@ module.exports = function(environment) {
       protocol: 'http',
       gatewayUrl: 'http://localhost:8080/ipfs'
     };
+
+    ENV.communityFundsAPI.balances.onchain.url   = 'http://localhost:3000/api/btcpay/onchain_btc_balance';
+    ENV.communityFundsAPI.balances.lightning.url = 'http://localhost:3000/api/btcpay/lightning_btc_balance';
   }
 
   if (environment === 'test') {

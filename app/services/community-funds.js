@@ -1,7 +1,7 @@
-import Service, { inject as service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 import { A } from '@ember/array';
 import { task } from 'ember-concurrency-decorators';
+import { tracked } from '@glimmer/tracking';
+import Service, { inject as service } from '@ember/service';
 import config from 'kredits-web/config/environment';
 
 export default class CommunityFundsService extends Service {
@@ -12,9 +12,20 @@ export default class CommunityFundsService extends Service {
 
   @task
   *fetchBalances () {
-    yield fetch(config.btcBalanceAPI).then(res => res.json())
-      .then(res => {
-        return this.processBalances(res);
+    const promises = [];
+    const balances = config.communityFundsAPI.balances;
+
+    for (const item of Object.keys(balances)) {
+      const c = balances[item];
+      promises.push(
+        this.fetchBalance(c.url)
+            .then(res => { return this.processBalance(res, c) })
+      )
+    }
+
+    yield Promise.all(promises)
+      .then(() => {
+        this.balancesLoaded = true;
       })
       .catch(err => {
         console.log(`[community-funds] Fetching balances failed:`);
@@ -22,18 +33,21 @@ export default class CommunityFundsService extends Service {
       });
   }
 
-  async processBalances (res) {
+  async fetchBalance(url) {
+    return fetch(url).then(res => res.json());
+  }
+
+  async processBalance (res, config) {
     await this.exchangeRates.fetchRates();
+
     // Format and round the approximate USD value
     const lang = navigator.language || navigator.userLanguage;
-    const balanceUSD = res.confirmed_balance * this.exchangeRates.btcusd;
+    const balanceUSD = (res.confirmed_balance / 100000000) * this.exchangeRates.btcusd;
     res.balanceUSD = Math.round(balanceUSD).toLocaleString(lang);
 
     this.balances.pushObject({
       ...res,
-      ...{ token: { name: 'BTC', symbol: 'BTC'} }
+      ...{ token: { icon: `/img/${config.icon}`, symbol: config.symbol, description: config.description } }
     });
-
-    this.balancesLoaded = true;
   }
 }
