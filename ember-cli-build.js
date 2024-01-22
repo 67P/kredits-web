@@ -29,6 +29,9 @@ module.exports = function(defaults) {
           path: "empty" // needed for kosmos-schemas dependency
         }
       }
+    },
+    fingerprint: {
+      exclude: [ 'img/icon-btc' ]
     }
   });
 
