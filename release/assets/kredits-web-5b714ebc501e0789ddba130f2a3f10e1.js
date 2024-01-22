@@ -1085,6 +1085,6 @@ case 13:e.next=16
 break
 case 15:console.warn("Failed to switch chains:",e.t0.message)
 case 16:case"end":return e.stop()}}),e,null,[[3,8]])})))).apply(this,arguments)}Object.defineProperty(e,"__esModule",{value:!0}),e.default=function(){return o.apply(this,arguments)}})),define("kredits-web/config/environment",[],(function(){try{var e="kredits-web/config/environment",t=document.querySelector('meta[name="'+e+'"]').getAttribute("content"),n={default:JSON.parse(decodeURIComponent(t))}
-return Object.defineProperty(n,"__esModule",{value:!0}),n}catch(r){throw new Error('Could not read config from meta tag with name "'+e+'".')}})),runningTests||require("kredits-web/app").default.create({name:"kredits-web",version:"2.1.0+895bf569"})
+return Object.defineProperty(n,"__esModule",{value:!0}),n}catch(r){throw new Error('Could not read config from meta tag with name "'+e+'".')}})),runningTests||require("kredits-web/app").default.create({name:"kredits-web",version:"2.1.1+5c9fbf50"})
 
-//# sourceMappingURL=kredits-web-d768c3917c64f936d82c158bb3528173.map
+//# sourceMappingURL=kredits-web-7c993a63fe709fe25b6d0b201adef2c2.map
