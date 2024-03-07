@@ -1,38 +1,5 @@
 <ul class="item-list spaced reimbursement-list {{if @loading 'loading'}}">
-  {{#each this.itemsSorted as |reimbursement|}}
-    <li data-reimbursement-id={{reimbursement.id}}
-        class="{{item-status reimbursement}}">
-      <p class="meta">
-        <span class="recipient">
-          <UserAvatar @contributor={{reimbursement.contributor}} />
-        </span>
-        <span class="title">
-          Expenses covered by {{reimbursement.contributor.name}}
-        </span>
-      </p>
-      <p class="token-amount">
-        <span class="amount">
-          {{sats-to-btc reimbursement.amount}}</span>&#8239;<span class="symbol">BTC</span>
-      </p>
-
-      <ExpenseList @expenses={{reimbursement.expenses}} />
-
-      <div class="meta">
-        <p class="confirmation-eta">
-          <ConfirmedIn @confirmedAtBlock={{reimbursement.confirmedAt}} />
-        </p>
-        <p class="actions">
-          <a href="{{this.ipfsGatewayUrl}}/{{reimbursement.ipfsHash}}"
-             class="button small" target="_blank" rel="noopener noreferrer">
-            Inspect IPFS data
-          </a>
-          {{#if this.kredits.currentUserIsCore}}
-            <button {{on "click" (fn this.veto reimbursement.id)}}
-                    disabled={{reimbursement.vetoed}}
-                    class="button small danger" type="button">veto</button>
-          {{/if}}
-        </p>
-      </div>
-    </li>
+  {{#each this.itemsSorted as |item|}}
+    <ReimbursementItem @reimbursement={{item}} />
   {{/each}}
 </ul>
