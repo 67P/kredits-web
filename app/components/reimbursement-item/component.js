@@ -10,6 +10,18 @@ export default class ReimbursementItemComponent extends Component {
     return config.ipfs.gatewayUrl;
   }
 
+  get isConfirmed () {
+    return (this.args.reimbursement.confirmedAt - this.kredits.currentBlock) <= 0;
+  }
+
+  get isUnconfirmed () {
+    return !this.isConfirmed;
+  }
+
+  get showVetoButton () {
+    return this.isUnconfirmed && this.kredits.currentUserIsCore;
+  }
+
   @action
   veto (id) {
     this.kredits.vetoReimbursement(id).then(transaction => {
