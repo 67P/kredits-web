@@ -24,7 +24,7 @@
          class="button small" target="_blank" rel="noopener noreferrer">
         Inspect IPFS data
       </a>
-      {{#if this.kredits.currentUserIsCore}}
+      {{#if this.showVetoButton}}
         <button {{on "click" (fn this.veto @reimbursement.id)}}
                 disabled={{@reimbursement.vetoed}}
                 class="button small danger" type="button">veto</button>
