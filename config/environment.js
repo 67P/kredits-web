@@ -82,8 +82,9 @@ module.exports = function(environment) {
       gatewayUrl: 'http://localhost:8080/ipfs'
     };
 
-    ENV.communityFundsAPI.balances.onchain.url   = 'http://localhost:3000/api/btcpay/onchain_btc_balance';
-    ENV.communityFundsAPI.balances.lightning.url = 'http://localhost:3000/api/btcpay/lightning_btc_balance';
+    // Uncomment if you want to use local akkounts
+    // ENV.communityFundsAPI.balances.onchain.url   = 'http://localhost:3000/api/btcpay/onchain_btc_balance';
+    // ENV.communityFundsAPI.balances.lightning.url = 'http://localhost:3000/api/btcpay/lightning_btc_balance';
   }
 
   if (environment === 'test') {
