@@ -1,3 +1,5 @@
-{{#unless this.isConfirmed}}
+{{#if this.isConfirmed}}
+Confirmed at block <strong>{{@confirmedAtBlock}}</strong> (~ {{this.confirmedInHumanTime}} ago)
+{{else}}
 Confirming in <strong>{{this.confirmedInBlocks}}</strong> blocks (~ {{this.confirmedInHumanTime}})
-{{/unless}}
+{{/if}}
