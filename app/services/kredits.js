@@ -29,7 +29,7 @@ export default Service.extend({
   browserCache: service(),
 
   currentBlock: null,
-  currentUserAccounts: null, // default to not having an account. this is the wen web3 is loaded.
+  currentUserAccounts: null, // default to not having an account. this is the when web3 is loaded.
   currentUser: null,
   contributors: null,
   contributions: null,
