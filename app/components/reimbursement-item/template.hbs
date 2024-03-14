@@ -19,8 +19,12 @@
   {{/if}}
 
   <div class="meta">
-    <p class="confirmation-eta">
+    <p>
+      {{#if this.showConfirmedIn}}
       <ConfirmedIn @confirmedAtBlock={{@reimbursement.confirmedAt}} />
+      {{else}}
+        {{#unless this.isVetoed}}{{this.expensesDateRange}}{{/unless}}
+      {{/if}}
     </p>
     <p class="actions">
       <a href="{{this.ipfsGatewayUrl}}/{{@reimbursement.ipfsHash}}"
