@@ -6,6 +6,7 @@ module.exports = {
   rules: {
     'simple-unless': false,
     'no-nested-interactive': false,
+    'no-invalid-interactive': false,
     'no-html-comments': false
   },
 
