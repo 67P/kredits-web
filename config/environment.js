@@ -62,7 +62,9 @@ module.exports = function(environment) {
       }
     },
 
-    corsProxy: 'https://cors.5apps.com/?uri='
+    corsProxy: 'https://cors.5apps.com/?uri=',
+
+    hideVetoedEntriesAfterBlocks: 5760 // 48 hours
   };
 
   if (environment === 'development') {

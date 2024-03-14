@@ -30,5 +30,8 @@ export default class BudgetRoute extends Route {
     }
     schedule('afterRender', this.kredits.fetchMissingReimbursements,
       this.kredits.fetchMissingReimbursements.perform);
+
+    schedule('afterRender', this.kredits.syncReimbursementEvents,
+      this.kredits.syncReimbursementEvents.perform);
   }
 }

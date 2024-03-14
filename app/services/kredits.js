@@ -780,5 +780,32 @@ export default Service.extend({
     this.contributors
         .findBy('address', to)
         .incrementProperty('balance', value);
+  },
+
+
+  syncReimbursementEvents: task(function * () {
+    yield this.fetchEvents(
+      'Reimbursement', // contract
+      'ReimbursementAdded', // event
+      0,
+      // this.kredits.currentBlock - (2*60*24*14), // from block
+      this.currentBlock // to block
+    );
+  }).group('syncTaskGroup'),
+
+  async fetchEvents(contractName, eventName, fromBlock, toBlock) {
+    const contract = this.kredits[contractName].contract;
+    const eventFilter = contract.filters[eventName]();
+    const filterOptions = { fromBlock, toBlock };
+
+    console.debug(contract, eventFilter, filterOptions);
+    contract.queryFilter(eventFilter)
+      .then(events => {
+        events.forEach(event => {
+          console.debug("Event:", event.args.creator, event.args.key, event.args.value);
+        });
+      }).catch(e => {
+        console.error(e);
+      });
   }
 });
