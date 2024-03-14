@@ -1,4 +1,4 @@
-<ul class="item-list spaced reimbursement-list {{if @loading 'loading'}}">
+<ul class="item-list collapsible spaced reimbursement-list {{if @loading 'loading'}}">
   {{#each this.itemsSorted as |item|}}
     <ReimbursementItem @reimbursement={{item}} />
   {{/each}}

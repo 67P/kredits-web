@@ -16,6 +16,16 @@ ul.item-list {
     }
   }
 
+  &.collapsible {
+    > li {
+      border-left: 1px solid transparent;
+
+      &:hover {
+        border-left: 1px solid $blue;
+      }
+    }
+  }
+
   &.loading {
     @include loading-border-top;
 
