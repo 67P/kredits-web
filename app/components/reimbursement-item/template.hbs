@@ -1,0 +1,41 @@
+<li data-reimbursement-id={{@reimbursement.id}}
+    class="{{item-status @reimbursement}}"
+    role="button" {{on "click" this.toggleExpenseDetails}}>
+  <p class="meta">
+    <span class="recipient">
+      <UserAvatar @contributor={{@reimbursement.contributor}} />
+    </span>
+    <span class="title">
+      Expenses covered by {{@reimbursement.contributor.name}}
+    </span>
+  </p>
+  <p class="token-amount">
+    <span class="amount">
+      {{sats-to-btc @reimbursement.amount}}</span>&#8239;<span class="symbol">BTC</span>
+  </p>
+
+  {{#if this.showExpenseDetails}}
+  <ExpenseList @expenses={{@reimbursement.expenses}} />
+  {{/if}}
+
+  <div class="meta">
+    <p>
+      {{#if this.showConfirmedIn}}
+      <ConfirmedIn @confirmedAtBlock={{@reimbursement.confirmedAt}} />
+      {{else}}
+        {{#unless this.isVetoed}}{{this.expensesDateRange}}{{/unless}}
+      {{/if}}
+    </p>
+    <p class="actions">
+      <a href="{{this.ipfsGatewayUrl}}/{{@reimbursement.ipfsHash}}"
+         class="button small" target="_blank" rel="noopener noreferrer">
+        Inspect IPFS data
+      </a>
+      {{#if this.showVetoButton}}
+        <button {{on "click" (fn this.veto @reimbursement.id)}}
+                disabled={{@reimbursement.vetoed}}
+                class="button small danger" type="button">veto</button>
+      {{/if}}
+    </p>
+  </div>
+</li>
