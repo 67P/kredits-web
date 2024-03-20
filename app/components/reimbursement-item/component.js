@@ -14,7 +14,6 @@ export default class ReimbursementItemComponent extends Component {
     if (this.isUnconfirmed && !this.isVetoed) {
       this.showExpenseDetails = true;
     }
-    console.debug(fmtDateLocalized);
   }
 
   get ipfsGatewayUrl () {
