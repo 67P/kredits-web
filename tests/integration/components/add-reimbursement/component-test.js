@@ -7,7 +7,7 @@ import contributors from '../../../fixtures/contributors';
 module('Integration | Component | add-reimbursement', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(assert) {
+  hooks.beforeEach(function() {
     let kredits = this.owner.lookup('service:kredits');
     kredits.set('contributors', contributors);
     kredits.set('currentUser', contributors.findBy('id', 3));
