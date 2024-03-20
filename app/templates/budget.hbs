@@ -17,7 +17,11 @@
         <header class="with-nav">
           <h2>Proposed Reimbursements</h2>
           <nav>
-            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+            <button title="Submit a reimbursement"
+                    class="button small green"
+                    {{on "click" this.addReimbursement}}>
+              add
+            </button>
           </nav>
         </header>
         <div class="content">
@@ -31,7 +35,11 @@
         <header class="with-nav">
           <h2>Confirmed Reimbursements</h2>
           <nav>
-            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+            <button title="Submit a reimbursement"
+                    class="button small green"
+                    {{on "click" this.addReimbursement}}>
+              add
+            </button>
           </nav>
         </header>
         <div class="content">
