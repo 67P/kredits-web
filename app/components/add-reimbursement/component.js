@@ -74,7 +74,7 @@ export default class AddReimbursementComponent extends Component {
   }
 
   updateTotalAmountFromFiat() {
-    let btcAmount = parseFloat(this.total);
+    let btcAmount = 0;
 
     if (this.exchangeRates.btceur > 0 && this.totalEUR > 0) {
       btcAmount += (this.totalEUR / this.exchangeRates.btceur);

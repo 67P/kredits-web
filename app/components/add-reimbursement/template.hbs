@@ -14,6 +14,7 @@
       <p class="label">Total amount (BTC):</p>
       <p>
         <Input @type="text"
+               @name="total-btc"
                @placeholder="0.0015"
                @value={{this.total}}
                @required={{true}}
@@ -49,7 +50,9 @@
 
     <p class="actions">
       <button {{on "click" this.showExpenseForm}}
-        class="green small" type="button">+ Add another item</button>
+        id="add-another-item" class="green small" type="button">
+        + Add another item
+      </button>
     </p>
   {{else}}
     <p>No line items yet.</p>
