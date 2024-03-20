@@ -2,8 +2,7 @@
   <label>
     <p class="label">Contributor:</p>
     <p>
-      <select required {{on "change" this.updateContributor}}>
-        <option value="" selected disabled hidden></option>
+      <select id="contributor" required {{on "change" this.updateContributor}}>
         {{#each this.contributors as |contributor|}}
           <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
         {{/each}}
