@@ -2,8 +2,7 @@
   <label>
     <p class="label">Contributor:</p>
     <p>
-      <select required {{on "change" this.updateContributor}}>
-        <option value="" selected disabled hidden></option>
+      <select id="contributor" required {{on "change" this.updateContributor}}>
         {{#each this.contributors as |contributor|}}
           <option value={{contributor.id}} selected={{eq this.contributorId contributor.id}}>{{contributor.name}}</option>
         {{/each}}
@@ -15,6 +14,7 @@
       <p class="label">Total amount (BTC):</p>
       <p>
         <Input @type="text"
+               @name="total-btc"
                @placeholder="0.0015"
                @value={{this.total}}
                @required={{true}}
@@ -50,7 +50,9 @@
 
     <p class="actions">
       <button {{on "click" this.showExpenseForm}}
-        class="green small" type="button">+ Add another item</button>
+        id="add-another-item" class="green small" type="button">
+        + Add another item
+      </button>
     </p>
   {{else}}
     <p>No line items yet.</p>

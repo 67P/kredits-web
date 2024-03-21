@@ -1,22 +1,6 @@
 <main id="budget">
 
   <div id="aside">
-    <!-- <section id="main&#45;nav"> -->
-    <!--   <header> -->
-    <!--     <h2>Budget</h2> -->
-    <!--   </header> -->
-    <!--   <div class="content"> -->
-    <!--     <ul> -->
-    <!--       <li> -->
-    <!--         <LinkTo @route="budget.expenses">Expenses</LinkTo> -->
-    <!--       </li> -->
-    <!--       <li> -->
-    <!--         <a href="#">Rewards</a> -->
-    <!--       </li> -->
-    <!--     </ul> -->
-    <!--   </div> -->
-    <!-- </section> -->
-
     <section id="funds">
       <header>
         <h2>Community funds</h2>
@@ -33,7 +17,11 @@
         <header class="with-nav">
           <h2>Proposed Reimbursements</h2>
           <nav>
-            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+            <button type="button" class="button small green"
+                    title="Submit a reimbursement"
+                    {{on "click" this.addReimbursement}}>
+              add
+            </button>
           </nav>
         </header>
         <div class="content">
@@ -47,7 +35,11 @@
         <header class="with-nav">
           <h2>Confirmed Reimbursements</h2>
           <nav>
-            <LinkTo @route="reimbursements.new" @title="Submit a reimbursement" class="button small green">add</LinkTo>
+            <button type="button" class="button small green"
+                    title="Submit a reimbursement"
+                    {{on "click" this.addReimbursement}}>
+              add
+            </button>
           </nav>
         </header>
         <div class="content">

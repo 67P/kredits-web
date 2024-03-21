@@ -27,6 +27,10 @@ export default class AddReimbursementComponent extends Component {
     this.exchangeRates.fetchRates();
   }
 
+  get contributorId () {
+    return this.recipientId || this.kredits.currentUser?.id;
+  }
+
   get isValidTotal () {
     return isValidAmount(this.total);
   }
@@ -70,7 +74,7 @@ export default class AddReimbursementComponent extends Component {
   }
 
   updateTotalAmountFromFiat() {
-    let btcAmount = parseFloat(this.total);
+    let btcAmount = 0;
 
     if (this.exchangeRates.btceur > 0 && this.totalEUR > 0) {
       btcAmount += (this.totalEUR / this.exchangeRates.btceur);
@@ -104,7 +108,7 @@ export default class AddReimbursementComponent extends Component {
 
   @action
   updateContributor (event) {
-    this.recipientId = event.target.value;
+    this.recipientId = parseInt(event.target.value);
   }
 
   @action
@@ -136,12 +140,12 @@ export default class AddReimbursementComponent extends Component {
     if (!this.kredits.currentUser) { window.alert('You need to connect your RSK account first.'); return false }
     if (!this.kredits.currentUserIsCore) { window.alert('Only core contributors can submit reimbursements.'); return false }
 
-    const contributor = this.contributors.findBy('id', parseInt(this.recipientId));
+    const contributor = this.contributors.findBy('id', this.contributorId);
 
     const attributes = {
       amount: parseInt(parseFloat(this.total) * 100000000), // convert to sats
       token: config.tokens['BTC'],
-      recipientId: parseInt(this.recipientId),
+      recipientId: this.contributorId,
       title: `Expenses covered by ${contributor.name}`,
       description: this.description,
       url: this.url,
