@@ -4,6 +4,7 @@ import config from 'kredits-web/config/environment';
 
 // Need to go through proxy for CORS headers
 const bitstampBaseUrl = `${config.corsProxy}https://www.bitstamp.net/api/v2`;
+const kosmosBtcPriceBaseUrl = "https://storage.kosmos.org/kosmos/public/btc-price";
 
 async function fetchFromBitstamp(currencyPair) {
   try {
@@ -16,11 +17,12 @@ async function fetchFromBitstamp(currencyPair) {
 }
 
 export default class ExchangeRatesService extends Service {
-  @tracked btceur = 0;
-  @tracked btcusd = 0;
+  @tracked EUR = 0;
+  @tracked USD = 0;
+  @tracked historic = {};
 
   get exchangeRatesLoaded () {
-    return (this.btceur !== 0) && (this.btcusd !== 0);
+    return (this.EUR !== 0) && (this.USD !== 0);
   }
 
   async fetchRates (source='bitstamp') {
@@ -28,8 +30,24 @@ export default class ExchangeRatesService extends Service {
 
     switch(source) {
       case 'bitstamp':
-        this.btceur = await fetchFromBitstamp('btceur');
-        this.btcusd = await fetchFromBitstamp('btcusd');
+        this.EUR = await fetchFromBitstamp('btceur');
+        this.USD = await fetchFromBitstamp('btcusd');
+    }
+  }
+
+  async fetchHistoricRates (isoDate) {
+    if (typeof this.historic[isoDate] === "object") {
+      return this.historic[isoDate];
+    } else {
+      const url = `${kosmosBtcPriceBaseUrl}/${isoDate}`;
+      try {
+        const rates = await fetch(url).then(res => res.json());
+        this.historic[isoDate] = rates;
+        return rates;
+      } catch(e) {
+        console.error(e);
+        Promise.reject(e);
+      }
     }
   }
 }

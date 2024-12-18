@@ -42,7 +42,7 @@ export default class CommunityFundsService extends Service {
 
     // Format and round the approximate USD value
     const lang = navigator.language || navigator.userLanguage;
-    const balanceUSD = (res.confirmed_balance / 100000000) * this.exchangeRates.btcusd;
+    const balanceUSD = (res.confirmed_balance / 100000000) * this.exchangeRates.USD;
     res.balanceUSD = Math.round(balanceUSD).toLocaleString(lang);
 
     this.balances.pushObject({

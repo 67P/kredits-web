@@ -18,7 +18,8 @@ export default class AddExpenseItemComponent extends Component {
 
   currencies = [
     { code: 'EUR' },
-    { code: 'USD' }
+    { code: 'USD' },
+    { code: 'BTC' }
   ];
 
   get isValidAmount () {

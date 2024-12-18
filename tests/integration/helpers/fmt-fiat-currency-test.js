@@ -18,5 +18,12 @@ module('Integration | Helper | fmt-fiat-currency', function(hooks) {
     await render(hbs`{{fmt-fiat-currency this.amount 'USD'}}`);
     assert.ok(this.element.textContent.trim().match(/USD/),
               'using defined currency when given');
+
+    await render(hbs`{{fmt-fiat-currency 0.00123 'BTC'}}`);
+    assert.ok(this.element.textContent.trim().match(/0.00123/),
+              'allows more decimals');
+    assert.ok(this.element.textContent.trim().match(/BTC/),
+              'using defined currency when given');
   });
+
 });

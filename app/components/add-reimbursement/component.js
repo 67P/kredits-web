@@ -5,7 +5,9 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { A } from '@ember/array';
 import { scheduleOnce } from '@ember/runloop';
+import { btcToSats, satsToBtc } from 'kredits-web/utils/btc-conversions';
 import isValidAmount from 'kredits-web/utils/is-valid-amount';
+import isoDateIsToday from 'kredits-web/utils/iso-date-is-today';
 import readFileContent from 'kredits-web/utils/read-file-content';
 import config from 'kredits-web/config/environment';
 
@@ -73,22 +75,6 @@ export default class AddReimbursementComponent extends Component {
     anchor.scrollIntoView();
   }
 
-  updateTotalAmountFromFiat() {
-    let btcAmount = 0;
-
-    if (this.exchangeRates.btceur > 0 && this.totalEUR > 0) {
-      btcAmount += (this.totalEUR / this.exchangeRates.btceur);
-    }
-    if (this.exchangeRates.btcusd > 0 && this.totalUSD > 0) {
-      btcAmount += (this.totalUSD / this.exchangeRates.btcusd);
-    }
-    if (this.totalUSD === 0 && this.totalEUR === 0) {
-      btcAmount = 0;
-    }
-
-    this.total = btcAmount.toFixed(8);
-  }
-
   // TODO use ember-concurrency here
   // https://github.com/67P/kredits-web/pull/209#discussion_r1064234421
   @action
@@ -118,16 +104,38 @@ export default class AddReimbursementComponent extends Component {
   }
 
   @action
-  addExpenseItem (expenseItem) {
-    this.expenses.pushObject(expenseItem);
-    this.updateTotalAmountFromFiat();
+  async addExpenseItem (expense) {
+    let totalBTC = parseFloat(this.total);
+
+    if (expense.currency === "BTC") {
+      expense.amountSats = btcToSats(expense.amount);
+      totalBTC += expense.amount;
+    } else {
+      let amountSats;
+      if (isoDateIsToday(expense.date)) {
+        amountSats = btcToSats(expense.amount / this.exchangeRates[expense.currency]);
+      } else {
+        const rates = await this.exchangeRates.fetchHistoricRates(expense.date);
+        amountSats = btcToSats(expense.amount / rates[expense.currency]);
+      }
+      expense.amountSats = amountSats;
+      totalBTC += satsToBtc(amountSats);
+    }
+    console.debug("Adding expense:", expense);
+
+    this.total = totalBTC.toFixed(8);
+    this.expenses.pushObject(expense);
     this.expenseFormVisible = false;
   }
 
   @action
-  removeExpenseItem (expenseItem) {
-    this.expenses.removeObject(expenseItem);
-    this.updateTotalAmountFromFiat();
+  async removeExpenseItem (expense) {
+    let totalBTC = parseFloat(this.total);
+    let amountBTC = satsToBtc(expense.amountSats);
+    totalBTC = totalBTC - amountBTC;
+    this.total = totalBTC.toFixed(8);
+
+    this.expenses.removeObject(expense);
 
     if (this.expenses.length === 0) {
       this.expenseFormVisible = true;
@@ -143,7 +151,7 @@ export default class AddReimbursementComponent extends Component {
     const contributor = this.contributors.findBy('id', this.contributorId);
 
     const attributes = {
-      amount: parseInt(parseFloat(this.total) * 100000000), // convert to sats
+      amount: btcToSats(this.total),
       token: config.tokens['BTC'],
       recipientId: this.contributorId,
       title: `Expenses covered by ${contributor.name}`,
