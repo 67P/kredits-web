@@ -5,7 +5,7 @@
         <span class="date">{{fmt-date-localized expense.date}}:</span>
         <span class="title">{{expense.title}}</span>
       </h4>
-      <div class="amount">
+      <div class="amount" title="{{fmt-amount-sats-title expense.amountSats}}">
         {{fmt-fiat-currency expense.amount expense.currency}}
       </div>
       <p class="description">
