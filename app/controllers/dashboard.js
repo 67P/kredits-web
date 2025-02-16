@@ -25,7 +25,10 @@ export default Controller.extend({
   kreditsToplistSorting: computed('showUnconfirmedKredits', function(){
     return this.showUnconfirmedKredits ? ['amountTotal:desc'] : ['amountConfirmed:desc'];
   }),
-  kreditsToplist: sort('kreditsByContributor', 'kreditsToplistSorting'),
+  kreditsToplist: computed('kreditsByContributor', function(){
+    return this.kreditsByContributor.filter(c => c.amountTotal > 0);
+  }),
+  kreditsToplistSorted: sort('kreditsToplist', 'kreditsToplistSorting'),
 
   showUnconfirmedKredits: true,
   hideUnconfirmedKredits: not('showUnconfirmedKredits'),
