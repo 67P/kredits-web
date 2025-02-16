@@ -1,7 +1,7 @@
 <li data-reimbursement-id={{@reimbursement.id}}
-    class="{{item-status @reimbursement}}"
-    role="button" {{on "click" this.toggleExpenseDetails}}>
-  <p class="meta">
+    class="{{item-status @reimbursement}}">
+  <p class="meta cursor-pointer" role="button"
+     {{on "click" this.toggleExpenseDetails}}>
     <span class="recipient">
       <UserAvatar @contributor={{@reimbursement.contributor}} />
     </span>

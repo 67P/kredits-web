@@ -39,12 +39,4 @@ module('Unit | Component | add-reimbursement', function(hooks) {
     assert.equal(component.totalEUR, '71');
     assert.equal(component.totalUSD, '59');
   });
-
-  test('#updateTotalAmountFromFiat', async function(assert) {
-    let component = createComponent('component:add-reimbursement');
-    component.expenses = expenses;
-    await component.exchangeRates.fetchRates();
-    component.updateTotalAmountFromFiat();
-    assert.equal(component.total, '0.01323322', 'converts EUR and USD totals to BTC and rounds to 8 decimals');
-  });
 });

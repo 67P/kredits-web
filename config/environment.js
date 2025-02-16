@@ -76,10 +76,10 @@ module.exports = function(environment) {
     ENV.githubSignupUrl = 'http://localhost:8888/kredits/signup/github';
 
     ENV.ipfs = {
-      host: 'localhost',
+      host: '10.1.1.198',
       port: '5001',
       protocol: 'http',
-      gatewayUrl: 'http://localhost:8080/ipfs'
+      gatewayUrl: 'http://10.1.1.198:9090/ipfs'
     };
 
     // Uncomment if you want to use local akkounts
