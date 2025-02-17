@@ -11,7 +11,7 @@
         {{/if}}
       </header>
       <div class="content">
-        <ContributorList @contributorList={{this.kreditsToplist}}
+        <ContributorList @contributorList={{this.kreditsToplistSorted}}
                          @showUnconfirmedKredits={{this.showUnconfirmedKredits}}
                          @selectedContributorId={{this.selectedContributorId}}
                          @loading={{this.kredits.syncContributors.isRunning}} />

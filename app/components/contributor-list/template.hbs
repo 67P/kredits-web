@@ -2,7 +2,7 @@
   <thead>
   </thead>
   <tbody>
-    {{#each @contributorList as |c|}}
+    {{#each this.contributors as |c|}}
       <tr role="button"
           onclick={{action "openContributorDetails" c.contributor}}
           class="{{if (is-current-user c.contributor) "current-user"}} {{if (eq c.contributor.id @selectedContributorId) "selected"}}">
@@ -21,5 +21,12 @@
         </td>
       </tr>
     {{/each}}
+    {{#if this.showToplistOnly}}
+      <tr role="button" onclick={{action "showAllContributors"}}>
+        <td colspan="2">
+          {{this.showAllButtonText}}
+        </td>
+      </tr>
+    {{/if}}
   </tbody>
 </table>
