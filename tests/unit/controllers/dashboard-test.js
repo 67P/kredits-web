@@ -17,15 +17,15 @@ module('Unit | Controller | Dashboard', function(hooks) {
     });
   };
 
-  test('doesn\'t contain people with 0 balance', function(assert) {
+  test('kreditsToplistSorted()', function(assert) {
     const controller = this.owner.lookup('controller:dashboard');
     addFixtures(controller);
 
     const kreditsToplistSorted = controller.get('kreditsToplistSorted');
 
     assert.equal(kreditsToplistSorted.length, 3,
-      'kreditsToplist contains all contributors with kredits');
+      'contains all contributors with kredits');
     assert.ok(isEmpty(kreditsToplistSorted.findBy('github_username', 'mouse')),
-      'kreditsToplist does not contain contributors with 0 kredits');
+      'does not contain contributors with 0 kredits');
   });
 });
