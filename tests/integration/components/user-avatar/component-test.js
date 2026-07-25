@@ -37,4 +37,20 @@ module('Integration | Component | user-avatar', function(hooks) {
                  `https://avatars2.githubusercontent.com/u/318?v=3&s=512`);
   });
 
+  test('renders empty src when contributor is undefined', async function(assert) {
+    this.set('contributor', undefined);
+    await render(hbs`{{user-avatar contributor=contributor}}`);
+
+    assert.dom(this.element).hasText('');
+    assert.equal(this.element.querySelector('img').getAttribute('src'), '');
+  });
+
+  test('renders empty src when contributor has no github_uid', async function(assert) {
+    const noGithub = { name: 'Mystery', github_uid: null };
+    this.set('contributor', noGithub);
+    await render(hbs`{{user-avatar contributor=contributor}}`);
+
+    assert.equal(this.element.querySelector('img').getAttribute('src'), '');
+  });
+
 });

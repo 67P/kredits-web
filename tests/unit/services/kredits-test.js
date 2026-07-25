@@ -2,6 +2,8 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import contributors from '../../fixtures/contributors';
 import contributions from '../../fixtures/contributions';
+import ContributionModel from 'kredits-web/models/contribution';
+import processContributionData from 'kredits-web/utils/process-contribution-data';
 
 module('Unit | Service | kredits', function(hooks) {
   setupTest(hooks);
@@ -56,5 +58,34 @@ module('Unit | Service | kredits', function(hooks) {
 
     assert.ok(service.contributorsSorted instanceof Array, 'is an array');
     assert.equal(service.contributorsSorted[1].name, 'Manuel', 'sorts by name');
+  });
+
+  test('#kreditsByContributor ignores unconfirmed contributions for contributors that are not loaded', function(assert) {
+    let service = this.owner.lookup('service:kredits');
+    service.set('contributors', contributors);
+
+    // Contribution referencing a contributor that is not in the contributors
+    // collection (e.g. its IPFS profile failed to deserialize). The dashboard
+    // must not throw when computing the toplist.
+    const orphanAttrs = { id: 99, contributorId: 999, confirmedAt: 2000, claimed: false, vetoed: false, amount: 7000, kind: 'dev' };
+    const orphan = ContributionModel.create(processContributionData(orphanAttrs));
+    orphan.set('contributor', undefined);
+
+    service.set('contributions', [...contributions, orphan]);
+    service.set('currentBlock', 1023);
+
+    let kreditsByContributor;
+    try {
+      kreditsByContributor = service.kreditsByContributor;
+    } catch (e) {
+      assert.ok(false, `did not expect kreditsByContributor to throw: ${e.message}`);
+      return;
+    }
+
+    assert.ok(kreditsByContributor, 'computes without throwing');
+    assert.notOk(kreditsByContributor.findBy('contributor', undefined),
+      'no entry for the missing contributor');
+    assert.notOk(kreditsByContributor.find(k => k.contributor && k.contributor.id === 999),
+      'orphan contributor id is absent from the toplist');
   });
 });

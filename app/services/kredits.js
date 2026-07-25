@@ -36,6 +36,11 @@ export default Service.extend({
   reimbursements: null,
   githubAccessToken: null,
 
+  // IDs of contributors currently being lazy-fetched (see ensureContributorLoaded),
+  // used to avoid spawning duplicate concurrent requests when many contributions
+  // for the same missing contributor are loaded in a tight loop.
+  contributorsFetching: null,
+
   currentUserIsContributor: notEmpty('currentUser'),
   currentUserIsCore: alias('currentUser.isCore'),
   hasAccounts: notEmpty('currentUserAccounts'),
@@ -56,6 +61,7 @@ export default Service.extend({
     this.set('contributors', []);
     this.set('contributions', []);
     this.set('reimbursements', []);
+    this.set('contributorsFetching', new Set());
 
     if (window.ethereum) {
       window.ethereum.on('chainChanged', this.handleUserChainChanged);
@@ -187,10 +193,17 @@ export default Service.extend({
   kreditsByContributor: computed('contributionsUnconfirmed.@each.vetoed', 'contributors.[]', function() {
     const contributionsUnconfirmed = this.contributionsUnconfirmed.filterBy('vetoed', false);
     const contributionsGrouped = groupBy(contributionsUnconfirmed, 'contributorId');
-    const contributorsWithUnconfirmed = contributionsGrouped.map(c => c.value);
+
+    // Drop groups whose contributor isn't loaded yet (e.g. an IPFS profile
+    // failed to deserialize). They'll be re-included once the contributor
+    // gets lazily fetched via loadContributionFromData.
+    const contributionsGroupedKnown = contributionsGrouped.filter(c => {
+      return this.contributors.findBy('id', c.value);
+    });
+    const contributorsWithUnconfirmed = contributionsGroupedKnown.map(c => c.value);
     const contributorsWithOnlyConfirmed = this.contributors.reject(c => contributorsWithUnconfirmed.includes(c.id))
 
-    const kreditsByContributor = contributionsGrouped.map(c => {
+    const kreditsByContributor = contributionsGroupedKnown.map(c => {
       const amountUnconfirmed = c.items.mapBy('amount').reduce((a, b) => a + b);
       const contributor = this.contributors.findBy('id', c.value);
 
@@ -302,6 +315,26 @@ export default Service.extend({
       .then(data => this.loadContributorFromData(data))
   },
 
+  // When a contribution/reimbursement references a contributor that isn't in
+  // the local collection yet (e.g. its IPFS profile failed to deserialize on a
+  // previous attempt, or it was added out-of-band), lazily fetch it in the
+  // background. Fire-and-forget: never blocks the calling loop iteration, and
+  // any rejection is logged so it doesn't break the run loop. The successful
+  // arrival of the contributor will retrigger dependent computeds
+  // (kreditsByContributor, UserAvatar) via the `contributors.[]` dependency.
+  ensureContributorLoaded (id) {
+    if (!id) return;
+    if (this.contributors.findBy('id', id)) return;
+    if (this.contributorsFetching.has(id)) return;
+
+    console.debug(`[kredits] Contributor ${id} not loaded yet; fetching in background`);
+    this.contributorsFetching.add(id);
+    this.fetchContributor(id)
+      .then(() => console.debug(`[kredits] Lazy-loaded contributor ${id}`))
+      .catch(err => console.warn(`[kredits] Failed to lazy-load contributor ${id}:`, err))
+      .finally(() => this.contributorsFetching.delete(id));
+  },
+
   fetchContributors () {
     console.debug(`[kredits] Fetching all contributors from the network`);
     return this.kredits.Contributor.all()
@@ -385,6 +418,7 @@ export default Service.extend({
     const loadedContribution = this.contributions.findBy('id', contribution.id);
     if (loadedContribution) { this.contributions.removeObject(loadedContribution); }
     this.contributions.pushObject(contribution);
+    this.ensureContributorLoaded(data.contributorId);
     return contribution;
   },
 
@@ -620,6 +654,7 @@ export default Service.extend({
     obj.set('contributor', this.contributors.findBy('id', data.recipientId));
     this.removeObjectFromCollectionIfLoaded('reimbursements', obj.id);
     this.reimbursements.pushObject(obj);
+    this.ensureContributorLoaded(data.recipientId);
     return obj;
   },
 

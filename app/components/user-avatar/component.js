@@ -19,8 +19,17 @@ export default Component.extend({
   src: alias('avatarURL'),
   title: alias('contributor.name'),
 
-  avatarURL: computed('contributor.github_uid', 'size', function() {
-    const github_uid = this.contributor.github_uid;
+  // Re-compute whenever the contributor reference itself changes (covers a
+  // previously-undefined contributor being lazily loaded later), as well as
+  // the github_uid property when one is present.
+  avatarURL: computed('contributor', 'contributor.github_uid', 'size', function() {
+    const contributor = this.contributor;
+
+    if (!contributor) {
+      return '';
+    }
+
+    const github_uid = contributor.github_uid;
 
     if (github_uid) {
       return `https://avatars2.githubusercontent.com/u/${github_uid}?v=3&s=${SIZES[this.size]}`;
